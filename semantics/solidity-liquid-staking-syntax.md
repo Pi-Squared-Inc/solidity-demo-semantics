@@ -9,22 +9,25 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     imports STRING-SYNTAX
     imports ID-SYNTAX
 
-    syntax ElementaryTypeName ::= "uint" | "uint256" | "address" | "bool"
+    syntax ElementaryType ::= "uint" | "uint256" | "address" | "bool"
     syntax DataLocation ::= "memory" | "storage" | "calldata"
+    syntax VisibilitySpecifier ::= "public" | "private" | "external"
     //syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
     syntax BoolLiteral ::= Bool
     syntax StringLiteral ::= String
+    syntax IntLiteral ::= Int
+    syntax AddressLiteral ::= r"0x[A-Fa-f0-9]{39,41}"     [prec(2), token]
+    syntax BlockTimestampLiteral ::= "block.timestamp"
     //syntax PragmaDefinition ::= r"pragma ([^;]+)*;[\\s]*" [token]
 
-    syntax TypeName ::= ElementaryTypeName
-    //syntax TypeName ::= ElementaryTypeName | IdentifierPath | MappingType
-    //syntax IdentifierPath ::= Id "." IdentifierPath | Id
-    //syntax MappingType ::= "mapping" "(" MappingKeyType OptionalIdentifier "=>" TypeName OptionalIdentifier ")"
-    //syntax MappingKeyType ::= ElementaryTypeName | IdentifierPath
-    //syntax OptionalIdentifier ::= Id | ""
-    syntax Literal ::= IntLiteral | BoolLiteral | StringLiteral
+    syntax TypeName ::= ElementaryType | IdentifierPath | MappingType
+    syntax IdentifierPath ::= Id "." IdentifierPath | Id
+    syntax MappingType ::= "mapping" "(" MappingKeyType OptionalIdentifier "=>" TypeName OptionalIdentifier ")"
+    syntax MappingKeyType ::= ElementaryType | IdentifierPath
+    syntax OptionalIdentifier ::= Id | ""
+    syntax Literal ::= IntLiteral | BoolLiteral | StringLiteral | AddressLiteral | BlockTimestampLiteral
     //syntax IntLiteral ::= Int | Int SubDenom
-    syntax IntLiteral ::= Int
+
 
     //syntax Program ::= PragmaDefinition SourceUnits
 
@@ -74,7 +77,7 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax CallArgumentList ::= List{Expression, ","}
 
     //Operator precedences set according to: https://docs.soliditylang.org/en/latest/cheatsheet.html
-    syntax Expression ::= Id | Literal | ElementaryTypeName
+    syntax Expression ::= Id | Literal | ElementaryType
                         > "(" Expression ")" [bracket]
                         > Expression "++" | Expression "--"
                         | Expression "[" Expression "]" | Expression "[""]"
@@ -102,6 +105,9 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
                         > left: Expression "||" Expression
                         > left:
                               Expression "+=" Expression
+                            | Expression "-=" Expression
+                            | Expression "*=" Expression
+                            | Expression "/=" Expression
                             | Expression "=" Expression
 
 endmodule
