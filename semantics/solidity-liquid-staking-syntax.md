@@ -71,33 +71,38 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax VariableDeclaration ::= TypeName Id
                                  | TypeName DataLocation Id
 
-    //syntax CallArgumentList ::= List{Expression, ","}
+    syntax CallArgumentList ::= List{Expression, ","}
 
-    //TODO: Set realistic prioritites for the operators
+    //Operator precedences set according to: https://docs.soliditylang.org/en/latest/cheatsheet.html
     syntax Expression ::= Id | Literal | ElementaryTypeName
-                        | "(" Expression ")" [bracket]
-//                        | Expression "[" Expression "]" | Expression "[""]"
-//                        | Expression "." Id | Expression ".address"
-//                        | Expression "(" CallArgumentList ")"
-                        > "!" Expression
-                        > "++" Expression | "--" Expression
+                        > "(" Expression ")" [bracket]
                         > Expression "++" | Expression "--"
-                        > left: Expression "<" Expression
-                        > left: Expression "<=" Expression
-                        > left: Expression ">" Expression
-                        > left: Expression ">=" Expression
-                        > left: Expression "==" Expression
-                        > left: Expression "!=" Expression
-                        > left: Expression "&&" Expression
-                        > left: Expression "^" Expression
-                        > left: Expression "||" Expression
+                        | Expression "[" Expression "]" | Expression "[""]"
+                        | Expression "." Id | Expression ".address"
+                        | Expression "(" CallArgumentList ")"
+                        > "++" Expression | "--" Expression
+                        | "!" Expression
                         > left: Expression "**" Expression
-                        > left: Expression "*" Expression
-                        > left: Expression "/" Expression
-                        > left: Expression "+" Expression
-                        > left: Expression "-" Expression
-                        > left: Expression "+=" Expression
-                        > left: Expression "=" Expression
+                        > left:
+                              Expression "*" Expression
+                            | Expression "/" Expression
+                            | Expression "%" Expression
+                        > left:
+                              Expression "+" Expression
+                            | Expression "-" Expression
+                        > left:
+                              Expression "<" Expression
+                            | Expression "<=" Expression
+                            | Expression ">" Expression
+                            | Expression ">=" Expression
+                        > left:
+                              Expression "==" Expression
+                            | Expression "!=" Expression
+                        > left: Expression "&&" Expression
+                        > left: Expression "||" Expression
+                        > left:
+                              Expression "+=" Expression
+                            | Expression "=" Expression
 
 endmodule
 ```
