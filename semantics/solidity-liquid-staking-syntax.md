@@ -12,10 +12,10 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax ElementaryType ::= "uint" | "uint256" | "address" | "bool"
     syntax DataLocation ::= "memory" | "storage" | "calldata"
     syntax VisibilitySpecifier ::= "public" | "private" | "external"
-    //syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
+    syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
     syntax BoolLiteral ::= Bool
     syntax StringLiteral ::= String
-    syntax IntLiteral ::= Int
+    syntax IntLiteral ::= Int | Int SubDenom
     syntax AddressLiteral ::= r"0x[A-Fa-f0-9]{39,41}"       [token]
     syntax RequireLiteral ::= "require"                     [token]
     syntax BlockTimestampLiteral ::= "block.timestamp"
@@ -27,7 +27,6 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax MappingKeyType ::= ElementaryType | IdentifierPath
     syntax OptionalIdentifier ::= Id | ""
     syntax Literal ::= IntLiteral | BoolLiteral | StringLiteral | AddressLiteral | BlockTimestampLiteral | RequireLiteral
-    //syntax IntLiteral ::= Int | Int SubDenom
 
 
     //syntax Program ::= PragmaDefinition SourceUnits

@@ -2,6 +2,16 @@
 requires "solidity-liquid-staking-syntax.md"
 requires "network.md"
 
+// TODO: TYPE-CHECK
+// TODO: FUNCTION DECLARATION
+// TODO: FUNCTION CALL
+// TODO: TEST CALL
+// TODO: CONTRACT DECLARATION
+// TODO: STATE VARIABLES
+// TODO: INTERFACE DECLARATION
+// TODO: CASTING TO INTERFACE
+// TODO: NETWORK INTERACTIONS
+
 module SOLIDITY-LIQUID-STAKING
      imports SOLIDITY-LIQUID-STAKING-SYNTAX
      imports BOOL
@@ -212,6 +222,16 @@ module SOLIDITY-LIQUID-STAKING
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id) => ESTACK ListItem(V)</expressionStack>
 
+     rule <k> .K => .K ... </k>
+          <localVariables> ...
+               <variableValues> ... I2 |-> V ... </variableValues>
+          </localVariables>
+          <expressionStack> ESTACK ListItem(I1:Id[I2:Id]) => ESTACK ListItem(I1[V])</expressionStack>
+
+     // SUBDENOM CALCULATE
+     rule <k> .K => .K ... </k>
+          <expressionStack> ESTACK ListItem(V:Int days) => ESTACK ListItem(V *Int 86400)</expressionStack>
+
      // MAPPING LOOKUP
      rule <k> .K => .K ... </k>
           <localVariables> ...
@@ -230,7 +250,7 @@ module SOLIDITY-LIQUID-STAKING
 
      // BLOCK.TIMSTAMP LOOKUP (TODO: TREATED AS 0, CHANGE LATER)
      rule <k> .K => .K ... </k>
-          <expressionStack> ESTACK ListItem(_B:BlockTimestampLiteral) => ESTACK ListItem(0)</expressionStack>
+          <expressionStack> ESTACK ListItem(_B:BlockTimestampLiteral) => ESTACK ListItem(1800000000)</expressionStack>
 
      // MOVE THE LATEST EXPRESSION TO THE TOP OF THE EXPRESSION STACK FOR EVALUATION
      rule <k> .K => .K ... </k>
