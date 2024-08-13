@@ -39,13 +39,14 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     //syntax InterfaceDefinition ::= "interface" Id "{" ContractBodyElements "}"
 
     //syntax ContractDefinition ::= "contract" Id "{" ContractBodyElements "}"
-    //syntax ContractBodyElements ::= List{ContractBodyElement, ""}
+    syntax ContractBodyElements ::= List{ContractBodyElement, ""}
+    syntax ContractBodyElement ::= Block | StateVariableDeclaration 
     //syntax ContractBodyElement ::= StateVariableDeclaration | ConstructorDefinition | FunctionDefinition
 
     //syntax ConstructorDefinition ::= "constructor" "(" ParameterList ")" Block
 
-    //syntax StateVariableDeclaration ::= TypeName VisibilitySpecifier Id InitialAssignment ";"
-    //syntax InitialAssignment ::= "=" Expression | ""
+    syntax StateVariableDeclaration ::= TypeName VisibilitySpecifier Id InitialAssignment ";"
+    syntax InitialAssignment ::= "=" Expression | ""
     //syntax FunctionDefinition ::= "function" Id "(" ParameterList ")" FunctionSpecifier ReturnSpecifier FunctionBody
     //syntax ParameterList ::= List{Parameter, ","}
     //syntax Parameter ::= TypeName DataLocation Id | TypeName Id | TypeName DataLocation | TypeName

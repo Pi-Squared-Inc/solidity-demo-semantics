@@ -4,9 +4,8 @@ requires "network.md"
 
 // TODO: FUNCTION DECLARATION
 // TODO: FUNCTION CALL
-// TODO: TEST CALL
 // TODO: CONTRACT DECLARATION
-// TODO: STATE VARIABLES
+// TODO: TEST CALL: LAST LINE OF CONSTRUCTOR
 // TODO: INTERFACE DECLARATION
 // TODO: CASTING TO INTERFACE
 // TODO: NETWORK INTERACTIONS
@@ -20,11 +19,19 @@ module SOLIDITY-LIQUID-STAKING
      imports NETWORK
 
      configuration  <Sol>
-                         <k> $PGM:Block </k>
+                         <k> $PGM:ContractBodyElements </k>
+                         
+                         <stateVariables>
+                              <stateVariableVisibilities> .Map </stateVariableVisibilities>
+                              <stateVariableTypes> .Map </stateVariableTypes>
+                              <stateVariableValues> .Map </stateVariableValues>
+                         </stateVariables>
+
                          <localVariables>
-                              <variableTypes> .Map </variableTypes>
-                              <variableValues> .Map </variableValues>
+                              <localVariableTypes> .Map </localVariableTypes>
+                              <localVariableValues> .Map </localVariableValues>
                          </localVariables>
+                         
                          <expressionStack> .List </expressionStack>
                          <computationStack> .List </computationStack>
                          <status> EVMC_SUCCESS </status>
@@ -32,6 +39,36 @@ module SOLIDITY-LIQUID-STAKING
                          <debug> .List </debug>
                     </Sol>
 
+
+     // STATE VARIABLE(S) DECLARATIONS
+     rule <k> S:StateVariableDeclaration C:ContractBodyElements => S ~> C ...</k>
+          <status> EVMC_SUCCESS </status>
+
+     // STATE VARIABLE DECLARATION
+     rule <k> T:ElementaryNumeralType V:VisibilitySpecifier I:Id; => .K ... </k>
+          <stateVariables>
+               <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
+               <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
+               <stateVariableValues> VALUES => VALUES [ I <- 0 ] </stateVariableValues>
+          </stateVariables>
+     
+     rule <k> T:ElementaryNumeralType V:VisibilitySpecifier I:Id = L:IntLiteral; => .K ... </k>
+          <stateVariables>
+               <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
+               <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
+               <stateVariableValues> VALUES => VALUES [ I <- L ] </stateVariableValues>
+          </stateVariables>
+
+     rule <k> T:MappingType V:VisibilitySpecifier I:Id ; => .K ... </k>
+          <stateVariables>
+               <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
+               <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
+               ...
+          </stateVariables>
+
+     rule <k> B:Block C:ContractBodyElements => B ~> C ...</k>
+          <status> EVMC_SUCCESS </status>
+     
      // STATEMENT(S) EXECUTION
      rule <k> { P:Statements } => P ...</k>
           <status> EVMC_SUCCESS </status>
@@ -45,21 +82,21 @@ module SOLIDITY-LIQUID-STAKING
      // ELEMANTARY VARIABLE DECLARATION
      rule <k> T:ElementaryNumeralType I:Id ; => .K ... </k>
           <localVariables>
-               <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
-               <variableValues> VALUES => VALUES [ I <- 0 ] </variableValues>
+               <localVariableTypes> TYPES => TYPES [ I <- T ] </localVariableTypes>
+               <localVariableValues> VALUES => VALUES [ I <- 0 ] </localVariableValues>
           </localVariables>
      
      rule <k> T:ElementaryAddressType I:Id ; => .K ... </k>
           <localVariables>
-               <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
-               <variableValues> VALUES => VALUES [ I <- 0x0000000000000000000000000000000000000000 ] </variableValues>
+               <localVariableTypes> TYPES => TYPES [ I <- T ] </localVariableTypes>
+               <localVariableValues> VALUES => VALUES [ I <- 0x0000000000000000000000000000000000000000 ] </localVariableValues>
           </localVariables>
 
      // MAPPING DECLARATION
      rule <k> T:MappingType I:Id ; => .K ... </k>
           <localVariables>
                ...
-               <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
+               <localVariableTypes> TYPES => TYPES [ I <- T ] </localVariableTypes>
           </localVariables>
 
      // ELEMANTARY VARIABLE DECLARATION AND ASSIGNMENT
@@ -88,23 +125,23 @@ module SOLIDITY-LIQUID-STAKING
      rule <k> .K => .K ... </k>
           <localVariables>
                ...
-               <variableValues> ... I2 |-> V2 ... </variableValues>
+               <localVariableValues> ... I2 |-> V2 ... </localVariableValues>
           </localVariables>
           <expressionStack> ListItem(I1:Id[I2:Id]) ListItem("=") ListItem(V:Int) => ListItem(I1[V2]) ListItem("=") ListItem(V:Int) </expressionStack>
 
      // ASSIGNMENT DONE IF RHS IS LITERAL
      rule <k> .K => .K ... </k>
           <localVariables>
-               <variableTypes> ... I |-> _T:ElementaryNumeralType ...</variableTypes>
-               <variableValues> VALUES => VALUES [ I <- V ] </variableValues>
+               <localVariableTypes> ... I |-> _T:ElementaryNumeralType ...</localVariableTypes>
+               <localVariableValues> VALUES => VALUES [ I <- V ] </localVariableValues>
           </localVariables>
           <expressionStack> ListItem(I:Id) ListItem("=") ListItem(V:Int) => .List  </expressionStack>
           <computationStack> .List </computationStack>
 
      rule <k> .K => .K ... </k>
           <localVariables>
-               <variableTypes> ... I |-> _T:ElementaryAddressType ...</variableTypes>
-               <variableValues> VALUES => VALUES [ I <- A ] </variableValues>
+               <localVariableTypes> ... I |-> _T:ElementaryAddressType ...</localVariableTypes>
+               <localVariableValues> VALUES => VALUES [ I <- A ] </localVariableValues>
           </localVariables>
           <expressionStack> ListItem(I:Id) ListItem("=") ListItem(A:AddressLiteral) => .List  </expressionStack>
           <computationStack> .List </computationStack>
@@ -112,8 +149,8 @@ module SOLIDITY-LIQUID-STAKING
      // ASSIGNMENT DONE IF RHS IS LITERAL 
      rule <k> .K => .K ... </k>
           <localVariables>
-               <variableTypes> ... I |-> mapping ( address => uint256 ) ...</variableTypes>
-               <variableValues> VALUES => VALUES [ I[A] <- V ] </variableValues>
+               <localVariableTypes> ... I |-> mapping ( address => uint256 ) ...</localVariableTypes>
+               <localVariableValues> VALUES => VALUES [ I[A] <- V ] </localVariableValues>
           </localVariables>
           <expressionStack> ListItem(I:Id[A:Literal]) ListItem("=") ListItem(V:Int) => .List </expressionStack>
 
@@ -175,28 +212,28 @@ module SOLIDITY-LIQUID-STAKING
      // OPERATION-ASSIGNMENTS ARE EXPANDED FOR ID LHS
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I |-> V ... </variableValues>
+               <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id += E2:Expression) => ESTACK ListItem(I:Id) ListItem("=") ListItem("+") ListItem(V) </expressionStack>
           <computationStack> CSTACK => CSTACK ListItem(E2) </computationStack>
 
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I |-> V ... </variableValues>
+               <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id -= E2:Expression) => ESTACK ListItem(I:Id) ListItem("=") ListItem("-") ListItem(V) </expressionStack>
           <computationStack> CSTACK => CSTACK ListItem(E2) </computationStack>
 
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I |-> V ... </variableValues>
+               <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id *= E2:Expression) => ESTACK ListItem(I:Id) ListItem("=") ListItem("*") ListItem(V) </expressionStack>
           <computationStack> CSTACK => CSTACK ListItem(E2) </computationStack>
 
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I |-> V ... </variableValues>
+               <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id /= E2:Expression) => ESTACK ListItem(I:Id) ListItem("=") ListItem("/") ListItem(V) </expressionStack>
           <computationStack> CSTACK => CSTACK ListItem(E2) </computationStack>
@@ -205,7 +242,7 @@ module SOLIDITY-LIQUID-STAKING
      rule <k> .K => .K ... </k>
           <localVariables>
                ...
-               <variableValues> ... I2 |-> V2 ... </variableValues>
+               <localVariableValues> ... I2 |-> V2 ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I1:Id[I2:Id] += E2:Expression) => ESTACK ListItem(I1[V2]) ListItem("=") ListItem("+") ListItem(I1[V2]) </expressionStack>
           <computationStack> CSTACK => CSTACK ListItem(E2) </computationStack>
@@ -213,13 +250,13 @@ module SOLIDITY-LIQUID-STAKING
      // VARIABLE LOOKUP
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I |-> V ... </variableValues>
+               <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id) => ESTACK ListItem(V)</expressionStack>
 
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I2 |-> V ... </variableValues>
+               <localVariableValues> ... I2 |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I1:Id[I2:Id]) => ESTACK ListItem(I1[V])</expressionStack>
 
@@ -230,14 +267,14 @@ module SOLIDITY-LIQUID-STAKING
      // MAPPING LOOKUP
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> ... I[A] |-> V ... </variableValues>
+               <localVariableValues> ... I[A] |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id[A:Literal]) => ESTACK ListItem(V)</expressionStack>
 
      // MAPPING DEFAULT LOOKUP - 0
      rule <k> .K => .K ... </k>
           <localVariables> ...
-               <variableValues> VALUES </variableValues>
+               <localVariableValues> VALUES </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id[A:Literal]) => ESTACK ListItem(0)</expressionStack>
           requires notBool I[A] in_keys(VALUES)
@@ -284,6 +321,8 @@ module SOLIDITY-LIQUID-STAKING
      rule <k> .K => .K ... </k>
           <expressionStack> ESTACK ListItem("!=") ListItem(V1:Int) ListItem(V2:Int) => ESTACK ListItem(V1 =/=Int V2) </expressionStack>
 
+
+     rule <k> .ContractBodyElements ~> .K => .K </k>          
      rule <k> .Statements => .K ...</k>
      
 endmodule
