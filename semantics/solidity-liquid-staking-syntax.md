@@ -16,7 +16,8 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax BoolLiteral ::= Bool
     syntax StringLiteral ::= String
     syntax IntLiteral ::= Int
-    syntax AddressLiteral ::= r"0x[A-Fa-f0-9]{39,41}"     [prec(2), token]
+    syntax AddressLiteral ::= r"0x[A-Fa-f0-9]{39,41}"       [token]
+    syntax RequireLiteral ::= "require"                     [token]
     syntax BlockTimestampLiteral ::= "block.timestamp"
     //syntax PragmaDefinition ::= r"pragma ([^;]+)*;[\\s]*" [token]
 
@@ -25,7 +26,7 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax MappingType ::= "mapping" "(" MappingKeyType OptionalIdentifier "=>" TypeName OptionalIdentifier ")"
     syntax MappingKeyType ::= ElementaryType | IdentifierPath
     syntax OptionalIdentifier ::= Id | ""
-    syntax Literal ::= IntLiteral | BoolLiteral | StringLiteral | AddressLiteral | BlockTimestampLiteral
+    syntax Literal ::= IntLiteral | BoolLiteral | StringLiteral | AddressLiteral | BlockTimestampLiteral | RequireLiteral
     //syntax IntLiteral ::= Int | Int SubDenom
 
 
