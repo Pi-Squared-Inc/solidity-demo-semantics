@@ -13,7 +13,7 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax ElementaryNumeralType ::= "uint256"
     syntax ElementaryAddressType ::= "address"
     syntax DataLocation ::= "memory" | "storage" | "calldata"
-    syntax VisibilitySpecifier ::= "public" | "private" | "external"
+    syntax VisibilitySpecifier ::= "public" | "private" | "external" | "internal"
     syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
     syntax BoolLiteral ::= Bool
     syntax StringLiteral ::= String
@@ -40,20 +40,18 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
 
     //syntax ContractDefinition ::= "contract" Id "{" ContractBodyElements "}"
     syntax ContractBodyElements ::= List{ContractBodyElement, ""}
-    syntax ContractBodyElement ::= Block | StateVariableDeclaration 
-    //syntax ContractBodyElement ::= StateVariableDeclaration | ConstructorDefinition | FunctionDefinition
-
-    //syntax ConstructorDefinition ::= "constructor" "(" ParameterList ")" Block
+    syntax ContractBodyElement ::= Block | StateVariableDeclaration | FunctionDefinition | ConstructorDefinition
+    syntax ConstructorDefinition ::= "constructor" "(" ParameterList ")" Block
 
     syntax StateVariableDeclaration ::= TypeName VisibilitySpecifier Id InitialAssignment ";"
     syntax InitialAssignment ::= "=" Expression | ""
-    //syntax FunctionDefinition ::= "function" Id "(" ParameterList ")" FunctionSpecifier ReturnSpecifier FunctionBody
-    //syntax ParameterList ::= List{Parameter, ","}
-    //syntax Parameter ::= TypeName DataLocation Id | TypeName Id | TypeName DataLocation | TypeName
-    //syntax FunctionSpecifier ::= VisibilitySpecifier | "virtual" | ""
+    syntax FunctionDefinition ::= "function" Id "(" ParameterList ")" FunctionSpecifier ReturnSpecifier FunctionBody
+    syntax ParameterList ::= List{Parameter, ","}
+    syntax Parameter ::= TypeName DataLocation Id | TypeName Id | TypeName DataLocation | TypeName
+    syntax FunctionSpecifier ::= VisibilitySpecifier | "virtual" | ""
     //syntax VisibilitySpecifier ::= "internal" | "external" | "private" | "public"
-    //syntax ReturnSpecifier ::= "returns" "(" ParameterList ")" | ""
-    //syntax FunctionBody ::= Block | ";"
+    syntax ReturnSpecifier ::= "returns" "(" ParameterList ")" | ""
+    syntax FunctionBody ::= Block | ";"
 
     syntax Block ::= "{" Statements "}"
     syntax Statements ::= List{Statement, ""}

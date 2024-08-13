@@ -2,7 +2,6 @@
 requires "solidity-liquid-staking-syntax.md"
 requires "network.md"
 
-// TODO: FUNCTION DECLARATION
 // TODO: FUNCTION CALL
 // TODO: CONTRACT DECLARATION
 // TODO: TEST CALL: LAST LINE OF CONSTRUCTOR
@@ -31,7 +30,19 @@ module SOLIDITY-LIQUID-STAKING
                               <localVariableTypes> .Map </localVariableTypes>
                               <localVariableValues> .Map </localVariableValues>
                          </localVariables>
-                         
+
+                         <functions>
+                              <functionParameters> .Map </functionParameters>
+                              <functionSpecifiers> .Map </functionSpecifiers>
+                              <functionBodies> .Map </functionBodies>
+                              <functionReturns> .Map </functionReturns>
+                         </functions>
+
+                         <constructor>
+                              <constructorParameters> .K </constructorParameters>
+                              <constructorBody> .K </constructorBody>
+                         </constructor>
+
                          <expressionStack> .List </expressionStack>
                          <computationStack> .List </computationStack>
                          <status> EVMC_SUCCESS </status>
@@ -40,8 +51,17 @@ module SOLIDITY-LIQUID-STAKING
                     </Sol>
 
 
-     // STATE VARIABLE(S) DECLARATIONS
+     // ALL DECLARATIONS
      rule <k> S:StateVariableDeclaration C:ContractBodyElements => S ~> C ...</k>
+          <status> EVMC_SUCCESS </status>
+
+     rule <k> F:FunctionDefinition C:ContractBodyElements => F ~> C ...</k>
+          <status> EVMC_SUCCESS </status>
+
+     rule <k> CD:ConstructorDefinition C:ContractBodyElements => CD ~> C ...</k>
+          <status> EVMC_SUCCESS </status>
+
+     rule <k> B:Block C:ContractBodyElements => B ~> C ...</k>
           <status> EVMC_SUCCESS </status>
 
      // STATE VARIABLE DECLARATION
@@ -65,10 +85,32 @@ module SOLIDITY-LIQUID-STAKING
                <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
                ...
           </stateVariables>
-
-     rule <k> B:Block C:ContractBodyElements => B ~> C ...</k>
-          <status> EVMC_SUCCESS </status>
      
+
+     // FUNCTION DECLARATION
+     rule <k> function I:Id ( P:ParameterList ) FS:FunctionSpecifier FB:FunctionBody => .K ... </k>
+          <functions>
+               <functionParameters> PARAMETERS => PARAMETERS [ I <- P ] </functionParameters>
+               <functionSpecifiers> SPECIFIERS => SPECIFIERS [ I <- FS ] </functionSpecifiers>
+               <functionBodies> BODIES => BODIES [ I <- FB ] </functionBodies>
+               <functionReturns> RETURNS => RETURNS [ I <- "" ] </functionReturns>
+          </functions>
+
+     rule <k> function I:Id ( P:ParameterList ) FS:FunctionSpecifier returns( RP:ParameterList ) FB:FunctionBody => .K ... </k>
+          <functions>
+               <functionParameters> PARAMETERS => PARAMETERS [ I <- P ] </functionParameters>
+               <functionSpecifiers> SPECIFIERS => SPECIFIERS [ I <- FS ] </functionSpecifiers>
+               <functionBodies> BODIES => BODIES [ I <- FB ] </functionBodies>
+               <functionReturns> RETURNS => RETURNS [ I <- RP ] </functionReturns>
+          </functions>
+
+     // CONSTRUCTOR DECLARATION
+     rule <k> constructor ( P:ParameterList ) B:Block => .K ... </k>
+          <constructor>
+               <constructorParameters> .K => P </constructorParameters>
+               <constructorBody> .K => B </constructorBody>
+          </constructor>
+
      // STATEMENT(S) EXECUTION
      rule <k> { P:Statements } => P ...</k>
           <status> EVMC_SUCCESS </status>
