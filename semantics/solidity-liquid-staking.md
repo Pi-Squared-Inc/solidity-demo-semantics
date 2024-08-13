@@ -2,9 +2,10 @@
 requires "solidity-liquid-staking-syntax.md"
 requires "network.md"
 
-// TODO: FUNCTION CALL
+// TODO: SIMPLE SINGLE FUNCTION CALL
 // TODO: CONTRACT DECLARATION
-// TODO: TEST CALL: LAST LINE OF CONSTRUCTOR
+// TODO: TEST CALL: BODY AFTER CONTRACTS
+// TODO: NESTED FUNCTION CALL
 // TODO: INTERFACE DECLARATION
 // TODO: CASTING TO INTERFACE
 // TODO: NETWORK INTERACTIONS
@@ -73,6 +74,20 @@ module SOLIDITY-LIQUID-STAKING
           </stateVariables>
      
      rule <k> T:ElementaryNumeralType V:VisibilitySpecifier I:Id = L:IntLiteral; => .K ... </k>
+          <stateVariables>
+               <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
+               <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
+               <stateVariableValues> VALUES => VALUES [ I <- L ] </stateVariableValues>
+          </stateVariables>
+
+     rule <k> T:ElementaryAddressType V:VisibilitySpecifier I:Id; => .K ... </k>
+          <stateVariables>
+               <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
+               <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
+               <stateVariableValues> VALUES => VALUES [ I <- 0x0000000000000000000000000000000000000000 ] </stateVariableValues>
+          </stateVariables>
+     
+     rule <k> T:ElementaryAddressType V:VisibilitySpecifier I:Id = L:AddressLiteral; => .K ... </k>
           <stateVariables>
                <stateVariableVisibilities> VISIBILITIES => VISIBILITIES [ I <- V ] </stateVariableVisibilities>
                <stateVariableTypes> TYPES => TYPES [ I <- T ] </stateVariableTypes>
