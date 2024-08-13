@@ -2,7 +2,6 @@
 requires "solidity-liquid-staking-syntax.md"
 requires "network.md"
 
-// TODO: TYPE-CHECK
 // TODO: FUNCTION DECLARATION
 // TODO: FUNCTION CALL
 // TODO: TEST CALL
@@ -19,10 +18,6 @@ module SOLIDITY-LIQUID-STAKING
      imports STRING
      imports LIST
      imports NETWORK
-     //imports K-EQUAL
-
-     //syntax TypeName ::= String2TypeName(String) [function, hook(STRING.string2token)]
-     //syntax String ::= TypeName2String(ElementaryType) [function, hook(STRING.token2string)]
 
      configuration  <Sol>
                          <k> $PGM:Block </k>
@@ -48,10 +43,16 @@ module SOLIDITY-LIQUID-STAKING
           <status> EVMC_REVERT </status>
 
      // ELEMANTARY VARIABLE DECLARATION
-     rule <k> T:ElementaryType I:Id ; => .K ... </k>
+     rule <k> T:ElementaryNumeralType I:Id ; => .K ... </k>
           <localVariables>
                <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
                <variableValues> VALUES => VALUES [ I <- 0 ] </variableValues>
+          </localVariables>
+     
+     rule <k> T:ElementaryAddressType I:Id ; => .K ... </k>
+          <localVariables>
+               <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
+               <variableValues> VALUES => VALUES [ I <- 0x0000000000000000000000000000000000000000 ] </variableValues>
           </localVariables>
 
      // MAPPING DECLARATION
@@ -62,12 +63,7 @@ module SOLIDITY-LIQUID-STAKING
           </localVariables>
 
      // ELEMANTARY VARIABLE DECLARATION AND ASSIGNMENT
-     rule <k> T:ElementaryType I:Id = E:Expression; => .K ...</k>
-          <localVariables>
-               <variableTypes> TYPES => TYPES [ I <- T ] </variableTypes>
-               <variableValues> VALUES => VALUES [ I <- 0 ] </variableValues>
-          </localVariables>
-          <expressionStack> .List => ListItem(I = E) </expressionStack>
+     rule <k> T:ElementaryType I:Id = E:Expression; ~> P:Statements => T I; ~> I = E; P ...</k>
 
      // EXPRESSIONS GO TO EXPRESSION STACK
      rule <k> E:Expression; => .K ...</k>
@@ -99,28 +95,27 @@ module SOLIDITY-LIQUID-STAKING
      // ASSIGNMENT DONE IF RHS IS LITERAL
      rule <k> .K => .K ... </k>
           <localVariables>
-               ...
+               <variableTypes> ... I |-> _T:ElementaryNumeralType ...</variableTypes>
                <variableValues> VALUES => VALUES [ I <- V ] </variableValues>
           </localVariables>
           <expressionStack> ListItem(I:Id) ListItem("=") ListItem(V:Int) => .List  </expressionStack>
           <computationStack> .List </computationStack>
 
-     // ASSIGNMENT DONE IF RHS IS LITERAL 
      rule <k> .K => .K ... </k>
           <localVariables>
-               ...
-               <variableValues> VALUES => VALUES [ I[A] <- V ] </variableValues>
-          </localVariables>
-          <expressionStack> ListItem(I:Id[A:Literal]) ListItem("=") ListItem(V:Int) => .List </expressionStack>
-
-     // ASSIGNMENT DONE IF RHS IS ADDRESS LITERAL 
-     rule <k> .K => .K ... </k>
-          <localVariables>
-               ...
+               <variableTypes> ... I |-> _T:ElementaryAddressType ...</variableTypes>
                <variableValues> VALUES => VALUES [ I <- A ] </variableValues>
           </localVariables>
           <expressionStack> ListItem(I:Id) ListItem("=") ListItem(A:AddressLiteral) => .List  </expressionStack>
           <computationStack> .List </computationStack>
+
+     // ASSIGNMENT DONE IF RHS IS LITERAL 
+     rule <k> .K => .K ... </k>
+          <localVariables>
+               <variableTypes> ... I |-> mapping ( address => uint256 ) ...</variableTypes>
+               <variableValues> VALUES => VALUES [ I[A] <- V ] </variableValues>
+          </localVariables>
+          <expressionStack> ListItem(I:Id[A:Literal]) ListItem("=") ListItem(V:Int) => .List </expressionStack>
 
      // REQUIRE EVALUATES TRUE
      rule <k> .K => .K ... </k>

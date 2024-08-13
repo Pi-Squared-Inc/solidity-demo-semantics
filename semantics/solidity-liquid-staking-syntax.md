@@ -9,7 +9,9 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     imports STRING-SYNTAX
     imports ID-SYNTAX
 
-    syntax ElementaryType ::= "uint" | "uint256" | "address" | "bool"
+    syntax ElementaryType ::= ElementaryNumeralType | ElementaryAddressType
+    syntax ElementaryNumeralType ::= "uint256"
+    syntax ElementaryAddressType ::= "address"
     syntax DataLocation ::= "memory" | "storage" | "calldata"
     syntax VisibilitySpecifier ::= "public" | "private" | "external"
     syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
