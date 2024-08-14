@@ -3,7 +3,7 @@
 Following contains a subset of the [Solidity Language Grammar](https://docs.soliditylang.org/en/latest/grammar.html) that can be used to parse the example solidity program in `examples\LiquidStaking.sol`
 
 ```k
-module SOLIDITY-LIQUID-STAKING-SYNTAX
+module SOLIDITY-SYNTAX
     imports BOOL-SYNTAX
     imports INT-SYNTAX
     imports STRING-SYNTAX
@@ -59,7 +59,7 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax Statement ::= VariableDeclarationStatement
                        | ExpressionStatement
                        | IfStatement
-    //                    | ReturnStatement
+                       | ReturnStatement
 
     syntax ExpressionStatement ::= Expression ";"
 
@@ -69,8 +69,8 @@ module SOLIDITY-LIQUID-STAKING-SYNTAX
     syntax IfStatement ::= "if" "(" Expression ")" Statement
                          | "if" "(" Expression ")" Statement "else" Statement
 
-    //syntax ReturnStatement ::= "return" ";"
-    //                         | "return" Expression ";"
+    syntax ReturnStatement ::= "return" ";"
+                             | "return" Expression ";"
 
     syntax VariableDeclaration ::= TypeName Id
                                  | TypeName DataLocation Id
