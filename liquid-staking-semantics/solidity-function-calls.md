@@ -11,23 +11,25 @@ module SOLIDITY-FUNCTION-CALLS
     //TODO: NOT YET READY FOR NESTED CALLS
     //TODO: TYPE CHECKING FOR RETURNS
 
+    //CLEAR LOCAL VARS AND MOVE PARAMS TO STACK
      rule <k> .K => .K ... </k>
-            <expressionStack> ESTACK ListItem(I:Id (.CallArgumentList))=> ESTACK ListItem("CALLFUNC") ListItem(I)</expressionStack>
+            <expressionStack> ListItem(C:Id . I:Id (.CallArgumentList)) => ListItem("CALLFUNC") ListItem(C) ListItem(I)</expressionStack>
             <localVariables>
                 <localVariableTypes> _TYPES => .Map </localVariableTypes>
                 <localVariableValues> _VALUES => .Map</localVariableValues>
             </localVariables>
             <functions>
                 ...
-                <functionParameters> ... I |-> P ...</functionParameters>
+                <functionParameters> ... C..I |-> P ...</functionParameters>
             </functions>
             <functionCallStack>
                 ...
                 <functionCallParameters> .ParameterList => P </functionCallParameters>
             </functionCallStack>
-
+            
+    //INIT LOCAL VARS FROM PARAMS
      rule <k> .K => .K ... </k>
-            <expressionStack> ESTACK ListItem("CALLFUNC") ListItem(I:Id) => ESTACK ListItem("CALLFUNC") ListItem(I)</expressionStack>
+            <expressionStack> ListItem("CALLFUNC") ListItem(C:Id) ListItem(I:Id) => ListItem("CALLFUNC") ListItem(C) ListItem(I)</expressionStack>
             <localVariables>
                 <localVariableTypes> LVTYPES => LVTYPES [ PID <- T ] </localVariableTypes>
                 <localVariableValues> LVVALUES => LVVALUES [ PID <- L ] </localVariableValues>
@@ -38,21 +40,13 @@ module SOLIDITY-FUNCTION-CALLS
                 ...
             </functionCallStack>
 
-
+    //COPY STATE VARIABLES TO LOCAL VARIABLES AND FUNCTIONS TO STACK
      rule <k> .K => S ~> .K ... </k>
-            <expressionStack> ESTACK ListItem("CALLFUNC") ListItem(I:Id) => ESTACK </expressionStack>
-            <stateVariables>
-                ...
-                <stateVariableTypes> SVTYPESMAP </stateVariableTypes>
-                <stateVariableValues> SVVALUESMAP </stateVariableValues>
-            </stateVariables>
-            <localVariables>
-                <localVariableTypes> LVTYPESMAP => LVTYPESMAP SVTYPESMAP</localVariableTypes>
-                <localVariableValues> LVVALUESMAP => LVVALUESMAP SVVALUESMAP</localVariableValues>
-            </localVariables>
+            <expressionStack> ListItem("CALLFUNC") ListItem(C:Id) ListItem(I:Id) => .List </expressionStack>
+            <runningContract> .K => C </runningContract>
             <functions>
                 ...
-                <functionBodies> ... I |-> S ... </functionBodies>
+                <functionBodies> ... C..I |-> S ... </functionBodies>
             </functions>
             <functionCallStack>
                 <functionCallValues> .List </functionCallValues>
@@ -60,11 +54,13 @@ module SOLIDITY-FUNCTION-CALLS
                 ...
             </functionCallStack>
 
+
+     // FUNCTION CALL
      rule <k> .K => .K ... </k>
-          <expressionStack> ESTACK ListItem(I:Id (E:Expression, C:CallArgumentList))=> ESTACK ListItem(I:Id (C:CallArgumentList)) ListItem(E)</expressionStack>
+          <expressionStack> ListItem(CON:Id . I:Id (E:Expression, C:CallArgumentList)) => ListItem(CON . I (C)) ListItem(E) </expressionStack>
 
      rule <k> .K => .K ... </k>
-        <expressionStack> ESTACK ListItem(I:Id (C:CallArgumentList)) ListItem(V:Literal)=> ESTACK ListItem(I:Id (C:CallArgumentList))</expressionStack>
+        <expressionStack> ListItem(CON:Id . I:Id (C:CallArgumentList)) ListItem(V:Literal)=> ListItem(CON . I (C))</expressionStack>
         <functionCallStack>
             <functionCallValues> FCSTACK => FCSTACK ListItem(V) </functionCallValues>
             <functionCallParameters> .ParameterList </functionCallParameters>
@@ -89,11 +85,13 @@ module SOLIDITY-FUNCTION-CALLS
             ...
             <functionReturnValues> ListItem(L:Literal) => .List </functionReturnValues>
         </functionCallStack>
+        <runningContract> _C => .K </runningContract>
         
 
      // EMPTY RETURN STATEMENTS
      rule <k> return ; => .K ... </k> 
-     <expressionStack> .List </expressionStack>
+            <expressionStack> .List </expressionStack>
+            <runningContract> _C => .K </runningContract>
 
 endmodule
 ```

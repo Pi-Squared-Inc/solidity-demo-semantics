@@ -32,15 +32,16 @@ module SOLIDITY-SYNTAX
 
 
     //syntax Program ::= PragmaDefinition SourceUnits
+    syntax Program ::= ContractDefinition Block
 
     //syntax SourceUnits ::= List{SourceUnit, ""}
     //syntax SourceUnit ::= ContractDefinition | FunctionDefinition | InterfaceDefinition
 
     //syntax InterfaceDefinition ::= "interface" Id "{" ContractBodyElements "}"
 
-    //syntax ContractDefinition ::= "contract" Id "{" ContractBodyElements "}"
+    syntax ContractDefinition ::= "contract" Id "{" ContractBodyElements "}"
     syntax ContractBodyElements ::= List{ContractBodyElement, ""}
-    syntax ContractBodyElement ::= Block | StateVariableDeclaration | FunctionDefinition | ConstructorDefinition
+    syntax ContractBodyElement ::= StateVariableDeclaration | FunctionDefinition | ConstructorDefinition
     syntax ConstructorDefinition ::= "constructor" "(" ParameterList ")" Block
 
     syntax StateVariableDeclaration ::= TypeName VisibilitySpecifier Id InitialAssignment ";"

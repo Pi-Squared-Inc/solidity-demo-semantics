@@ -11,10 +11,9 @@ requires "solidity-syntax.md"
 
 requires "network.md"
 
-// TODO: SIMPLE SINGLE FUNCTION CALL
-// TODO: CONTRACT DECLARATION
 // TODO: TEST CALL: BODY AFTER CONTRACTS
 // TODO: NESTED FUNCTION CALL
+// TODO: CONSTRUCTOR CALLS
 // TODO: INTERFACE DECLARATION
 // TODO: CASTING TO INTERFACE
 // TODO: NETWORK INTERACTIONS
@@ -32,6 +31,9 @@ module SOLIDITY
      imports NETWORK
 
      // ALL DECLARATIONS
+     rule <k> CON:ContractDefinition B:Block => CON ~> B ...</k>
+          <status> EVMC_SUCCESS </status>
+
      rule <k> S:StateVariableDeclaration C:ContractBodyElements => S ~> C ...</k>
           <status> EVMC_SUCCESS </status>
 
@@ -39,9 +41,6 @@ module SOLIDITY
           <status> EVMC_SUCCESS </status>
 
      rule <k> CD:ConstructorDefinition C:ContractBodyElements => CD ~> C ...</k>
-          <status> EVMC_SUCCESS </status>
-
-     rule <k> B:Block C:ContractBodyElements => B ~> C ...</k>
           <status> EVMC_SUCCESS </status>
 
      // STATEMENT(S) EXECUTION
@@ -54,7 +53,7 @@ module SOLIDITY
      rule <k> _P:Statements ~> .K => .K </k>
           <status> EVMC_REVERT </status>
 
-     rule <k> .ContractBodyElements ~> .K => .K </k>          
+     rule <k> .ContractBodyElements ~> B:Block ~> .K => B ~> .K </k>          
      rule <k> .Statements => .K ...</k>
      
 endmodule

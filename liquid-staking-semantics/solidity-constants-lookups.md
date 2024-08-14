@@ -17,7 +17,17 @@ module SOLIDITY-LOOKUPS
                <localVariableValues> ... I |-> V ... </localVariableValues>
           </localVariables>
           <expressionStack> ESTACK ListItem(I:Id) => ESTACK ListItem(V)</expressionStack>
-          
+
+     rule <k> .K => .K ... </k>
+          <runningContract> C:Id </runningContract>
+          <localVariables> ...
+               <localVariableValues> VALUES </localVariableValues>
+          </localVariables>
+          <stateVariables>...
+               <stateVariableValues> ... C..I |-> V ... </stateVariableValues>
+          </stateVariables>
+          <expressionStack> ESTACK ListItem(I:Id) => ESTACK ListItem(V)</expressionStack>
+          requires notBool I in_keys(VALUES)
 
      rule <k> .K => .K ... </k>
           <localVariables> ...

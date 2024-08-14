@@ -10,13 +10,16 @@ module SOLIDITY-SPECS
      imports NETWORK
 
      configuration  <Sol>
-                         <k> $PGM:ContractBodyElements </k>
+                         <k> $PGM:Program </k>
                          
                          <stateVariables>
                               <stateVariableVisibilities> .Map </stateVariableVisibilities>
                               <stateVariableTypes> .Map </stateVariableTypes>
                               <stateVariableValues> .Map </stateVariableValues>
                          </stateVariables>
+
+                         <contracts> .List </contracts>
+                         <runningContract> .K </runningContract>
 
                          <functions>
                               <functionParameters> .Map </functionParameters>
@@ -25,10 +28,10 @@ module SOLIDITY-SPECS
                               <functionReturns> .Map </functionReturns>
                          </functions>
 
-                         <constructor>
-                              <constructorParameters> .K </constructorParameters>
-                              <constructorBody> .K </constructorBody>
-                         </constructor>
+                         <constructors>
+                              <constructorParameters> .Map </constructorParameters>
+                              <constructorBody> .Map </constructorBody>
+                         </constructors>
 
 
                          <localVariables>
@@ -50,6 +53,8 @@ module SOLIDITY-SPECS
                          <debug> .List </debug>
                     </Sol>
 
+     syntax IdTuple ::= Id ".." Id
+                      | Id ".." Id "[" Literal "]"
      
 endmodule
 ```
