@@ -1,0 +1,2 @@
+#!/bin/bash
+kparse -s Transactions -m SOLIDITY-DATA-SYNTAX "$(cat "$1")"

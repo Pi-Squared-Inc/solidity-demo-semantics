@@ -1,0 +1,3 @@
+create(1p160, 0p256, "UniswapV2SwapTest()", ),
+txn(1p160, 2p160, 0p256, "setUp()", ),
+txn(1p160, 2p160, 0p256, "testSwapSingleHopExactAmountIn()", )
