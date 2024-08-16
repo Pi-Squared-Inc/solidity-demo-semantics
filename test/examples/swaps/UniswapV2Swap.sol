@@ -313,3 +313,375 @@ contract UniswapV2Pair{
         emit Sync(reserve0, reserve1);
     } 
 }
+
+contract WETHMock {
+
+    mapping (address => uint256) public balanceOf;
+    mapping (address => mapping (address => uint256)) public allowance;
+    
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    function decimals() external returns (uint8) {
+        return 18;
+    }
+
+    function deposit() external payable {
+        balanceOf[msg.sender] += msg.value;
+        emit Transfer(address(0), msg.sender, msg.value);
+    }
+    
+    function approve(address spender, uint256 value) external returns (bool) {
+        allowance[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+
+        return true;
+    }
+
+    function transfer(address to, uint256 value) external returns (bool) {
+        if (to != address(0) && to != address(this)) { // Transfer
+            uint256 balance = balanceOf[msg.sender];
+            require(balance >= value, "WETH: transfer amount exceeds balance");
+
+            balanceOf[msg.sender] = balance - value;
+            balanceOf[to] += value;
+            emit Transfer(msg.sender, to, value);
+        } else { // Withdraw
+            uint256 balance = balanceOf[msg.sender];
+            require(balance >= value, "WETH: burn amount exceeds balance");
+            balanceOf[msg.sender] = balance - value;
+            emit Transfer(msg.sender, address(0), value);
+
+            (bool success, ) = msg.sender.call{value: value}("");
+            require(success, "WETH: ETH transfer failed");
+        }
+
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 value) external returns (bool) {
+        if (from != msg.sender) {
+            uint256 allowed = allowance[from][msg.sender];
+            if (allowed != type(uint256).max) {
+                require(allowed >= value, "WETH: request exceeds allowance");
+                uint256 reduced = allowed - value;
+                allowance[from][msg.sender] = reduced;
+                emit Approval(from, msg.sender, reduced);
+            }
+        }
+
+        if (to != address(0) && to != address(this)) { 
+            uint256 balance = balanceOf[from];
+            require(balance >= value, "WETH: transfer amount exceeds balance");
+
+            balanceOf[from] = balance - value;
+            balanceOf[to] += value;
+            emit Transfer(from, to, value);
+        } else { 
+            uint256 balance = balanceOf[from];
+            require(balance >= value, "WETH: burn amount exceeds balance");
+            balanceOf[from] = balance - value;
+            emit Transfer(from, address(0), value);
+
+            (bool success, ) = msg.sender.call{value: value}("");
+            require(success, "WETH: ETH transfer failed");
+        }
+
+        return true;
+    }
+}
+
+contract DAIMock {
+
+    uint256 public totalSupply;
+
+    mapping (address => uint)                      public balanceOf;
+    mapping (address => mapping (address => uint)) public allowance;
+
+    event Approval(address indexed src, address indexed guy, uint wad);
+    event Transfer(address indexed src, address indexed dst, uint wad);
+
+    function decimals() external returns (uint8) {
+        return 18;
+    }
+
+    function mint(address usr, uint wad) public {
+        balanceOf[usr] = balanceOf[usr] + wad;
+        totalSupply    = totalSupply + wad;
+        emit Transfer(address(0), usr, wad);
+    }
+
+    function mintOnDeposit(address usr, uint wad) public {
+        mint(usr, wad);
+    }
+    
+    function burn(address usr, uint wad) public {
+        if(balanceOf[usr] >=  wad){
+            balanceOf[usr] = balanceOf[usr] - wad;
+            totalSupply    = totalSupply - wad;
+        }
+    }
+
+    function approve(address usr, uint wad) external returns (bool) {
+        allowance[msg.sender][usr] = wad;
+        emit Approval(msg.sender, usr, wad);
+        return true;
+    }
+
+    
+    function transfer(address dst, uint wad) public returns (bool) {
+        return transferFrom(msg.sender, dst, wad);
+    }
+
+    function transferFrom(address src, address dst, uint wad)
+        public returns (bool)
+    {
+        require(balanceOf[src] >= wad, "Dai/insufficient-balance");
+        if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
+            require(allowance[src][msg.sender] >= wad, "Dai/insufficient-allowance");
+            allowance[src][msg.sender] = allowance[src][msg.sender] - wad;
+        }
+        balanceOf[src] = balanceOf[src] - wad;
+        balanceOf[dst] = balanceOf[dst] + wad;
+        emit Transfer(src, dst, wad);
+        return true;
+    }
+
+    function safeTransferFrom(address from, address to, uint256 value) external{
+        transferFrom(from, to, value);
+    }
+
+
+}
+
+contract USDCMock {
+    uint256 private _totalSupply;
+        
+    mapping(address account => uint256) private _balances;  
+    mapping(address account => mapping(address spender => uint256)) private _allowances;
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed);
+    error ERC20InvalidSender(address sender);
+    error ERC20InvalidReceiver(address receiver);
+    error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed);
+    error ERC20InvalidApprover(address approver);
+    error ERC20InvalidSpender(address spender);
+
+    function decimals() external returns (uint8) {
+        return 18;
+    }
+
+    function mint(address account, uint256 value) public {
+        if (account == address(0)) {
+            revert ERC20InvalidReceiver(address(0));
+        }
+        _update(address(0), account, value);
+    }
+
+    function balanceOf(address account) public returns (uint256) {
+        return _balances[account];
+    }
+
+    function transfer(address to, uint256 value) public returns (bool) {
+        address owner = msg.sender;
+        _transfer(owner, to, value);
+        return true;
+    }
+
+    function allowance(address owner, address spender) public returns (uint256) {
+        return _allowances[owner][spender];
+    }
+
+    function approve(address spender, uint256 value) public returns (bool) {
+        address owner = msg.sender;
+        _approve(owner, spender, value, true);
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 value) public returns (bool) {
+        address spender = msg.sender;
+        _spendAllowance(from, spender, value);
+        _transfer(from, to, value);
+        return true;
+    }
+
+    function _transfer(address from, address to, uint256 value) internal {
+        if (from == address(0)) {
+            revert ERC20InvalidSender(address(0));
+        }
+        if (to == address(0)) {
+            revert ERC20InvalidReceiver(address(0));
+        }
+        _update(from, to, value);
+    }
+
+    function _update(address from, address to, uint256 value) internal {
+        if (from == address(0)) {
+            _totalSupply += value;
+        } else {
+            uint256 fromBalance = _balances[from];
+            if (fromBalance < value) {
+                revert ERC20InsufficientBalance(from, fromBalance, value);
+            }
+            _balances[from] = fromBalance - value;
+            
+        }
+
+        if (to == address(0)) {
+            _totalSupply -= value;
+            
+        } else {
+            _balances[to] += value;
+        }
+
+        emit Transfer(from, to, value);
+    }
+
+
+    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal {
+        if (owner == address(0)) {
+            revert ERC20InvalidApprover(address(0));
+        }
+        if (spender == address(0)) {
+            revert ERC20InvalidSpender(address(0));
+        }
+        _allowances[owner][spender] = value;
+        if (emitEvent) {
+            emit Approval(owner, spender, value);
+        }
+    }
+
+    function _spendAllowance(address owner, address spender, uint256 value) internal {
+        uint256 currentAllowance = allowance(owner, spender);
+        if (currentAllowance != type(uint256).max) {
+            if (currentAllowance < value) {
+                revert ERC20InsufficientAllowance(spender, currentAllowance, value);
+            }
+            _approve(owner, spender, currentAllowance - value, false);
+            
+        }
+    }
+    
+    
+}
+
+contract UniswapV2SwapTest {
+
+    UniswapV2Swap private _uni;
+    WETHMock private _weth;
+    DAIMock private _dai;
+    USDCMock private _usdc;
+
+    function setUp() public {
+        _weth = new WETHMock();
+        _dai = new DAIMock();
+        _usdc = new USDCMock();
+        _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
+    }
+
+    function testSwapSingleHopExactAmountIn() public {
+        uint256 wethAmount = 1e18;
+        _weth.deposit{value: 2*wethAmount}();
+        _weth.approve(address(_uni), 2*wethAmount);
+        _dai.mint(address(this), wethAmount);
+        _dai.approve(address(_uni), wethAmount);
+        
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+
+        _uni.router().sync_local_pair(address(_weth), address(_dai));
+
+        uint256 daiAmountMin = 1;
+        uint256 daiAmountOut = _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+
+        assert(daiAmountOut >= daiAmountMin);
+    }
+
+    function testSwapMultiHopExactAmountIn() public {
+        uint256 wethAmount = 1e18;
+        
+        _weth.deposit{value: 4*wethAmount}();
+        _weth.approve(address(_uni), 8*wethAmount);
+        _dai.mint(address(this), 3*wethAmount);
+        _dai.approve(address(_uni), 3*wethAmount);
+        _usdc.mint(address(this), 2*wethAmount);
+        _usdc.approve(address(_uni), 2*wethAmount);
+
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+
+        _uni.router().sync_local_pair(address(_weth), address(_dai));
+
+        uint256 daiAmountMin = 1;
+        _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+
+        uint256 daiAmountIn = 1e18;
+        
+        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
+        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
+        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
+
+        _uni.router().sync_local_pair(address(_dai), address(_weth));
+        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+
+        uint256 usdcAmountOutMin = 1;
+        uint256 usdcAmountOut =
+            _uni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
+
+        assert(usdcAmountOut >= usdcAmountOutMin);
+    }
+
+    function testSwapSingleHopExactAmountOut() public {
+        uint256 wethAmount = 1e18;
+        _weth.deposit{value: 10*wethAmount}();
+        _weth.approve(address(_uni), 6*wethAmount);
+        _dai.mint(address(this), 10*wethAmount);
+        _dai.approve(address(_uni), 4*wethAmount);
+        
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
+        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
+
+        _uni.router().sync_local_pair(address(_weth), address(_dai));
+
+        uint256 daiAmountDesired = 1e18;
+        uint256 daiAmountOut =
+            _uni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
+
+        assert(daiAmountOut == daiAmountDesired);
+    }
+
+    function testSwapMultiHopExactAmountOut() public {
+        uint256 wethAmount = 1e18;
+        _weth.deposit{value: 20*wethAmount}();
+        _weth.approve(address(_uni), 20*wethAmount);
+        _dai.mint(address(this), 20*wethAmount);
+        _dai.approve(address(_uni), 20*wethAmount);
+        _usdc.mint(address(this), 10*wethAmount);
+        _usdc.approve(address(_uni), 10*wethAmount);
+
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
+        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
+
+        _uni.router().sync_local_pair(address(_weth), address(_dai));
+
+        uint256 daiAmountOut = 2 * 1e18;
+        _uni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
+        
+        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
+        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
+        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
+        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
+        _uni.router().sync_local_pair(address(_dai), address(_weth));
+        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+
+        uint256 amountOutDesired = 1e6;
+        uint256 amountOut =
+            _uni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
+
+        assert(amountOut == amountOutDesired);
+    }
+}
