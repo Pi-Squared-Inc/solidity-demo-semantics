@@ -1,0 +1,29 @@
+name: 'Test PR'
+on:
+  pull_request:
+    branches:
+      - 'main'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  test:
+    name: 'Conformance Tests'
+    runs-on: [self-hosted, linux, normal]
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v4
+      - name: 'Set up Docker'
+        uses: ./.github/actions/with-docker
+        with:
+          container-name: solidity-ci-${{ github.sha }}
+      - name: 'Build semantics'
+        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make build-bison'
+      - name: 'Test parsing'
+        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make test-bison'
+      - name: 'Tear down Docker'
+        if: always()
+        run: |
+          docker stop --time=0 solidity-ci-${{ github.sha }}

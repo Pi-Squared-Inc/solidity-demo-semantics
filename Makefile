@@ -1,5 +1,6 @@
-SYNTAX_DIR = solidity-lite-syntax
-EXAMPLES_DIR = $(SYNTAX_DIR)/examples
+SEMANTICS_DIR = src
+TEST_DIR = test
+EXAMPLES_DIR = $(TEST_DIR)/examples
 SYNTAX_FILE_NAME = solidity-syntax
 SYNTAX_FILE = $(SYNTAX_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
@@ -13,11 +14,11 @@ LIDO_PARAMS = $(EXAMPLES_DIR)/staking/LidoStaking.sol 2>&1 1>$(OUTPUT_DIR)/lidos
 LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR)/lendingpool.ast
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
 
-build: $(SYNTAX_DIR)/$(SYNTAX_FILE)
-	kompile $(SYNTAX_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) 
+build: $(SEMANTICS_DIR)/$(SYNTAX_FILE)
+	kompile $(SEMANTICS_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) 
 
-build-bison: $(SYNTAX_DIR)/$(SYNTAX_FILE)
-	kompile $(SYNTAX_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
+build-bison: $(SEMANTICS_DIR)/$(SYNTAX_FILE)
+	kompile $(SEMANTICS_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
 
 clean:
 	rm -Rf $(SYNTAX_FILE_NAME)-kompiled
