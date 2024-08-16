@@ -179,6 +179,7 @@ Following is a list of supported statements.
 
     syntax VariableDeclarationStatement ::= VariableDeclaration ";"
                                             | VariableDeclaration "=" Expression ";"
+                                            | "(" VariableDeclaration "," ")" "=" Expression ";"
 
     syntax IfStatement ::= "if" "(" Expression ")" Statement
                          | "if" "(" Expression ")" Statement "else" Statement
