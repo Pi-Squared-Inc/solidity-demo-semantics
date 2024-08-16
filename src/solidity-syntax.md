@@ -261,11 +261,3 @@ Following is a list of supported expressions. Operator precendences are taken fr
 endmodule
 
 ```
-
-A placeholder module that imports syntax module
-
-```k
-module SOLIDITY
-  imports SOLIDITY-SYNTAX
-endmodule
-```

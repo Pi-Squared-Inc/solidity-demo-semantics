@@ -1,8 +1,8 @@
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
-SYNTAX_FILE_NAME = solidity-syntax
-SYNTAX_FILE = $(SYNTAX_FILE_NAME).md
+SEMANTICS_FILE_NAME = solidity
+SEMANTICS_FILE = $(SEMANTICS_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
 OUTPUT_DIR = out
 
@@ -14,11 +14,11 @@ LIDO_PARAMS = $(EXAMPLES_DIR)/staking/LidoStaking.sol 2>&1 1>$(OUTPUT_DIR)/lidos
 LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR)/lendingpool.ast
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
 
-build: $(SEMANTICS_DIR)/$(SYNTAX_FILE)
-	kompile $(SEMANTICS_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
+build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
+	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
 
 clean:
-	rm -Rf $(SYNTAX_FILE_NAME)-kompiled
+	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
 
 test: test-swap test-tokens test-staking test-lending
