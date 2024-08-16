@@ -15,21 +15,6 @@ inputs:
     required: false
     type: string
     default: './'
-  os: 
-    description: 'OS to setup Docker for.'
-    required: false
-    type: string
-    default: 'ubuntu'
-  distro:
-    description: 'Distribution to setup Docker for.'
-    required: false
-    type: string
-    default: 'jammy'
-  llvm:
-    description: 'LLVM version to use.'
-    required: false
-    type: number
-    default: 14
   dockerfile:
     description: 'Hardcode the path of the dockerfile to use.'
     required: false
@@ -53,7 +38,6 @@ runs:
 
       USER=github-user
       GROUP=${USER}
-      Z3_VERSION=$(cat deps/z3)
       K_VERSION=$(cat deps/k_release)
       USER_ID=1000
       GROUP_ID=${USER_ID}
@@ -64,10 +48,7 @@ runs:
         --build-arg GROUP_ID=${GROUP_ID}         \
         --build-arg USER=${USER}                 \
         --build-arg GROUP=${GROUP}               \
-        --build-arg BASE_DISTRO=${BASE_DISTRO}   \
         --build-arg K_VERSION=${K_VERSION}       \
-        --build-arg Z3_VERSION=${Z3_VERSION}     \
-        --build-arg LLVM_VERSION=${LLVM_VERSION}
 
       docker run                          \
         --name ${CONTAINER_NAME}          \
