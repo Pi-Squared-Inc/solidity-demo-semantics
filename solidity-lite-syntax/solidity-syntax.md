@@ -5,7 +5,6 @@ Following contains a subset of the [Solidity Language Grammar](https://docs.soli
 ```k
 module SOLIDITY-SYNTAX
     imports BOOL-SYNTAX
-    //imports INT-SYNTAX
     imports STRING-SYNTAX
     imports ID-SYNTAX
 
