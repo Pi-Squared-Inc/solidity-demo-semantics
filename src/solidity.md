@@ -54,6 +54,9 @@ module SOLIDITY-DATA
   imports SOLIDITY-DATA-SYNTAX
 
   syntax TypedVal ::= v(Value, TypeName)
+  syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
+  syntax Expression ::= TypedVal
+  syntax CallArgumentList ::= TypedVals
   syntax KResult ::= TypedVal
   syntax Value ::= MInt{160} | MInt{256} | Bool | String
 
