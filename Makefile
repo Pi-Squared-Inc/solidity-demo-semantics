@@ -1,3 +1,5 @@
+.PHONY: build clean test test-tokens test-staking test-lending test-swap test-erc20 test-erc1155 test-liquid test-lido test-lendingpool test-aave test-regression
+
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
