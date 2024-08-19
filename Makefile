@@ -23,6 +23,7 @@ build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
 clean:
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
+	rm -Rf $(TEST_DIR)/regression/*.out
 
 test: test-swap test-tokens test-staking test-lending test-regression
 
@@ -62,6 +63,6 @@ test-aave:
 
 test-regression: ${REGRESSION_TESTS}
 
-%.out: %.sol %.txn %.ref
+%.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
 	bin/krun-sol $*.sol $*.txn > $*.out
 	diff -U3 $*.ref $*.out
