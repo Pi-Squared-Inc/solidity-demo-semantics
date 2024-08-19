@@ -88,5 +88,10 @@ module SOLIDITY
   rule .SourceUnits => .K
   rule C:ContractBodyElement Cc:ContractBodyElements => C ~> Cc
   rule .ContractBodyElements => .K
+  rule T:Transaction, Tt:Transactions => T ~> Tt
+  rule .Transactions => .K
+  rule S:Statement Ss:Statements => S ~> Ss
+  rule .Statements => .K
+  rule isKResult(.TypedVals) => true
 endmodule
 ```
