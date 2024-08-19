@@ -88,18 +88,6 @@ contract LendingPool {
     mapping(address => SupportedToken) internal supportedTokens;
     mapping(address => mapping(address => AccountShares)) private userShares;
 
-    error TooHighSlippage(uint256 sharesOutOrAmountIn);
-    error InsufficientBalance();
-    error BelowHeathFactor();
-    error BorrowerIsSolvant();
-    error SelfLiquidation();
-    error InvalidFeeRate(uint256 fee);
-    error InvalidReserveRatio(uint256 ratio);
-    error InvalidPrice();
-    error AlreadySupported(address token);
-    error InvalidTokenType(TokenType tokenType);
-    error TransferFailed();
-
     event AddSupportedToken(address token, TokenType tokenType);
     event Deposit(address user, address token, uint256 amount, uint256 shares);
     event Borrow(address user, address token, uint256 amount, uint256 shares);
@@ -144,7 +132,7 @@ contract LendingPool {
 
         _transferERC20(token, msg.sender, address(this), amount);
         uint256 shares = _toShares(vaults[token].totalAsset, amount, false);
-        if (shares < minSharesOut) revert TooHighSlippage(shares);
+        require(shares >= minSharesOut, "LendingPool: too high slippage");
 
         vaults[token].totalAsset.shares += uint128(shares);
         vaults[token].totalAsset.amount += uint128(amount);
@@ -154,8 +142,7 @@ contract LendingPool {
     }
 
     function borrow(address token, uint256 amount) external {
-        if (!vaultAboveReserveRatio(token, amount))
-            revert InsufficientBalance();
+        require(vaultAboveReserveRatio(token, amount), "LendingPool: insufficient balance");
         _accrueInterest(token);
 
         uint256 shares = _toShares(vaults[token].totalBorrow, amount, false);
@@ -164,8 +151,10 @@ contract LendingPool {
         userShares[msg.sender][token].borrow += shares;
 
         _transferERC20(token, address(this), msg.sender, amount);
-        if (healthFactor(msg.sender) < MIN_HEALTH_FACTOR)
-            revert BelowHeathFactor();
+        require(
+            healthFactor(msg.sender) >= MIN_HEALTH_FACTOR,
+            "LendingPool: cannot borrow, account below health factor"
+        );
 
         emit Borrow(msg.sender, token, amount, shares);
     }
@@ -207,9 +196,9 @@ contract LendingPool {
         address userBorrowToken,
         uint256 amountToLiquidate
     ) external {
-        if (msg.sender == account) revert SelfLiquidation();
+        require(msg.sender != account, "LendingPool: borrower cannot self liquidate");
         uint256 accountHF = healthFactor(account);
-        if (accountHF >= MIN_HEALTH_FACTOR) revert BorrowerIsSolvant();
+        require(accountHF < MIN_HEALTH_FACTOR, "LendingPool: borrower is solvant");
         uint256 collateralShares = userShares[account][collateral].collateral;
         uint256 borrowShares = userShares[account][userBorrowToken].borrow;
         if (collateralShares == 0 || borrowShares == 0) return;
@@ -465,24 +454,24 @@ contract LendingPool {
         if (share) {
             shares = amount;
             amount = _toAmount(vaults[token].totalAsset, shares, false);
-            if (amount < minAmountOutOrMaxShareIn)
-                revert TooHighSlippage(amount);
+            require(amount >= minAmountOutOrMaxShareIn, "LendingPool: too high slippage");
         } else {
             shares = _toShares(vaults[token].totalAsset, amount, false);
-            if (shares > minAmountOutOrMaxShareIn)
-                revert TooHighSlippage(shares);
+            require(shares <= minAmountOutOrMaxShareIn, "LendingPool: too high slippage");
         }
-        if (
-            userCollShares < shares ||
-            IERC20(token).balanceOf(address(this)) < amount
-        ) revert InsufficientBalance();
+        require(
+            userCollShares >= shares && IERC20(token).balanceOf(address(this)) >= amount,
+            "LendingPool: insufficient balance"
+        );
         vaults[token].totalAsset.shares -= uint128(shares);
         vaults[token].totalAsset.amount -= uint128(amount);
         userShares[msg.sender][token].collateral -= shares;
 
         _transferERC20(token, address(this), msg.sender, amount);
-        if (healthFactor(msg.sender) < MIN_HEALTH_FACTOR)
-            revert BelowHeathFactor();
+        require(
+            healthFactor(msg.sender) >= MIN_HEALTH_FACTOR,
+            "LendingPool: cannot withdraw, account below health factor"
+        );
         emit Withdraw(msg.sender, token, amount, shares);
     }
 
@@ -562,12 +551,18 @@ contract LendingPool {
             _addSupportedToken(token, priceFeed, tokenType);
         }
         if (tokenType == TokenType.ERC20) {
-            if (params.reserveRatio > BPS)
-                revert InvalidReserveRatio(params.reserveRatio);
-            if (params.feeToProtocolRate > MAX_PROTOCOL_FEE)
-                revert InvalidFeeRate(params.feeToProtocolRate);
-            if (params.flashFeeRate > MAX_PROTOCOL_FEE)
-                revert InvalidFeeRate(params.flashFeeRate);
+            require(
+                params.reserveRatio <= BPS,
+                "LendingPool: invalid reserve ratio"
+            );
+            require(
+                params.feeToProtocolRate <= MAX_PROTOCOL_FEE,
+                "LendingPool: invalid fee to protocol rate"
+            );
+            require(
+                params.flashFeeRate <= MAX_PROTOCOL_FEE,
+                "LendingPool: invalid flash fee rate"
+            );
             VaultInfo storage _vaultInfo = vaults[token].vaultInfo;
             _vaultInfo.reserveRatio = params.reserveRatio;
             _vaultInfo.feeToProtocolRate = params.feeToProtocolRate;
@@ -586,8 +581,14 @@ contract LendingPool {
         address priceFeed,
         TokenType tokenType
     ) internal {
-        if (supportedTokens[token].supported) revert AlreadySupported(token);
-        if (uint256(tokenType) > 1) revert InvalidTokenType(tokenType);
+        require(
+            !supportedTokens[token].supported,
+            "LendingPool: adding support for already supported token"
+        );
+        require(
+            uint256(tokenType) <= 1,
+            "LendingPool: invalid token type"
+        );
 
         supportedTokens[token].usdPriceFeed = priceFeed;
         supportedTokens[token].tokenType = tokenType;
@@ -618,8 +619,10 @@ contract LendingPool {
         uint256 updatedAt = returndata[3];
         uint256 answeredInRound = returndata[4];
 
-        if (answer <= 0 || updatedAt == 0 || answeredInRound < roundId)
-            revert InvalidPrice();
+        require(
+            answer > 0 && updatedAt != 0 && answeredInRound >= roundId,
+            "LendingPool: invalid price for token"
+        );
 
         price = answer;
     }
@@ -636,7 +639,7 @@ contract LendingPool {
         } else {
             success = IERC20(_token).transferFrom(_from, _to, _amount);
         }
-        if (!success) revert TransferFailed();
+        require(success, "LendingPool: transfer failed");
     }
 
     function _toShares(
