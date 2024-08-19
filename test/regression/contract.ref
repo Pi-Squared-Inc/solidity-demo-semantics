@@ -1,0 +1,301 @@
+<solidity>
+  <k>
+    .K
+  </k>
+  <current-body>
+    UniswapV2Swap
+  </current-body>
+  <ifaces>
+    <iface>
+      <iface-id>
+        IERC20
+      </iface-id>
+      <iface-fns>
+        <iface-fn>
+          <iface-fn-id>
+            approve
+          </iface-fn-id>
+          <iface-fn-arg-types>
+            ListItem ( address )
+            ListItem ( uint256 )
+          </iface-fn-arg-types>
+          <iface-fn-return-types>
+            ListItem ( bool )
+          </iface-fn-return-types>
+        </iface-fn> <iface-fn>
+          <iface-fn-id>
+            balanceOf
+          </iface-fn-id>
+          <iface-fn-arg-types>
+            ListItem ( address )
+          </iface-fn-arg-types>
+          <iface-fn-return-types>
+            ListItem ( uint )
+          </iface-fn-return-types>
+        </iface-fn> <iface-fn>
+          <iface-fn-id>
+            transfer
+          </iface-fn-id>
+          <iface-fn-arg-types>
+            ListItem ( address )
+            ListItem ( uint )
+          </iface-fn-arg-types>
+          <iface-fn-return-types>
+            ListItem ( bool )
+          </iface-fn-return-types>
+        </iface-fn> <iface-fn>
+          <iface-fn-id>
+            transferFrom
+          </iface-fn-id>
+          <iface-fn-arg-types>
+            ListItem ( address )
+            ListItem ( address )
+            ListItem ( uint )
+          </iface-fn-arg-types>
+          <iface-fn-return-types>
+            ListItem ( bool )
+          </iface-fn-return-types>
+        </iface-fn>
+      </iface-fns>
+    </iface>
+  </ifaces>
+  <contracts>
+    <contract>
+      <contract-id>
+        UniswapV2Swap
+      </contract-id>
+      <contract-state>
+        dai |-> IERC20
+        router |-> UniswapV2Router02
+        usdc |-> IERC20
+        weth |-> IERC20
+      </contract-state>
+      <contract-init>
+        .List
+      </contract-init>
+      <contract-fns>
+        <contract-fn>
+          <contract-fn-id>
+            constructor
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            ListItem ( address )
+            ListItem ( address )
+            ListItem ( address )
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            ListItem ( _weth )
+            ListItem ( _dai )
+            ListItem ( _usdc )
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-body>
+            .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            dai
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            ListItem ( IERC20 )
+          </contract-fn-return-types>
+          <contract-fn-body>
+            return dai ;  .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            router
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            ListItem ( UniswapV2Router02 )
+          </contract-fn-return-types>
+          <contract-fn-body>
+            return router ;  .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            swapMultiHopExactAmountIn
+          </contract-fn-id>
+          <contract-fn-visibility>
+            external
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            ListItem ( uint256 )
+            ListItem ( uint256 )
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            ListItem ( amountIn )
+            ListItem ( amountOutMin )
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-body>
+            .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            swapMultiHopExactAmountOut
+          </contract-fn-id>
+          <contract-fn-visibility>
+            external
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            ListItem ( uint256 )
+            ListItem ( uint256 )
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            ListItem ( amountOutDesired )
+            ListItem ( amountInMax )
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-body>
+            .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            swapSingleHopExactAmountIn
+          </contract-fn-id>
+          <contract-fn-visibility>
+            external
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            ListItem ( uint256 )
+            ListItem ( uint256 )
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            ListItem ( amountIn )
+            ListItem ( amountOutMin )
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-body>
+            .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            swapSingleHopExactAmountOut
+          </contract-fn-id>
+          <contract-fn-visibility>
+            external
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            ListItem ( uint256 )
+            ListItem ( uint256 )
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            ListItem ( amountOutDesired )
+            ListItem ( amountInMax )
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-body>
+            .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            usdc
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            ListItem ( IERC20 )
+          </contract-fn-return-types>
+          <contract-fn-body>
+            return usdc ;  .Statements
+          </contract-fn-body>
+        </contract-fn> <contract-fn>
+          <contract-fn-id>
+            weth
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            ListItem ( IERC20 )
+          </contract-fn-return-types>
+          <contract-fn-body>
+            return weth ;  .Statements
+          </contract-fn-body>
+        </contract-fn>
+      </contract-fns>
+    </contract>
+  </contracts>
+  <exec>
+    <msg-sender>
+      1p160
+    </msg-sender>
+    <msg-value>
+      0p256
+    </msg-value>
+    <tx-origin>
+      1p160
+    </tx-origin>
+    <env>
+      _dai |-> 1
+      _usdc |-> 2
+      _weth |-> 0
+    </env>
+    <store>
+      0 |-> 2p160
+      1 |-> 3p160
+      2 |-> 4p160
+    </store>
+    <live-contracts>
+      <live-contract>
+        <contract-address>
+          2p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          .Map
+        </contract-storage>
+      </live-contract>
+    </live-contracts>
+    <next-address>
+      3p160
+    </next-address>
+  </exec>
+</solidity>
