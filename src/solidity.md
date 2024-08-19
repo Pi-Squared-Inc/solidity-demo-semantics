@@ -3,6 +3,7 @@
 ```k
 requires "solidity-syntax.md"
 requires "interface.md"
+requires "contract.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -26,6 +27,23 @@ module SOLIDITY-CONFIGURATION
           </iface-fns>
         </iface>
       </ifaces>
+      <contracts>
+        <contract multiplicity="*" type="Map">
+          <contract-id> Id </contract-id>
+          <contract-state> .Map </contract-state>
+          <contract-init> .List </contract-init>
+          <contract-fns>
+            <contract-fn multiplicity="*" type="Map">
+              <contract-fn-id> Id </contract-fn-id>
+              <contract-fn-visibility> public </contract-fn-visibility>
+              <contract-fn-arg-types> .List </contract-fn-arg-types>
+              <contract-fn-param-names> .List </contract-fn-param-names>
+              <contract-fn-return-types> .List </contract-fn-return-types>
+              <contract-fn-body> .Statements </contract-fn-body>
+            </contract-fn>
+          </contract-fns>
+        </contract>
+      </contracts>
     </solidity>
 
 endmodule
@@ -83,6 +101,7 @@ endmodule
 module SOLIDITY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-INTERFACE
+  imports SOLIDITY-CONTRACT
 
   rule _:PragmaDefinition Ss:SourceUnits => Ss
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
