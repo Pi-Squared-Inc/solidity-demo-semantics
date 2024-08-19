@@ -20,9 +20,9 @@ jobs:
         with:
           container-name: solidity-ci-${{ github.sha }}
       - name: 'Build semantics'
-        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make build-bison'
+        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make'
       - name: 'Test parsing'
-        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make test-bison'
+        run: docker exec -u github-user solidity-ci-${{ github.sha }} /bin/bash -c 'make test'
       - name: 'Tear down Docker'
         if: always()
         run: |

@@ -1,8 +1,8 @@
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
-SYNTAX_FILE_NAME = solidity-syntax
-SYNTAX_FILE = $(SYNTAX_FILE_NAME).md
+SEMANTICS_FILE_NAME = solidity
+SEMANTICS_FILE = $(SEMANTICS_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
 OUTPUT_DIR = out
 
@@ -14,14 +14,11 @@ LIDO_PARAMS = $(EXAMPLES_DIR)/staking/LidoStaking.sol 2>&1 1>$(OUTPUT_DIR)/lidos
 LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR)/lendingpool.ast
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
 
-build: $(SEMANTICS_DIR)/$(SYNTAX_FILE)
-	kompile $(SEMANTICS_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) 
-
-build-bison: $(SEMANTICS_DIR)/$(SYNTAX_FILE)
-	kompile $(SEMANTICS_DIR)/$(SYNTAX_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
+build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
+	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
 
 clean:
-	rm -Rf $(SYNTAX_FILE_NAME)-kompiled
+	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
 
 test: test-swap test-tokens test-staking test-lending
@@ -32,66 +29,30 @@ test-staking: test-liquid test-lido
 
 test-lending: test-lendingpool test-aave
 
-test-swap: 
+test-swap:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(UNISWAP_PARAMS)
+	kparse $(UNISWAP_PARAMS)
 
-test-erc20: 
+test-erc20:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(SOMETOKEN_PARAMS)
+	kparse $(SOMETOKEN_PARAMS)
 
-test-erc1155: 
+test-erc1155:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(SOMEMULTITOKEN_PARAMS)
+	kparse $(SOMEMULTITOKEN_PARAMS)
 
-test-liquid: 
+test-liquid:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(LIQUIDSTAKING_PARAMS)
+	kparse $(LIQUIDSTAKING_PARAMS)
 
-test-lido: 
+test-lido:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(LIDO_PARAMS)
+	kparse $(LIDO_PARAMS)
 
-test-lendingpool: 
+test-lendingpool:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(LENDINGPOOL_PARAMS)
+	kparse $(LENDINGPOOL_PARAMS)
 
-test-aave: 
+test-aave:
 	mkdir -p $(OUTPUT_DIR)
-	kast $(AAVE_PARAMS)
-
-test-bison: test-bison-swap test-bison-tokens test-bison-staking test-bison-lending
-
-test-bison-tokens: test-bison-erc20 test-bison-erc1155
-
-test-bison-staking: test-bison-liquid test-bison-lido
-
-test-bison-lending: test-bison-lendingpool test-bison-aave
-
-test-bison-swap:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(UNISWAP_PARAMS)
-
-test-bison-erc20:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(SOMETOKEN_PARAMS)
-
-test-bison-erc1155:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(SOMEMULTITOKEN_PARAMS)
-
-test-bison-liquid:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(LIQUIDSTAKING_PARAMS)
-
-test-bison-lido:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(LIDO_PARAMS)
-
-test-bison-lendingpool:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(LENDINGPOOL_PARAMS)
-
-test-bison-aave:
-	mkdir -p $(OUTPUT_DIR)
-	./$(SYNTAX_FILE_NAME)-kompiled/parser_PGM $(AAVE_PARAMS)
+	kparse $(AAVE_PARAMS)

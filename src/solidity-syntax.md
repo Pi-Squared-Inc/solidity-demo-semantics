@@ -83,6 +83,7 @@ A contract file consists of a series of contract definitions listed as follows.
 
     syntax ContractDefinition ::= "contract" Id "{" ContractBodyElements "}"
     syntax FunctionDefinition ::= "function" Id "(" ParameterList ")" FunctionSpecifiers ReturnSpecifier FunctionBody
+                                | "function" Id "(" ParameterList ")" FunctionSpecifiers FunctionBody
     syntax InterfaceDefinition ::= "interface" Id "{" ContractBodyElements "}"
     syntax ErrorDefinition ::= "error" Id "(" ErrorParameters ")" ";"
     syntax StructDefinition ::= "struct" Id "{" StructMembers "}"
@@ -120,7 +121,7 @@ A Function definition contains a parameter list and some specifiers. Supported l
     syntax Parameter ::= TypeName DataLocation Id | TypeName Id | TypeName DataLocation | TypeName
     syntax FunctionSpecifiers ::= List{FunctionSpecifier, ""}
     syntax FunctionSpecifier ::= VisibilitySpecifier | "virtual" | "payable"
-    syntax ReturnSpecifier ::= "returns" "(" ParameterList ")" | ""
+    syntax ReturnSpecifier ::= "returns" "(" ParameterList ")"
     syntax FunctionBody ::= Block | ";"
 
     syntax VisibilitySpecifier ::= "internal" | "external" | "private" | "public"
@@ -179,6 +180,7 @@ Following is a list of supported statements.
 
     syntax VariableDeclarationStatement ::= VariableDeclaration ";"
                                             | VariableDeclaration "=" Expression ";"
+                                            | "(" VariableDeclaration "," ")" "=" Expression ";"
 
     syntax IfStatement ::= "if" "(" Expression ")" Statement
                          | "if" "(" Expression ")" Statement "else" Statement
@@ -259,12 +261,4 @@ Following is a list of supported expressions. Operator precendences are taken fr
 
 endmodule
 
-```
-
-A placeholder module that imports syntax module
-
-```k
-module SOLIDITY
-  imports SOLIDITY-SYNTAX
-endmodule
 ```
