@@ -53,6 +53,8 @@ module SOLIDITY-DATA
   imports LIST
   imports SOLIDITY-DATA-SYNTAX
 
+  syntax KItem ::= "noId"
+
   syntax TypedVal ::= v(Value, TypeName)
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
   syntax Expression ::= TypedVal
@@ -66,6 +68,12 @@ module SOLIDITY-DATA
   rule getTypes(T:TypeName _:Id, Pp:ParameterList) => ListItem(T) getTypes(Pp)
   rule getTypes(T:TypeName _:DataLocation, Pp:ParameterList) => ListItem(T) getTypes(Pp)
   rule getTypes(T:TypeName, Pp:ParameterList) => ListItem(T) getTypes(Pp)
+
+  syntax List ::= getNames(ParameterList) [function]
+  rule getNames(.ParameterList) => .List
+  rule getNames(_:TypeName _:DataLocation X:Id, Pp:ParameterList) => ListItem(X) getNames(Pp)
+  rule getNames(_:TypeName X:Id, Pp:ParameterList) => ListItem(X) getNames(Pp)
+  rule getNames(_, Pp:ParameterList) => ListItem(noId) getNames(Pp) [owise]
 
 endmodule
 ```
