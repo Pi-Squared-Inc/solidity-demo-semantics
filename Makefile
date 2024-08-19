@@ -18,7 +18,7 @@ AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/a
 REGRESSION_TESTS = $(patsubst %.sol, %.out, $(wildcard $(TEST_DIR)/regression/*.sol))
 
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
-	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
+	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2
 
 clean:
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
