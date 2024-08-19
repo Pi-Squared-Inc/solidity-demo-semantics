@@ -229,6 +229,8 @@ contract UniswapV2Router02 {
 
 contract UniswapV2Pair{
 
+    uint112 internal UINT112_MAX = 0xffffffffffffffffffffffffffff;
+
     address public token0;
     address public token1;
 
@@ -300,7 +302,7 @@ contract UniswapV2Pair{
     }
 
     function _update(uint balance0, uint balance1, uint112 _reserve0, uint112 _reserve1) private {
-        require(balance0 <= type(uint112).max && balance1 <= type(uint112).max, "UniswapV2: OVERFLOW");
+        require(balance0 <= UINT112_MAX && balance1 <= UINT112_MAX, "UniswapV2: OVERFLOW");
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
         if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
@@ -315,6 +317,8 @@ contract UniswapV2Pair{
 }
 
 contract WETHMock {
+
+    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     mapping (address => uint256) public balanceOf;
     mapping (address => mapping (address => uint256)) public allowance;
@@ -362,7 +366,7 @@ contract WETHMock {
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
         if (from != msg.sender) {
             uint256 allowed = allowance[from][msg.sender];
-            if (allowed != type(uint256).max) {
+            if (allowed != UINT256_MAX) {
                 require(allowed >= value, "WETH: request exceeds allowance");
                 uint256 reduced = allowed - value;
                 allowance[from][msg.sender] = reduced;
@@ -392,6 +396,8 @@ contract WETHMock {
 }
 
 contract DAIMock {
+
+    uint internal UINT_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     uint256 public totalSupply;
 
@@ -437,7 +443,7 @@ contract DAIMock {
         public returns (bool)
     {
         require(balanceOf[src] >= wad, "Dai/insufficient-balance");
-        if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
+        if (src != msg.sender && allowance[src][msg.sender] != UINT_MAX) {
             require(allowance[src][msg.sender] >= wad, "Dai/insufficient-allowance");
             allowance[src][msg.sender] = allowance[src][msg.sender] - wad;
         }
@@ -455,6 +461,8 @@ contract DAIMock {
 }
 
 contract USDCMock {
+    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+
     uint256 private _totalSupply;
         
     mapping(address account => uint256) private _balances;  
@@ -537,7 +545,7 @@ contract USDCMock {
 
     function _spendAllowance(address owner, address spender, uint256 value) internal {
         uint256 currentAllowance = allowance(owner, spender);
-        if (currentAllowance != type(uint256).max) {
+        if (currentAllowance != UINT256_MAX) {
             require(currentAllowance >= value, "USDC: insufficient allowance");
             _approve(owner, spender, currentAllowance - value, false);
             
