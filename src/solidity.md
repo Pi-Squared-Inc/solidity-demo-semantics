@@ -4,6 +4,7 @@
 requires "solidity-syntax.md"
 requires "interface.md"
 requires "contract.md"
+requires "transaction.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -44,6 +45,21 @@ module SOLIDITY-CONFIGURATION
           </contract-fns>
         </contract>
       </contracts>
+      <exec>
+        <msg-sender> 0p160 </msg-sender>
+        <msg-value> 0p256 </msg-value>
+        <tx-origin> 0p160 </tx-origin>
+        <env> .Map </env>
+        <store> .Map </store>
+        <live-contracts>
+          <live-contract multiplicity="*" type="Map">
+            <contract-address> 0p160 </contract-address>
+            <contract-type> Id </contract-type>
+            <contract-storage> .Map </contract-storage>
+          </live-contract>
+        </live-contracts>
+        <next-address> 2p160 </next-address>
+      </exec>
     </solidity>
 
 endmodule
@@ -102,6 +118,7 @@ module SOLIDITY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-INTERFACE
   imports SOLIDITY-CONTRACT
+  imports SOLIDITY-TRANSACTION
 
   rule _:PragmaDefinition Ss:SourceUnits => Ss
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
