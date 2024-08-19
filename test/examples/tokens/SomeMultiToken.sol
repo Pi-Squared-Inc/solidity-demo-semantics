@@ -27,14 +27,6 @@ contract SomeMultiToken{
     event ApprovalForAll(address indexed account, address indexed operator, bool approved);
     event URI(string value, uint256 indexed id);
 
-    error ERC1155InsufficientBalance(address sender, uint256 balance, uint256 needed, uint256 tokenId);
-    error ERC1155InvalidSender(address sender);
-    error ERC1155InvalidReceiver(address receiver);
-    error ERC1155MissingApprovalForAll(address operator, address owner);
-    error ERC1155InvalidApprover(address approver);
-    error ERC1155InvalidOperator(address operator);
-    error ERC1155InvalidArrayLength(uint256 idsLength, uint256 valuesLength);
-
     constructor(string memory uri_, uint256 init_supply) {
         _setURI(uri_);
         _mint(msg.sender, GOLD, init_supply);
@@ -49,9 +41,10 @@ contract SomeMultiToken{
         address[] memory accounts,
         uint256[] memory ids
     ) public returns (uint256[] memory) {
-        if (accounts.length != ids.length) {
-            revert ERC1155InvalidArrayLength(ids.length, accounts.length);
-        }
+        require(
+            accounts.length == ids.length,
+            "SomeMultiToken: different number of accounts and token type ids"
+        );
 
         uint256[] memory batchBalances = new uint256[](accounts.length);
 
@@ -72,9 +65,10 @@ contract SomeMultiToken{
 
     function safeTransferFrom(address from, address to, uint256 id, uint256 value) public {
         address sender = msg.sender;
-        if (from != sender && !isApprovedForAll(from, sender)) {
-            revert ERC1155MissingApprovalForAll(sender, from);
-        }
+        require(
+            from == sender || isApprovedForAll(from, sender),
+            "SomeMultiToken: sender missing approval"
+        );
         _safeTransferFrom(from, to, id, value);
     }
 
@@ -85,16 +79,18 @@ contract SomeMultiToken{
         uint256[] memory values
     ) public {
         address sender = msg.sender;
-        if (from != sender && !isApprovedForAll(from, sender)) {
-            revert ERC1155MissingApprovalForAll(sender, from);
-        }
+        require(
+            from == sender || isApprovedForAll(from, sender),
+            "SomeMultiToken: sender missing approval"
+        );
         _safeBatchTransferFrom(from, to, ids, values);
     }
 
     function _update(address from, address to, uint256[] memory ids, uint256[] memory values) internal {
-        if (ids.length != values.length) {
-            revert ERC1155InvalidArrayLength(ids.length, values.length);
-        }
+        require(
+            ids.length == values.length,
+            "SomeMultiToken: different number of amounts and token type ids"
+        );
 
         address operator = msg.sender;
 
@@ -104,9 +100,7 @@ contract SomeMultiToken{
 
             if (from != address(0)) {
                 uint256 fromBalance = _balances[id][from];
-                if (fromBalance < value) {
-                    revert ERC1155InsufficientBalance(from, fromBalance, value, id);
-                }
+                require(fromBalance >= value, "SomeMultiToken: insufficient balance");
                 _balances[id][from] = fromBalance - value;
                 
             }
@@ -135,12 +129,8 @@ contract SomeMultiToken{
     }
 
     function _safeTransferFrom(address from, address to, uint256 id, uint256 value) internal {
-        if (to == address(0)) {
-            revert ERC1155InvalidReceiver(address(0));
-        }
-        if (from == address(0)) {
-            revert ERC1155InvalidSender(address(0));
-        }
+        require(to != address(0), "SomeMultiToken: invalid receiver");
+        require(from != address(0), "SomeMultiToken: invalid sender");
 
         uint256[] memory ids = new uint256[](1);
         uint256[] memory values = new uint256[](1);
@@ -157,12 +147,8 @@ contract SomeMultiToken{
         uint256[] memory ids,
         uint256[] memory values
     ) internal {
-        if (to == address(0)) {
-            revert ERC1155InvalidReceiver(address(0));
-        }
-        if (from == address(0)) {
-            revert ERC1155InvalidSender(address(0));
-        }
+        require(to != address(0), "SomeMultiToken: invalid receiver");
+        require(from != address(0), "SomeMultiToken: invalid sender");
         _updateWithoutAcceptanceCheck(from, to, ids, values);
     }
 
@@ -172,9 +158,7 @@ contract SomeMultiToken{
 
 
     function _mint(address to, uint256 id, uint256 value) internal {
-        if (to == address(0)) {
-            revert ERC1155InvalidReceiver(address(0));
-        }
+        require(to != address(0), "SomeMultiToken: invalid receiver");
         
         uint256[] memory ids = new uint256[](1);
         uint256[] memory values = new uint256[](1);
@@ -187,17 +171,13 @@ contract SomeMultiToken{
 
 
     function _mintBatch(address to, uint256[] memory ids, uint256[] memory values) internal {
-        if (to == address(0)) {
-            revert ERC1155InvalidReceiver(address(0));
-        }
+        require(to != address(0), "SomeMultiToken: invalid receiver");
         _updateWithoutAcceptanceCheck(address(0), to, ids, values);
     }
 
 
     function _burn(address from, uint256 id, uint256 value) internal {
-        if (from == address(0)) {
-            revert ERC1155InvalidSender(address(0));
-        }
+        require(from != address(0), "SomeMultiToken: invalid sender");
         
         uint256[] memory ids = new uint256[](1);
         uint256[] memory values = new uint256[](1);
@@ -209,17 +189,13 @@ contract SomeMultiToken{
     }
 
     function _burnBatch(address from, uint256[] memory ids, uint256[] memory values) internal {
-        if (from == address(0)) {
-            revert ERC1155InvalidSender(address(0));
-        }
+        require(from != address(0), "SomeMultiToken: invalid sender");
         _updateWithoutAcceptanceCheck(from, address(0), ids, values);
     }
 
 
     function _setApprovalForAll(address owner, address operator, bool approved) internal {
-        if (operator == address(0)) {
-            revert ERC1155InvalidOperator(address(0));
-        }
+        require(operator != address(0), "SomeMultiToken: invalid operator");
         _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
     }
