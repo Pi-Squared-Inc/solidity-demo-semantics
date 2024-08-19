@@ -658,15 +658,18 @@ contract AaveLendingPool {
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
 
+        require(
+            _rateMode == InterestRateMode.VARIABLE ||
+                _rateMode == InterestRateMode.STABLE,
+            "Invalid borrow rate mode"
+        );
         if (_rateMode == InterestRateMode.STABLE) {
             user.stableBorrowRate = reserve.currentStableBorrowRate;
             user.lastVariableBorrowCumulativeIndex = 0;
-        } else if (_rateMode == InterestRateMode.VARIABLE) {
+        } else {
             user.stableBorrowRate = 0;
             user.lastVariableBorrowCumulativeIndex = reserve
                 .lastVariableBorrowCumulativeIndex;
-        } else {
-            revert("Invalid borrow rate mode");
         }
         user.principalBorrowBalance =
             user.principalBorrowBalance +
@@ -905,16 +908,19 @@ contract AaveLendingPool {
         uint256 newPrincipalAmount = _principalBalance +
             _balanceIncrease +
             _amountBorrowed;
+        require(
+           _newBorrowRateMode == InterestRateMode.VARIABLE ||
+               _newBorrowRateMode == InterestRateMode.STABLE,
+           "Invalid new borrow rate mode"
+        );
         if (_newBorrowRateMode == InterestRateMode.STABLE) {
             core_increaseTotalBorrowsStableAndUpdateAverageRate(
                 reserve,
                 newPrincipalAmount,
                 reserve.currentStableBorrowRate
             );
-        } else if (_newBorrowRateMode == InterestRateMode.VARIABLE) {
-            core_increaseTotalBorrowsVariable(reserve, newPrincipalAmount);
         } else {
-            revert("Invalid new borrow rate mode");
+            core_increaseTotalBorrowsVariable(reserve, newPrincipalAmount);
         }
     }
 
