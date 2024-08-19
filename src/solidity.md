@@ -54,6 +54,7 @@ module SOLIDITY-DATA
   imports SOLIDITY-DATA-SYNTAX
 
   syntax KItem ::= "noId"
+  syntax Id ::= "constructor" [token]
 
   syntax TypedVal ::= v(Value, TypeName)
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
