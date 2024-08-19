@@ -205,7 +205,7 @@ Following is a list of supported statements.
 `CallArgumentList` keeps a list of arguments for function calls and such (`revert()`, `emit()`, etc.)
 
 ```k
-    syntax CallArgumentList ::= List{Expression, ","}
+    syntax CallArgumentList ::= List{Expression, ","} [overload(exps), strict, hybrid]
 
 ```
 
