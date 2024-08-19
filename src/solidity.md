@@ -41,8 +41,8 @@ module SOLIDITY-DATA-SYNTAX
   syntax MInt{256}
 
   syntax Transactions ::= List{Transaction, ","}
-  syntax Transaction ::= txn(from: MInt{160}, to: MInt{160}, value: MInt{256}, func: String, args: CallArgumentList) [strict(5)]
-  syntax Transaction ::= create(from: MInt{160}, value: MInt{256}, ctor: String, args: CallArgumentList) [strict(4)]
+  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, func: Id, args: CallArgumentList) [strict(5)]
+  syntax Transaction ::= create(from: Decimal, value: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
 endmodule
 
 module SOLIDITY-DATA
