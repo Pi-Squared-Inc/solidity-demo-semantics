@@ -86,7 +86,7 @@ contract SomeMultiToken{
         _safeBatchTransferFrom(from, to, ids, values);
     }
 
-    function _update(address from, address to, uint256[] memory ids, uint256[] memory values) internal {
+    function _update(address from, address to, uint256[] memory ids, uint256[] memory values) private {
         require(
             ids.length == values.length,
             "SomeMultiToken: different number of amounts and token type ids"
@@ -124,11 +124,11 @@ contract SomeMultiToken{
         address to,
         uint256[] memory ids,
         uint256[] memory values
-    ) internal {
+    ) private {
         _update(from, to, ids, values);
     }
 
-    function _safeTransferFrom(address from, address to, uint256 id, uint256 value) internal {
+    function _safeTransferFrom(address from, address to, uint256 id, uint256 value) private {
         require(to != address(0), "SomeMultiToken: invalid receiver");
         require(from != address(0), "SomeMultiToken: invalid sender");
 
@@ -146,18 +146,18 @@ contract SomeMultiToken{
         address to,
         uint256[] memory ids,
         uint256[] memory values
-    ) internal {
+    ) private {
         require(to != address(0), "SomeMultiToken: invalid receiver");
         require(from != address(0), "SomeMultiToken: invalid sender");
         _updateWithoutAcceptanceCheck(from, to, ids, values);
     }
 
-    function _setURI(string memory newuri) internal {
+    function _setURI(string memory newuri) private {
         _uri = newuri;
     }
 
 
-    function _mint(address to, uint256 id, uint256 value) internal {
+    function _mint(address to, uint256 id, uint256 value) private {
         require(to != address(0), "SomeMultiToken: invalid receiver");
         
         uint256[] memory ids = new uint256[](1);
@@ -170,13 +170,13 @@ contract SomeMultiToken{
     }
 
 
-    function _mintBatch(address to, uint256[] memory ids, uint256[] memory values) internal {
+    function _mintBatch(address to, uint256[] memory ids, uint256[] memory values) private {
         require(to != address(0), "SomeMultiToken: invalid receiver");
         _updateWithoutAcceptanceCheck(address(0), to, ids, values);
     }
 
 
-    function _burn(address from, uint256 id, uint256 value) internal {
+    function _burn(address from, uint256 id, uint256 value) private {
         require(from != address(0), "SomeMultiToken: invalid sender");
         
         uint256[] memory ids = new uint256[](1);
@@ -188,13 +188,13 @@ contract SomeMultiToken{
         _updateWithoutAcceptanceCheck(from, address(0), ids, values);
     }
 
-    function _burnBatch(address from, uint256[] memory ids, uint256[] memory values) internal {
+    function _burnBatch(address from, uint256[] memory ids, uint256[] memory values) private {
         require(from != address(0), "SomeMultiToken: invalid sender");
         _updateWithoutAcceptanceCheck(from, address(0), ids, values);
     }
 
 
-    function _setApprovalForAll(address owner, address operator, bool approved) internal {
+    function _setApprovalForAll(address owner, address operator, bool approved) private {
         require(operator != address(0), "SomeMultiToken: invalid operator");
         _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
