@@ -70,6 +70,8 @@ contract LendingPool {
         bool supported;
     }
 
+    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+
     uint256 internal MAX_PROTOCOL_FEE = 0.5e4; // 5%
     uint256 public PRECISION = 1e18; // 18 decimals precision
     uint256 public BPS = 1e5; // 5 decimals precision
@@ -163,7 +165,7 @@ contract LendingPool {
         _accrueInterest(token);
         uint256 userBorrowShare = userShares[msg.sender][token].borrow;
         uint256 shares = _toShares(vaults[token].totalBorrow, amount, true);
-        if (amount == type(uint256).max || shares > userBorrowShare) {
+        if (amount == UINT256_MAX || shares > userBorrowShare) {
             shares = userBorrowShare;
             amount = _toAmount(vaults[token].totalBorrow, shares, true);
         }

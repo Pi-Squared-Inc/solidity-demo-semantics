@@ -7,6 +7,8 @@ pragma solidity ^0.8.20;
 
 contract SomeToken {
 
+    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+
     uint256 private _totalSupply;
 
     string private _name;
@@ -113,7 +115,7 @@ contract SomeToken {
 
     function _spendAllowance(address owner, address spender, uint256 value) internal {
         uint256 currentAllowance = allowance(owner, spender);
-        if (currentAllowance != type(uint256).max) {
+        if (currentAllowance != UINT256_MAX) {
             require(currentAllowance >= value, "SomeToken: insufficient allowance");
             _approve(owner, spender, currentAllowance - value, false);
             
