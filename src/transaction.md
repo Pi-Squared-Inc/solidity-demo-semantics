@@ -29,6 +29,25 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     requires isKResult(ARGS)
 
+  rule <k> create(FROM, VALUE, CTOR, .TypedVals) => List2Statements(INIT) ...</k>
+       <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
+       <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
+       <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <env> _ => .Map </env>
+       <store> _ => .Map </store>
+       <contract-id> CTOR </contract-id>
+       <contract-init> INIT </contract-init>
+       <live-contracts>
+         .Bag => <live-contract>
+                   <contract-address> ADDR </contract-address>
+                   <contract-type> CTOR </contract-type>
+                   ...
+                 </live-contract>
+         ...
+       </live-contracts>
+       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
+    [owise]
+
   syntax Statements ::= List2Statements(List) [function]
   rule List2Statements(.List) => .Statements
   rule List2Statements(ListItem(S) L) => S List2Statements(L)
