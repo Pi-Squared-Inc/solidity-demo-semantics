@@ -98,5 +98,19 @@ module SOLIDITY-CONTRACT
        <contract-state> Env => Env [ X <- T ] </contract-state>
        <contract-init>... .List => ListItem(X = E;) </contract-init>
  
+  rule <k> event X ( EventParams ) ; => .K ...</k>
+       <current-body> C </current-body>
+       <contract-id> C </contract-id>
+       <contract-events>
+         .Bag => <contract-event>
+                   <contract-event-id> X </contract-event-id>
+                   <contract-event-arg-types> getTypes(EventParams) </contract-event-arg-types>
+                   <contract-event-param-names> getNames(EventParams) </contract-event-param-names>
+                   <contract-event-indexed-pos> getIndexed(EventParams) </contract-event-indexed-pos>
+                   ...
+                 </contract-event>
+         ...
+       </contract-events>
+
 endmodule
 ```
