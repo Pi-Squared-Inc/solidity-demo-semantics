@@ -37,6 +37,9 @@
           <contract-fn-return-types>
             ListItem ( uint256 [ ] )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return arr ;  .Statements
           </contract-fn-body>
@@ -56,6 +59,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -76,12 +82,21 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      TestArraysContract
+    </this-type>
     <env>
       .Map
     </env>
     <store>
       .Map
     </store>
+    <call-stack>
+      .List
+    </call-stack>
     <live-contracts>
       <live-contract>
         <contract-address>

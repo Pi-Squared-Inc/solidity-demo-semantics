@@ -38,6 +38,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -57,6 +60,9 @@
           <contract-fn-return-types>
             ListItem ( mapping ( address  => uint256  ) )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return testMap ;  .Statements
           </contract-fn-body>
@@ -76,6 +82,9 @@
           <contract-fn-return-types>
             ListItem ( mapping ( address key => uint256 val ) )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return testMapWithOptIds ;  .Statements
           </contract-fn-body>
@@ -96,12 +105,21 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      TestMapsContract
+    </this-type>
     <env>
       .Map
     </env>
     <store>
       .Map
     </store>
+    <call-stack>
+      .List
+    </call-stack>
     <live-contracts>
       <live-contract>
         <contract-address>
