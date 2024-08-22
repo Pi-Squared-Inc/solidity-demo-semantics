@@ -65,6 +65,10 @@ module SOLIDITY-EXPRESSION
        <contract-address> THIS </contract-address>
        <contract-storage> S => S [ X <- convert(V, RT, LT) ] </contract-storage>
 
+  // literal assignment to local variable
+  rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
+       <env>... X |-> var(_, LT) ...</env>
+
   // assignment to local variable
   rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <env>... X |-> var(I, LT) ...</env>
