@@ -39,6 +39,9 @@
           <contract-fn-return-names>
             .List
           </contract-fn-return-names>
+          <contract-fn-payable>
+            false
+          </contract-fn-payable>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
