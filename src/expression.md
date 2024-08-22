@@ -175,6 +175,7 @@ module SOLIDITY-EXPRESSION
   syntax KItem ::= bind(List, List, CallArgumentList, List, List)
   rule bind(.List, .List, .CallArgumentList, .List, .List) => .K
   rule bind(ListItem(noId) PARAMS, ListItem(_) TYPES, _, ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2)
+  rule bind(.List, .List, .CallArgumentList, ListItem(_) TYPES, ListItem(noId) NAMES) => bind(.List, .List, .CallArgumentList, TYPES, NAMES)
   rule <k> bind(ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2) ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(V, RT, LT) ] </store>
@@ -202,5 +203,6 @@ module SOLIDITY-EXPRESSION
 
   syntax Expression ::= retval(List) [function] 
   rule retval(.List) => void
+  rule retval(ListItem(noId)) => void
   rule retval(ListItem(X:Id)) => X
 endmodule
