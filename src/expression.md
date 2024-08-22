@@ -51,7 +51,7 @@ module SOLIDITY-EXPRESSION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
   // literal assignment to state variable
-  rule <k> X:Id = N:NumberLiteral => X = v(convert(Number2Int(N), LT), LT) ...</k>
+  rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> LT </contract-state>
@@ -74,7 +74,7 @@ module SOLIDITY-EXPRESSION
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
   context _:Id ( HOLE:CallArgumentList )
   rule address(v(ADDR:MInt{160}, _)) => v(ADDR, address)
-  rule address ( I:NumberLiteral ) => v(Int2MInt(Number2Int(I))::MInt{160}, address)
+  rule address ( I:Int ) => v(Int2MInt(I)::MInt{160}, address)
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
        <contract-id> TYPE </contract-id>
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
@@ -134,6 +134,9 @@ module SOLIDITY-EXPRESSION
   // boolean literal
   rule B:Bool => v(B, bool)
 
+  // integer literal
+  rule N:NumberLiteral => Number2Int(N)
+
   // equality and inequality
   rule v(V1:MInt{160}, _) == v(V2, _) => v(V1 ==MInt V2, bool)
   rule v(V1:MInt{160}, _) != v(V2, _) => v(V1 =/=MInt V2, bool)
@@ -171,6 +174,8 @@ module SOLIDITY-EXPRESSION
   syntax Int ::= DecimalString2Int(String) [function]
   rule DecimalString2Int(S) => String2Int(replaceAll(S, "_", ""))
     requires findChar(S, "eE.", 0) ==Int -1
+  rule DecimalString2Int(S) => String2Int(replaceAll(substrString(S, 0, findChar(S, "eE", 0)), "_", "")) *Int 10 ^Int String2Int(replaceAll(substrString(S, findChar(S, "eE", 0) +Int 1, lengthString(S)), "_", ""))
+    requires findChar(S, ".", 0) ==Int -1 [owise]
 
   syntax Statements ::= List2Statements(List) [function]
   rule List2Statements(.List) => .Statements
