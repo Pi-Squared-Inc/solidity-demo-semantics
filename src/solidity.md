@@ -59,6 +59,8 @@ module SOLIDITY-CONFIGURATION
         <msg-sender> 0p160 </msg-sender>
         <msg-value> 0p256 </msg-value>
         <tx-origin> 0p160 </tx-origin>
+        <this> 0p160 </this>
+        <this-type> Id </this-type>
         <env> .Map </env>
         <store> .Map </store>
         <live-contracts>

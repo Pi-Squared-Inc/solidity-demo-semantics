@@ -11,6 +11,8 @@ module SOLIDITY-TRANSACTION
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <this> _ => ADDR </this>
+       <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
        <store> _ => .Map </store>
        <contract-id> CTOR </contract-id>
@@ -34,6 +36,8 @@ module SOLIDITY-TRANSACTION
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <this> _ => ADDR </this>
+       <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
        <store> _ => .Map </store>
        <contract-id> CTOR </contract-id>
