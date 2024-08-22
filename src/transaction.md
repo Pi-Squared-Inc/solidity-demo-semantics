@@ -47,15 +47,4 @@ module SOLIDITY-TRANSACTION
        </live-contracts>
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     [owise]
-
-  syntax Statements ::= List2Statements(List) [function]
-  rule List2Statements(.List) => .Statements
-  rule List2Statements(ListItem(S) L) => S List2Statements(L)
-
-  syntax KItem ::= bind(List, CallArgumentList)
-  rule bind(.List, .CallArgumentList) => .K
-  rule bind(ListItem(noId) PARAMS, _, ARGS) => bind(PARAMS, ARGS)
-  rule <k> bind(ListItem(X:Id) PARAMS, v(V:Value, _), ARGS) => bind(PARAMS, ARGS) ...</k>
-       <env> E => E [ X <- !I:Int ] </env>
-       <store> S => S [ !I <- V ] </store>
 endmodule

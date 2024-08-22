@@ -24,4 +24,14 @@ module SOLIDITY-EXPRESSION
   rule DecimalString2Int(S) => String2Int(replaceAll(S, "_", ""))
     requires findChar(S, "eE.", 0) ==Int -1
 
+  syntax Statements ::= List2Statements(List) [function]
+  rule List2Statements(.List) => .Statements
+  rule List2Statements(ListItem(S) L) => S List2Statements(L)
+
+  syntax KItem ::= bind(List, CallArgumentList)
+  rule bind(.List, .CallArgumentList) => .K
+  rule bind(ListItem(noId) PARAMS, _, ARGS) => bind(PARAMS, ARGS)
+  rule <k> bind(ListItem(X:Id) PARAMS, v(V:Value, _), ARGS) => bind(PARAMS, ARGS) ...</k>
+       <env> E => E [ X <- !I:Int ] </env>
+       <store> S => S [ !I <- V ] </store>
 endmodule
