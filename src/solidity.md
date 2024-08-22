@@ -63,6 +63,7 @@ module SOLIDITY-CONFIGURATION
         <this-type> Id </this-type>
         <env> .Map </env>
         <store> .Map </store>
+        <call-stack> .List </call-stack>
         <live-contracts>
           <live-contract multiplicity="*" type="Map">
             <contract-address> 0p160 </contract-address>
@@ -99,12 +100,13 @@ module SOLIDITY-DATA
   imports ID
   imports LIST
   imports SET
+  imports MAP
   imports SOLIDITY-DATA-SYNTAX
 
   syntax KItem ::= "noId"
   syntax Id ::= "constructor" [token]
 
-  syntax TypedVal ::= v(Value, TypeName)
+  syntax TypedVal ::= v(Value, TypeName) | NumberLiteral | String | "void"
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
@@ -144,6 +146,9 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed _:Id, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
+
+  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id)
+
 endmodule
 ```
 
