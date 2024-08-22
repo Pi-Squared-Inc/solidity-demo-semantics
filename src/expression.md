@@ -126,6 +126,32 @@ module SOLIDITY-EXPRESSION
        <contract-type> TYPE' </contract-type>
     requires isKResult(ARGS)
 
+  syntax Id ::= "value" [token]
+
+  context HOLE . _ { value: _ } ( _ )
+  context _ . _ { value: HOLE } ( _ )
+  context _ . _ { _ } ( HOLE:CallArgumentList )
+
+  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+       <msg-sender> FROM => THIS </msg-sender>
+       <msg-value> VALUE => VALUE' </msg-value>
+       <this> THIS => ADDR </this>
+       <this-type> TYPE => TYPE' </this-type>
+       <env> E => .Map </env>
+       <store> S => .Map </store>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <contract-id> TYPE' </contract-id>
+       <contract-fn-id> F </contract-fn-id>
+       <contract-fn-payable> PAYABLE </contract-fn-payable>
+       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+       <contract-fn-body> BODY </contract-fn-body>
+       <contract-address> ADDR </contract-address>
+       <contract-type> TYPE' </contract-type>
+    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
+
   // internal call
   rule <k> F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM </msg-sender>
