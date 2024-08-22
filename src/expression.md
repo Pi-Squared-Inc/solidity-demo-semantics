@@ -81,13 +81,13 @@ module SOLIDITY-EXPRESSION
        <iface-id> TYPE </iface-id>
 
   // state variable lookup
-  rule <k> X:Id => v(V, T) ...</k>
+  rule <k> X:Id => v({S[X] orDefault default(T)}:>Value, T) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T </contract-state>
+       <contract-state>... X |-> T ...</contract-state>
        <contract-address> THIS </contract-address>
-       <contract-storage>... X |-> V ...</contract-storage>
+       <contract-storage> S </contract-storage>
 
   // local variable lookup
   rule <k> X:Id => v(V, T) ...</k>
@@ -190,7 +190,15 @@ module SOLIDITY-EXPRESSION
   rule convert(I:Int, uint256) => Int2MInt(I)::MInt{256}
 
   syntax Value ::= default(TypeName) [function]
+  rule default(uint8)   => 0p8
+  rule default(uint32)  => 0p32
+  rule default(uint112) => 0p112
   rule default(address) => 0p160
+  rule [[ default(X:Id) => 0p160 ]]
+       <contract-id> X </contract-id>
+  rule [[ default(X:Id) => 0p160 ]]
+       <iface-id> X </iface-id>
+  rule default(uint256) => 0p256
 
   syntax Expression ::= retval(List) [function] 
   rule retval(.List) => void
