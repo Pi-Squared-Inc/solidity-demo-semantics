@@ -131,6 +131,9 @@ module SOLIDITY-EXPRESSION
        <contract-fn-body> BODY </contract-fn-body>
     requires isKResult(ARGS)
 
+  // boolean literal
+  rule B:Bool => v(B, bool)
+
   // equality and inequality
   rule v(V1:MInt{160}, _) == v(V2, _) => v(V1 ==MInt V2, bool)
   rule v(V1:MInt{160}, _) != v(V2, _) => v(V1 =/=MInt V2, bool)
