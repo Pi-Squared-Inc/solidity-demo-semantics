@@ -25,7 +25,7 @@ We use tokens for the `pragma` definition in the header, hexadecimal numbers use
     syntax HexNumber ::= r"0x[A-Fa-f0-9]+"                                                          [token]
     syntax Decimal ::= r"(([0-9][_]?)+|([0-9][_]?)*[\\.]([0-9][_]?)+)([eE][\\-]?([0-9][_]?)+)?"     [token]
 
-    syntax ElementaryTypeName ::= "uint" [function] | "uint256" | "address" | "bool"
+    syntax ElementaryTypeName ::= "uint" [function] | "uint112" | "uint256" | "address" | "bool"
     syntax DataLocation ::= "memory" | "storage" | "calldata"
     syntax SubDenom ::= "wei" | "gwei" | "ether" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "years"
     rule uint => uint256

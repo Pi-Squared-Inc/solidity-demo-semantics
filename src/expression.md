@@ -183,6 +183,7 @@ module SOLIDITY-EXPRESSION
   rule convert(V, T, T) => V
 
   syntax Value ::= convert(Int, TypeName) [function]
+  rule convert(I:Int, uint112) => Int2MInt(I)::MInt{112}
   rule convert(I:Int, uint256) => Int2MInt(I)::MInt{256}
 
   syntax Value ::= default(TypeName) [function]
