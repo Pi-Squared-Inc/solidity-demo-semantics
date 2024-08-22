@@ -6,6 +6,7 @@ requires "interface.md"
 requires "contract.md"
 requires "transaction.md"
 requires "expression.md"
+requires "statement.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -159,6 +160,7 @@ module SOLIDITY
   imports SOLIDITY-CONTRACT
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
 
   rule _:PragmaDefinition Ss:SourceUnits => Ss
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
