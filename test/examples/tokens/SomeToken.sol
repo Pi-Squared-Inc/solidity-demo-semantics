@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
 
 contract SomeToken {
 
-    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     uint256 private _totalSupply;
 
@@ -69,13 +69,13 @@ contract SomeToken {
         return true;
     }
 
-    function _transfer(address from, address to, uint256 value) internal {
+    function _transfer(address from, address to, uint256 value) private {
         require(from != address(0), "SomeToken: invalid sender");
         require(to != address(0), "SomeToken: invalid receiver");
         _update(from, to, value);
     }
 
-    function _update(address from, address to, uint256 value) internal {
+    function _update(address from, address to, uint256 value) private {
         if (from == address(0)) {
             _totalSupply += value;
         } else {
@@ -94,17 +94,17 @@ contract SomeToken {
         emit Transfer(from, to, value);
     }
 
-    function _mint(address account, uint256 value) internal {
+    function _mint(address account, uint256 value) private {
         require(account != address(0), "SomeToken: invalid receiver");
         _update(address(0), account, value);
     }
 
-    function _burn(address account, uint256 value) internal {
+    function _burn(address account, uint256 value) private {
         require(account != address(0), "SomeToken: invalid sender");
         _update(account, address(0), value);
     }
 
-    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal {
+    function _approve(address owner, address spender, uint256 value, bool emitEvent) private {
         require(owner != address(0), "SomeToken: invalid approver");
         require(spender != address(0), "SomeToken: invalid spender");
         _allowances[owner][spender] = value;
@@ -113,7 +113,7 @@ contract SomeToken {
         }
     }
 
-    function _spendAllowance(address owner, address spender, uint256 value) internal {
+    function _spendAllowance(address owner, address spender, uint256 value) private {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != UINT256_MAX) {
             require(currentAllowance >= value, "SomeToken: insufficient allowance");

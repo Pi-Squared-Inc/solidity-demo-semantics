@@ -153,7 +153,7 @@ contract UniswapV2Router02 {
         UniswapV2Pair(local_pairs[tokens[0]][tokens[1]]).sync();
     }
 
-    function _swap(uint[] memory amounts, address[] memory path, address _to) internal {
+    function _swap(uint[] memory amounts, address[] memory path, address _to) private {
         for (uint i; i < path.length - 1; i++) {
             address input = path[i];
             address output = path[i + 1];
@@ -168,12 +168,12 @@ contract UniswapV2Router02 {
         }
     }
 
-    function uniswapV2Library_pairFor(address tokenA, address tokenB) internal returns (address pair) {
+    function uniswapV2Library_pairFor(address tokenA, address tokenB) private returns (address pair) {
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
         pair = local_pairs[tokens[0]][tokens[1]];
     }
 
-    function uniswapV2Library_sortTokens(address tokenA, address tokenB) internal returns (address[] memory tokens) {
+    function uniswapV2Library_sortTokens(address tokenA, address tokenB) private returns (address[] memory tokens) {
         tokens = new address[](2);
         require(tokenA != tokenB, "UniswapV2Library: IDENTICAL_ADDRESSES");
         tokens[0] = tokenA < tokenB ? tokenA : tokenB;
@@ -181,7 +181,7 @@ contract UniswapV2Router02 {
         require(tokens[0] != address(0), "UniswapV2Library: ZERO_ADDRESS");
     }
 
-    function uniswapV2Library_getAmountsOut(uint amountIn, address[] memory path) internal returns (uint[] memory amounts) {
+    function uniswapV2Library_getAmountsOut(uint amountIn, address[] memory path) private returns (uint[] memory amounts) {
         require(path.length >= 2, "UniswapV2Library: INVALID_PATH");
         amounts = new uint[](path.length);
         amounts[0] = amountIn;
@@ -191,7 +191,7 @@ contract UniswapV2Router02 {
         }
     }
 
-    function uniswapV2Library_getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal returns (uint amountOut) {
+    function uniswapV2Library_getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) private returns (uint amountOut) {
         require(amountIn > 0, "UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "UniswapV2Library: INSUFFICIENT_LIQUIDITY");
         uint amountInWithFee = amountIn*997;
@@ -200,7 +200,7 @@ contract UniswapV2Router02 {
         amountOut = numerator / denominator;
     }
 
-    function uniswapV2Library_getReserves(address tokenA, address tokenB) internal returns (uint[] memory reserves) {
+    function uniswapV2Library_getReserves(address tokenA, address tokenB) private returns (uint[] memory reserves) {
         reserves = new uint[](2);
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
         uint112[] memory pair_reserves = UniswapV2Pair(uniswapV2Library_pairFor(tokenA, tokenB)).getReserves();
@@ -208,7 +208,7 @@ contract UniswapV2Router02 {
         reserves[1] = tokenA == tokens[0] ? pair_reserves[1] : pair_reserves[0];
     }
     
-    function uniswapV2Library_getAmountsIn(uint amountOut, address[] memory path) internal returns (uint[] memory amounts) {
+    function uniswapV2Library_getAmountsIn(uint amountOut, address[] memory path) private returns (uint[] memory amounts) {
         require(path.length >= 2, "UniswapV2Library: INVALID_PATH");
         amounts = new uint[](path.length);
         amounts[amounts.length - 1] = amountOut;
@@ -218,7 +218,7 @@ contract UniswapV2Router02 {
         }
     }
 
-    function uniswapV2Library_getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal returns (uint amountIn) {
+    function uniswapV2Library_getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) private returns (uint amountIn) {
         require(amountOut > 0, "UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "UniswapV2Library: INSUFFICIENT_LIQUIDITY");
         uint numerator = reserveIn*amountOut*1000;
@@ -229,7 +229,7 @@ contract UniswapV2Router02 {
 
 contract UniswapV2Pair{
 
-    uint112 internal UINT112_MAX = 0xffffffffffffffffffffffffffff;
+    uint112 private UINT112_MAX = 0xffffffffffffffffffffffffffff;
 
     address public token0;
     address public token1;
@@ -318,7 +318,7 @@ contract UniswapV2Pair{
 
 contract WETHMock {
 
-    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     mapping (address => uint256) public balanceOf;
     mapping (address => mapping (address => uint256)) public allowance;
@@ -397,7 +397,7 @@ contract WETHMock {
 
 contract DAIMock {
 
-    uint internal UINT_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint private UINT_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     uint256 public totalSupply;
 
@@ -461,7 +461,7 @@ contract DAIMock {
 }
 
 contract USDCMock {
-    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     uint256 private _totalSupply;
         
@@ -507,13 +507,13 @@ contract USDCMock {
         return true;
     }
 
-    function _transfer(address from, address to, uint256 value) internal {
+    function _transfer(address from, address to, uint256 value) private {
         require(from != address(0), "USDC: invalid sender");
         require(to != address(0), "USDC: invalid receiver");
         _update(from, to, value);
     }
 
-    function _update(address from, address to, uint256 value) internal {
+    function _update(address from, address to, uint256 value) private {
         if (from == address(0)) {
             _totalSupply += value;
         } else {
@@ -534,7 +534,7 @@ contract USDCMock {
     }
 
 
-    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal {
+    function _approve(address owner, address spender, uint256 value, bool emitEvent) private {
         require(owner != address(0), "USDC: invalid approver");
         require(spender != address(0), "USDC: invalid spender");
         _allowances[owner][spender] = value;
@@ -543,7 +543,7 @@ contract USDCMock {
         }
     }
 
-    function _spendAllowance(address owner, address spender, uint256 value) internal {
+    function _spendAllowance(address owner, address spender, uint256 value) private {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != UINT256_MAX) {
             require(currentAllowance >= value, "USDC: insufficient allowance");

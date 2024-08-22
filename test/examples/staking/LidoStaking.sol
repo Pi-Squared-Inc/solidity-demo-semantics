@@ -112,19 +112,19 @@ contract Lido{
 
     uint256 private DEPOSIT_SIZE = 32 ether;
 
-    address internal LIDO_LOCATOR_POSITION; 
+    address private LIDO_LOCATOR_POSITION; 
     uint256 public BUFFERED_ETHER_POSITION; 
-    uint256 internal DEPOSITED_VALIDATORS_POSITION; 
-    uint256 internal CL_BALANCE_POSITION; 
-    uint256 internal CL_VALIDATORS_POSITION; 
-    uint256 internal TOTAL_EL_REWARDS_COLLECTED_POSITION; 
+    uint256 private DEPOSITED_VALIDATORS_POSITION; 
+    uint256 private CL_BALANCE_POSITION; 
+    uint256 private CL_VALIDATORS_POSITION; 
+    uint256 private TOTAL_EL_REWARDS_COLLECTED_POSITION; 
 
     /*stETH variables start*/
-    address internal INITIAL_TOKEN_HOLDER = address(0xdead);
-    uint256 internal INFINITE_ALLOWANCE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    address private INITIAL_TOKEN_HOLDER = address(0xdead);
+    uint256 private INFINITE_ALLOWANCE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     mapping (address => uint256) private shares;
     mapping (address => mapping (address => uint256)) private allowances;
-    uint256 internal TOTAL_SHARES_POSITION;
+    uint256 private TOTAL_SHARES_POSITION;
     /*stETH variables end*/
 
     struct OracleReportedData {
@@ -350,7 +350,7 @@ contract Lido{
         stakingRouter.deposit{value: depositsValue}(depositsCount, _stakingModuleId, _depositCalldata);
     }
 
-    function _min(uint256 a, uint256 b) internal returns(uint256 min){
+    function _min(uint256 a, uint256 b) private returns(uint256 min){
         min = a < b ? a : b;
     }
 
@@ -359,7 +359,7 @@ contract Lido{
         uint256 _preClValidators,
         uint256 _postClValidators,
         uint256 _postClBalance
-    ) internal returns (uint256 preCLBalance) {
+    ) private returns (uint256 preCLBalance) {
         uint256 depositedValidators = DEPOSITED_VALIDATORS_POSITION;
         require(_postClValidators <= depositedValidators, "REPORTED_MORE_DEPOSITED");
         require(_postClValidators >= _preClValidators, "REPORTED_LESS_VALIDATORS");
@@ -384,7 +384,7 @@ contract Lido{
         uint256[] memory _withdrawalFinalizationBatches,
         uint256 _simulatedShareRate,
         uint256 _etherToLockOnWithdrawalQueue
-    ) internal {
+    ) private {
         if (_elRewardsToWithdraw > 0) {
             ILidoExecutionLayerRewardsVault(_contracts.elRewardsVault).withdrawRewards(_elRewardsToWithdraw);
         }
@@ -409,7 +409,7 @@ contract Lido{
     function _calculateWithdrawals(
         OracleReportContracts memory _contracts,
         OracleReportedData memory _reportedData
-    ) internal returns (uint256[] memory return_data) {
+    ) private returns (uint256[] memory return_data) {
         IWithdrawalQueue withdrawalQueue = IWithdrawalQueue(_contracts.withdrawalQueue);
 
         IOracleReportSanityChecker(_contracts.oracleReportSanityChecker).checkWithdrawalQueueOracleReport(
@@ -428,7 +428,7 @@ contract Lido{
         uint256 _postCLBalance,
         uint256 _withdrawnWithdrawals,
         uint256 _withdrawnElRewards
-    ) internal returns (uint256 sharesMintedAsFees) {
+    ) private returns (uint256 sharesMintedAsFees) {
         uint256 postCLTotalBalance = _postCLBalance + _withdrawnWithdrawals;
         if (postCLTotalBalance > _reportContext.preCLBalance) {
             uint256 consensusLayerRewards = postCLTotalBalance - _reportContext.preCLBalance;
@@ -441,7 +441,7 @@ contract Lido{
         }
     }
 
-    function _submit(address _referral) internal returns (uint256) {
+    function _submit(address _referral) private returns (uint256) {
         require(msg.value != 0, "ZERO_DEPOSIT");
 
         uint256 sharesAmount = getSharesByPooledEth(msg.value);
@@ -455,7 +455,7 @@ contract Lido{
         return sharesAmount;
     }
 
-    function _getStakingRewardsDistribution() internal returns (StakingRewardsDistributionReturnData memory return_data) {
+    function _getStakingRewardsDistribution() private returns (StakingRewardsDistributionReturnData memory return_data) {
         return_data.router = _stakingRouter();
         return_data.distributionData = return_data.router.getStakingRewardsDistribution();
         
@@ -467,7 +467,7 @@ contract Lido{
         uint256 _preTotalPooledEther,
         uint256 _preTotalShares,
         uint256 _totalRewards
-    ) internal returns (uint256 sharesMintedAsFees) {
+    ) private returns (uint256 sharesMintedAsFees) {
         StakingRewardsDistributionReturnData memory return_data = _getStakingRewardsDistribution();
         StakingRewardsDistribution memory rewardsDistribution = return_data.distributionData;
         IStakingRouter router = return_data.router;
@@ -507,7 +507,7 @@ contract Lido{
         uint256[] memory modulesFees,
         uint256 totalFee,
         uint256 totalRewards
-    ) internal returns (uint256[] memory moduleRewardsAndTotal) {
+    ) private returns (uint256[] memory moduleRewardsAndTotal) {
         moduleRewardsAndTotal = new uint256[](recipients.length + 1);
         uint256 totalModuleRewards;
 
@@ -523,28 +523,28 @@ contract Lido{
         moduleRewardsAndTotal[recipients.length] = totalModuleRewards;
     }
 
-    function _transferTreasuryRewards(uint256 treasuryReward) internal {
+    function _transferTreasuryRewards(uint256 treasuryReward) private {
         address treasury = _treasury();
         _transferShares(address(this), treasury, treasuryReward);
         _emitTransferAfterMintingShares(treasury, treasuryReward);
     }
 
-    function _setBufferedEther(uint256 _newBufferedEther) internal {
+    function _setBufferedEther(uint256 _newBufferedEther) private {
         BUFFERED_ETHER_POSITION = _newBufferedEther;
     }
 
-    function _getTransientBalance() internal returns (uint256) {
+    function _getTransientBalance() private returns (uint256) {
         uint256 depositedValidators = DEPOSITED_VALIDATORS_POSITION;
         uint256 clValidators = CL_VALIDATORS_POSITION;
         assert(depositedValidators >= clValidators);
         return (depositedValidators - clValidators) * DEPOSIT_SIZE;
     }
 
-    function _getTotalPooledEther() internal returns (uint256) {
+    function _getTotalPooledEther() private returns (uint256) {
         return BUFFERED_ETHER_POSITION + CL_BALANCE_POSITION + _getTransientBalance();
     }
 
-    function _handleOracleReport(OracleReportedData memory _reportedData) internal returns (uint256[4] memory) {
+    function _handleOracleReport(OracleReportedData memory _reportedData) private returns (uint256[4] memory) {
         OracleReportContracts memory contracts = _loadOracleReportContracts();
 
         require(msg.sender == contracts.accountingOracle, "APP_AUTH_FAILED");
@@ -653,7 +653,7 @@ contract Lido{
         OracleReportContracts memory _contracts,
         OracleReportedData memory _reportedData,
         OracleReportContext memory _reportContext
-    ) internal {
+    ) private {
         IOracleReportSanityChecker(_contracts.oracleReportSanityChecker).checkAccountingOracleReport(
             _reportedData.timeElapsed,
             _reportContext.preCLBalance,
@@ -671,7 +671,7 @@ contract Lido{
         OracleReportedData memory _reportedData,
         OracleReportContext memory _reportContext,
         IPostTokenRebaseReceiver _postTokenRebaseReceiver
-    ) internal returns (uint256[] memory return_data) {
+    ) private returns (uint256[] memory return_data) {
         return_data = new uint256[](2);
 
         uint256 postTotalShares = _getTotalShares();
@@ -703,7 +703,7 @@ contract Lido{
         );
     }
 
-    function _loadOracleReportContracts() internal returns (OracleReportContracts memory ret) {
+    function _loadOracleReportContracts() private returns (OracleReportContracts memory ret) {
         address[] memory oracle_report_components_return_data = getLidoLocator().oracleReportComponentsForLido();
 
         ret.accountingOracle = oracle_report_components_return_data[0];
@@ -716,15 +716,15 @@ contract Lido{
          
     }
 
-    function _stakingRouter() internal returns (IStakingRouter) {
+    function _stakingRouter() private returns (IStakingRouter) {
         return IStakingRouter(getLidoLocator().stakingRouter());
     }
 
-    function _withdrawalQueue() internal returns (IWithdrawalQueue) {
+    function _withdrawalQueue() private returns (IWithdrawalQueue) {
         return IWithdrawalQueue(getLidoLocator().withdrawalQueue());
     }
 
-    function _treasury() internal returns (address) {
+    function _treasury() private returns (address) {
         return getLidoLocator().treasury();
     }
 
@@ -811,14 +811,14 @@ contract Lido{
         return tokensAmount;
     }
 
-    function _transfer(address _sender, address _recipient, uint256 _amount) internal {
+    function _transfer(address _sender, address _recipient, uint256 _amount) private {
         uint256 _sharesToTransfer = getSharesByPooledEth(_amount);
         _transferShares(_sender, _recipient, _sharesToTransfer);
         _emitTransferEvents(_sender, _recipient, _amount, _sharesToTransfer);
     }
 
 
-    function _approve(address _owner, address _spender, uint256 _amount) internal {
+    function _approve(address _owner, address _spender, uint256 _amount) private {
         require(_owner != address(0), "APPROVE_FROM_ZERO_ADDR");
         require(_spender != address(0), "APPROVE_TO_ZERO_ADDR");
 
@@ -826,7 +826,7 @@ contract Lido{
         emit Approval(_owner, _spender, _amount);
     }
 
-    function _spendAllowance(address _owner, address _spender, uint256 _amount) internal {
+    function _spendAllowance(address _owner, address _spender, uint256 _amount) private {
         uint256 currentAllowance = allowances[_owner][_spender];
         if (currentAllowance != INFINITE_ALLOWANCE) {
             require(currentAllowance >= _amount, "ALLOWANCE_EXCEEDED");
@@ -834,15 +834,15 @@ contract Lido{
         }
     }
 
-    function _getTotalShares() internal returns (uint256) {
+    function _getTotalShares() private returns (uint256) {
         return TOTAL_SHARES_POSITION;
     }
 
-    function _sharesOf(address _account) internal returns (uint256) {
+    function _sharesOf(address _account) private returns (uint256) {
         return shares[_account];
     }
 
-    function _transferShares(address _sender, address _recipient, uint256 _sharesAmount) internal {
+    function _transferShares(address _sender, address _recipient, uint256 _sharesAmount) private {
         require(_sender != address(0), "TRANSFER_FROM_ZERO_ADDR");
         require(_recipient != address(0), "TRANSFER_TO_ZERO_ADDR");
         require(_recipient != address(this), "TRANSFER_TO_STETH_CONTRACT");
@@ -854,7 +854,7 @@ contract Lido{
         shares[_recipient] = shares[_recipient] + _sharesAmount;
     }
 
-    function _mintShares(address _recipient, uint256 _sharesAmount) internal returns (uint256 newTotalShares) {
+    function _mintShares(address _recipient, uint256 _sharesAmount) private returns (uint256 newTotalShares) {
         require(_recipient != address(0), "MINT_TO_ZERO_ADDR");
 
         newTotalShares = _getTotalShares() + _sharesAmount;
@@ -864,7 +864,7 @@ contract Lido{
 
     }
 
-    function _burnShares(address _account, uint256 _sharesAmount) internal returns (uint256 newTotalShares) {
+    function _burnShares(address _account, uint256 _sharesAmount) private returns (uint256 newTotalShares) {
         require(_account != address(0), "BURN_FROM_ZERO_ADDR");
 
         uint256 accountShares = shares[_account];
@@ -884,17 +884,17 @@ contract Lido{
     }
 
  
-    function _emitTransferEvents(address _from, address _to, uint _tokenAmount, uint256 _sharesAmount) internal {
+    function _emitTransferEvents(address _from, address _to, uint _tokenAmount, uint256 _sharesAmount) private {
         emit Transfer(_from, _to, _tokenAmount);
         emit TransferShares(_from, _to, _sharesAmount);
     }
 
 
-    function _emitTransferAfterMintingShares(address _to, uint256 _sharesAmount) internal {
+    function _emitTransferAfterMintingShares(address _to, uint256 _sharesAmount) private {
         _emitTransferEvents(address(0), _to, getPooledEthByShares(_sharesAmount), _sharesAmount);
     }
 
-    function _mintInitialShares(uint256 _sharesAmount) internal {
+    function _mintInitialShares(uint256 _sharesAmount) private {
         _mintShares(INITIAL_TOKEN_HOLDER, _sharesAmount);
         _emitTransferAfterMintingShares(INITIAL_TOKEN_HOLDER, _sharesAmount);
     }

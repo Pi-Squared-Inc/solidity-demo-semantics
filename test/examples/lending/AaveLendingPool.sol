@@ -138,12 +138,12 @@ contract AaveLendingPool {
 
     ILendingPoolAddressesProvider public addressesProvider;
 
-    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     /* LendingPoolCore variables*/
-    mapping(address => ReserveData) internal reserves;
+    mapping(address => ReserveData) private reserves;
     mapping(address => mapping(address => UserReserveData))
-        internal usersReserveData;
+        private usersReserveData;
     address[] public reservesList;
 
     constructor(address _addressesProvider) {
@@ -385,7 +385,7 @@ contract AaveLendingPool {
         address _user,
         uint256 _amount,
         bool _isFirstDeposit
-    ) internal {
+    ) private {
         core_updateCumulativeIndexes(reserves[_reserve]);
         core_updateReserveInterestRatesAndTimestampInternal(
             _reserve,
@@ -403,7 +403,7 @@ contract AaveLendingPool {
         address _user,
         uint256 _amountRedeemed,
         bool _userRedeemedEverything
-    ) internal {
+    ) private {
         core_updateCumulativeIndexes(reserves[_reserve]);
         core_updateReserveInterestRatesAndTimestampInternal(
             _reserve,
@@ -418,7 +418,7 @@ contract AaveLendingPool {
 
     function core_isReserveBorrowingEnabled(
         address _reserve
-    ) internal returns (bool) {
+    ) private returns (bool) {
         ReserveData storage reserve = reserves[_reserve];
         return reserve.borrowingEnabled;
     }
@@ -427,7 +427,7 @@ contract AaveLendingPool {
         address _reserve,
         address _user,
         uint256 _amount
-    ) internal returns (bool) {
+    ) private returns (bool) {
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
 
@@ -445,7 +445,7 @@ contract AaveLendingPool {
         uint256 _amountBorrowed,
         uint256 _borrowFee,
         InterestRateMode _rateMode
-    ) internal returns (uint256[] memory return_data) {
+    ) private returns (uint256[] memory return_data) {
         return_data = new uint256[](2);
 
         uint256[]
@@ -487,7 +487,7 @@ contract AaveLendingPool {
     function core_getUserOriginationFee(
         address _reserve,
         address _user
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         UserReserveData storage user = usersReserveData[_user][_reserve];
         return user.originationFee;
     }
@@ -499,7 +499,7 @@ contract AaveLendingPool {
         uint256 _originationFeeRepaid,
         uint256 _balanceIncrease,
         bool _repaidWholeLoan
-    ) internal {
+    ) private {
         core_updateReserveStateOnRepayInternal(
             _reserve,
             _user,
@@ -580,7 +580,7 @@ contract AaveLendingPool {
         address _reserve,
         uint256 _liquidityAdded,
         uint256 _liquidityTaken
-    ) internal {
+    ) private {
         ReserveData storage reserve = reserves[_reserve];
         uint256[] memory return_data = IReserveInterestRateStrategy(
             reserve.interestRateStrategyAddress
@@ -605,7 +605,7 @@ contract AaveLendingPool {
         reserve.lastUpdateTimestamp = uint40(block.timestamp);
     }
 
-    function core_updateCumulativeIndexes(ReserveData storage _self) internal {
+    function core_updateCumulativeIndexes(ReserveData storage _self) private {
         uint256 totalBorrows = _self.totalBorrowsStable +
             _self.totalBorrowsVariable;
 
@@ -636,7 +636,7 @@ contract AaveLendingPool {
         uint256 _balanceIncrease,
         uint256 _amountBorrowed,
         InterestRateMode _rateMode
-    ) internal {
+    ) private {
         core_updateCumulativeIndexes(reserves[_reserve]);
 
         core_updateReserveTotalBorrowsByRateModeInternal(
@@ -656,7 +656,7 @@ contract AaveLendingPool {
         uint256 _balanceIncrease,
         uint256 _fee,
         InterestRateMode _rateMode
-    ) internal {
+    ) private {
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
 
@@ -685,7 +685,7 @@ contract AaveLendingPool {
     function core_getUserCurrentBorrowRate(
         address _reserve,
         address _user
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         InterestRateMode rateMode = core_getUserCurrentBorrowRateMode(
             _reserve,
             _user
@@ -706,7 +706,7 @@ contract AaveLendingPool {
         address _user,
         uint256 _paybackAmountMinusFees,
         uint256 _balanceIncrease
-    ) internal {
+    ) private {
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
 
@@ -741,7 +741,7 @@ contract AaveLendingPool {
         uint256 _originationFeeRepaid,
         uint256 _balanceIncrease,
         bool _repaidWholeLoan
-    ) internal {
+    ) private {
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
 
@@ -765,7 +765,7 @@ contract AaveLendingPool {
         ReserveData storage _reserve,
         uint256 _amount,
         uint256 _rate
-    ) internal {
+    ) private {
         uint256 previousTotalBorrowStable = _reserve.totalBorrowsStable;
         _reserve.totalBorrowsStable = _reserve.totalBorrowsStable + _amount;
 
@@ -783,7 +783,7 @@ contract AaveLendingPool {
         ReserveData storage _reserve,
         uint256 _amount,
         uint256 _rate
-    ) internal {
+    ) private {
         require(
             _reserve.totalBorrowsStable >= _amount,
             "Invalid amount to decrease"
@@ -816,14 +816,14 @@ contract AaveLendingPool {
     function core_increaseTotalBorrowsVariable(
         ReserveData storage _reserve,
         uint256 _amount
-    ) internal {
+    ) private {
         _reserve.totalBorrowsVariable = _reserve.totalBorrowsVariable + _amount;
     }
 
     function core_decreaseTotalBorrowsVariable(
         ReserveData storage _reserve,
         uint256 _amount
-    ) internal {
+    ) private {
         require(
             _reserve.totalBorrowsVariable >= _amount,
             "The amount that is being subtracted from the variable total borrows is incorrect"
@@ -834,7 +834,7 @@ contract AaveLendingPool {
     function core_getCompoundedBorrowBalance(
         UserReserveData storage _self,
         ReserveData storage _reserve
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         if (_self.principalBorrowBalance == 0) return 0;
 
         uint256 principalBorrowBalanceRay = _self.principalBorrowBalance * 1e9;
@@ -871,14 +871,14 @@ contract AaveLendingPool {
     function core_calculateLinearInterest_mocked(
         uint256 /*_rate*/,
         uint40 /*_lastUpdateTimestamp*/
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         return 1e27 + 0.01 * 1e27;
     }
 
     function core_calculateCompoundedInterest_mocked(
         uint256 /*_rate*/,
         uint40 /*_lastUpdateTimestamp*/
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         return 1e27 + 0.01 * 1e27;
     }
 
@@ -889,7 +889,7 @@ contract AaveLendingPool {
         uint256 _balanceIncrease,
         uint256 _amountBorrowed,
         InterestRateMode _newBorrowRateMode
-    ) internal {
+    ) private {
         InterestRateMode previousRateMode = core_getUserCurrentBorrowRateMode(
             _reserve,
             _user
@@ -929,7 +929,7 @@ contract AaveLendingPool {
     function core_getUserBasicReserveData(
         address _reserve,
         address _user
-    ) internal returns (uint256[] memory return_data) {
+    ) private returns (uint256[] memory return_data) {
         return_data = new uint256[](4);
         ReserveData storage reserve = reserves[_reserve];
         UserReserveData storage user = usersReserveData[_user][_reserve];
@@ -953,7 +953,7 @@ contract AaveLendingPool {
 
     function core_getReserveConfiguration(
         address _reserve
-    ) internal returns (uint256[] memory return_data) {
+    ) private returns (uint256[] memory return_data) {
         return_data = new uint256[](4);
 
         uint256 decimals;
@@ -976,7 +976,7 @@ contract AaveLendingPool {
     function core_isUserUseReserveAsCollateralEnabled(
         address _reserve,
         address _user
-    ) internal returns (bool) {
+    ) private returns (bool) {
         UserReserveData storage user = usersReserveData[_user][_reserve];
         return user.useAsCollateral;
     }
@@ -1084,7 +1084,7 @@ contract AaveLendingPool {
         uint256 _userCurrentBorrowBalanceTH,
         uint256 _userCurrentFeesETH,
         uint256 _userCurrentLtv
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         uint256 reserveDecimals = IERC20(_reserve).decimals();
 
         IPriceOracleGetter oracle = IPriceOracleGetter(
@@ -1105,7 +1105,7 @@ contract AaveLendingPool {
         address _reserve,
         address _user,
         uint256 _amount
-    ) internal returns (bool) {
+    ) private returns (bool) {
         BalanceDecreaseAllowedLocalVars memory vars;
         uint256[] memory reserve_conf_return;
 
@@ -1174,7 +1174,7 @@ contract AaveLendingPool {
         uint256 borrowBalanceETH,
         uint256 totalFeesETH,
         uint256 liquidationThreshold
-    ) internal returns (uint256) {
+    ) private returns (uint256) {
         if (borrowBalanceETH == 0) return UINT256_MAX;
 
         return
