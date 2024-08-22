@@ -43,6 +43,7 @@ module SOLIDITY-CONFIGURATION
               <contract-fn-param-names> .List </contract-fn-param-names>
               <contract-fn-return-types> .List </contract-fn-return-types>
               <contract-fn-return-names> .List </contract-fn-return-names>
+              <contract-fn-payable> false </contract-fn-payable>
               <contract-fn-body> .Statements </contract-fn-body>
             </contract-fn>
           </contract-fns>
