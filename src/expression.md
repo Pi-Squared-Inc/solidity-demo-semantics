@@ -175,6 +175,21 @@ module SOLIDITY-EXPRESSION
   // integer literal
   rule N:NumberLiteral => Number2Int(N)
 
+  // automatic variables
+  syntax Id ::= "msg" [token] | "sender" [token] | "this" [token] | "tx" [token] | "origin" [token] | "block" [token] | "timestamp" [token]
+
+  rule <k> (msg . sender)::Expression => v(FROM, address) ...</k>
+       <msg-sender> FROM </msg-sender>
+  rule <k> (msg . value)::Expression => v(VALUE, uint) ...</k>
+       <msg-value> VALUE </msg-value>
+  rule <k> this => v(THIS, TYPE) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+  rule <k> (tx . origin)::Expression => v(ORIGIN, address) ...</k>
+       <tx-origin> ORIGIN </tx-origin>
+  rule <k> (block . timestamp)::Expression => v(NOW, uint) ...</k>
+       <block-timestamp> NOW </block-timestamp>
+
   // basic arithmetic
   rule v(V1:Value, T)  + v(V2:Value, T) => v(add(V1, V2), T)
   rule v(V1:Value, T)  - v(V2:Value, T) => v(sub(V1, V2), T)
