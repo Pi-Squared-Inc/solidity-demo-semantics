@@ -153,7 +153,7 @@ contract UniswapV2Router02 {
         UniswapV2Pair(local_pairs[tokens[0]][tokens[1]]).sync();
     }
 
-    function _swap(uint[] memory amounts, address[] memory path, address _to) internal virtual {
+    function _swap(uint[] memory amounts, address[] memory path, address _to) internal {
         for (uint i; i < path.length - 1; i++) {
             address input = path[i];
             address output = path[i + 1];

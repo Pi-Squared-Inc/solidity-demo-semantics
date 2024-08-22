@@ -1,0 +1,5 @@
+#!/bin/bash
+contract="$1"
+txn="$2"
+shift; shift
+krun -d "$(dirname "$0")/../solidity-kompiled" "$contract" -cTXN="$txn" -pTXN="$(dirname "$0")/kparse-txn" --no-expand-macros "$@"

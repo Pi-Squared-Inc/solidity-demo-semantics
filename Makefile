@@ -1,3 +1,5 @@
+.PHONY: build clean test test-tokens test-staking test-lending test-swap test-erc20 test-erc1155 test-liquid test-lido test-lendingpool test-aave test-regression
+
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
@@ -13,15 +15,17 @@ LIQUIDSTAKING_PARAMS = $(EXAMPLES_DIR)/staking/LiquidStaking.sol 2>&1 1>$(OUTPUT
 LIDO_PARAMS = $(EXAMPLES_DIR)/staking/LidoStaking.sol 2>&1 1>$(OUTPUT_DIR)/lidostaking.ast
 LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR)/lendingpool.ast
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
+REGRESSION_TESTS = $(patsubst %.sol, %.out, $(wildcard $(TEST_DIR)/regression/*.sol))
 
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
-	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser
+	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2
 
 clean:
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
+	rm -Rf $(TEST_DIR)/regression/*.out
 
-test: test-swap test-tokens test-staking test-lending
+test: test-swap test-tokens test-staking test-lending test-regression
 
 test-tokens: test-erc20 test-erc1155
 
@@ -56,3 +60,9 @@ test-lendingpool:
 test-aave:
 	mkdir -p $(OUTPUT_DIR)
 	kparse $(AAVE_PARAMS)
+
+test-regression: ${REGRESSION_TESTS}
+
+%.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+	bin/krun-sol $*.sol $*.txn > $*.out
+	diff -U3 $*.ref $*.out
