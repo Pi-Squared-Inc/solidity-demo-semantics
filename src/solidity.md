@@ -96,7 +96,7 @@ module SOLIDITY-DATA-SYNTAX
 
   syntax Transactions ::= List{Transaction, ","}
   syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [function]
-  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
+  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList) [strict(5)]
 endmodule
 
 module SOLIDITY-DATA

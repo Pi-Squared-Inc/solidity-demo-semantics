@@ -55,7 +55,7 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     [owise]
 
-  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [strict(5)]
+  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [strict(6)]
   rule txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, NOW, FUNC, ARGS)
 
   rule <k> txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
