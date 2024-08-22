@@ -177,11 +177,11 @@ In each code block, various statments and nested blocks can be present.
 Following is a list of supported statements.
 
 ```k
-    syntax ExpressionStatement ::= Expression ";"
+    syntax ExpressionStatement ::= Expression ";" [strict]
 
     syntax VariableDeclarationStatement ::= VariableDeclaration ";"
-                                            | VariableDeclaration "=" Expression ";"
-                                            | "(" VariableDeclaration "," ")" "=" Expression ";"
+                                            | VariableDeclaration "=" Expression ";" [strict(2)]
+                                            | "(" VariableDeclaration "," ")" "=" Expression ";" [strict(2)]
 
     syntax IfStatement ::= "if" "(" Expression ")" Statement
                          | "if" "(" Expression ")" Statement "else" Statement
@@ -194,7 +194,7 @@ Following is a list of supported statements.
     syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";"
 
     syntax ReturnStatement ::= "return" ";"
-                            | "return" Expression ";"
+                            | "return" Expression ";" [strict]
 
     syntax RevertStatement ::= "revert" "(" CallArgumentList ")" ";"
                              | "revert" Id "(" CallArgumentList ")" ";"
@@ -226,7 +226,7 @@ Following is a list of supported expressions. Operator precendences are taken fr
     syntax Expression ::= Id | Literal | LiteralWithSubDenom | ElementaryTypeName
                         > "(" Expression ")" [bracket]
                         | "[" CallArgumentList "]"
-                        | "new" TypeName "(" CallArgumentList ")"
+                        | "new" TypeName "(" CallArgumentList ")" [strict(2)]
                         | Expression "++" | Expression "--"
                         | Expression "[" Expression "]" | Expression "[""]"
                         | Expression "." Id | Expression ".address"
@@ -236,29 +236,29 @@ Following is a list of supported expressions. Operator precendences are taken fr
                         | "!" Expression
                         > left: Expression "**" Expression
                         > left:
-                              Expression "*" Expression
-                            | Expression "/" Expression
-                            | Expression "%" Expression
+                              Expression "*" Expression [strict]
+                            | Expression "/" Expression [strict]
+                            | Expression "%" Expression [strict]
                         > left:
-                              Expression "+" Expression
-                            | Expression "-" Expression
+                              Expression "+" Expression [strict]
+                            | Expression "-" Expression [strict]
                         > left:
-                              Expression "<" Expression
-                            | Expression "<=" Expression
-                            | Expression ">" Expression
-                            | Expression ">=" Expression
+                              Expression "<" Expression [strict]
+                            | Expression "<=" Expression [strict]
+                            | Expression ">" Expression [strict]
+                            | Expression ">=" Expression [strict]
                         > left:
-                              Expression "==" Expression
-                            | Expression "!=" Expression
-                        > left: Expression "&&" Expression
-                        > left: Expression "||" Expression
-                        > left:
-                            Expression "?" Expression ":" Expression
-                            | Expression "+=" Expression
-                            | Expression "-=" Expression
-                            | Expression "*=" Expression
-                            | Expression "/=" Expression
-                            | Expression "=" Expression
+                              Expression "==" Expression [strict]
+                            | Expression "!=" Expression [strict]
+                        > left: Expression "&&" Expression [strict(1)]
+                        > left: Expression "||" Expression [strict(1)]
+                        > right:
+                            Expression "?" Expression ":" Expression [strict(1)]
+                            | Expression "+=" Expression [strict(2)]
+                            | Expression "-=" Expression [strict(2)]
+                            | Expression "*=" Expression [strict(2)]
+                            | Expression "/=" Expression [strict(2)]
+                            | Expression "=" Expression [strict(2)]
 
 endmodule
 
