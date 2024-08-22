@@ -44,6 +44,14 @@ module SOLIDITY-CONFIGURATION
               <contract-fn-body> .Statements </contract-fn-body>
             </contract-fn>
           </contract-fns>
+          <contract-events>
+            <contract-event multiplicity="*" type="Map">
+              <contract-event-id> Id </contract-event-id>
+              <contract-event-arg-types> .List </contract-event-arg-types>
+              <contract-event-param-names> .List </contract-event-param-names>
+              <contract-event-indexed-pos> .Set </contract-event-indexed-pos>
+            </contract-event>
+          </contract-events>
         </contract>
       </contracts>
       <exec>
@@ -81,11 +89,13 @@ module SOLIDITY-DATA-SYNTAX
 endmodule
 
 module SOLIDITY-DATA
+  imports INT
   imports MINT
   imports BOOL
   imports STRING
   imports ID
   imports LIST
+  imports SET
   imports SOLIDITY-DATA-SYNTAX
 
   syntax KItem ::= "noId"
@@ -111,6 +121,26 @@ module SOLIDITY-DATA
   rule getNames(_:TypeName X:Id, Pp:ParameterList) => ListItem(X) getNames(Pp)
   rule getNames(_, Pp:ParameterList) => ListItem(noId) getNames(Pp) [owise]
 
+  syntax List ::= getTypes(EventParameters) [function]
+  rule getTypes(.EventParameters) => .List
+  rule getTypes(T:TypeName indexed _:Id, Ep:EventParameters) => ListItem(T) getTypes(Ep)
+  rule getTypes(T:TypeName _:Id, Ep:EventParameters) => ListItem(T) getTypes(Ep)
+  rule getTypes(T:TypeName indexed, Ep:EventParameters) => ListItem(T) getTypes(Ep)
+  rule getTypes(T:TypeName, Ep:EventParameters) => ListItem(T) getTypes(Ep)
+
+  syntax List ::= getNames(EventParameters) [function]
+  rule getNames(.EventParameters) => .List
+  rule getNames(_:TypeName indexed X:Id, Ep:EventParameters) => ListItem(X) getNames(Ep)
+  rule getNames(_:TypeName X:Id, Ep:EventParameters) => ListItem(X) getNames(Ep)
+  rule getNames(_, Ep:EventParameters) => ListItem(noId) getNames(Ep) [owise]
+
+  syntax Set ::= getIndexed(EventParameters)      [function]
+               | getIndexed(EventParameters, Int) [function]
+  rule getIndexed(Ep:EventParameters) => getIndexed(Ep, 0)
+  rule getIndexed(.EventParameters, _:Int) => .Set
+  rule getIndexed(_:TypeName indexed _:Id, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
+  rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
+  rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 endmodule
 ```
 

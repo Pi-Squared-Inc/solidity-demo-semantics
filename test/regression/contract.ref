@@ -259,6 +259,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract>
   </contracts>
   <exec>
