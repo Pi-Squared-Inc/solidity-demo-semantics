@@ -7,7 +7,7 @@ module SOLIDITY-TRANSACTION
   imports INT
   imports private SOLIDITY-EXPRESSION
 
-  rule <k> create(FROM, VALUE, CTOR, ARGS) => bind(PARAMS, ARGS) ~> List2Statements(INIT) ~> BODY ...</k>
+  rule <k> create(FROM, VALUE, CTOR, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
@@ -17,6 +17,7 @@ module SOLIDITY-TRANSACTION
        <contract-init> INIT </contract-init>
        <contract-fn-id> constructor </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
+       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
        <contract-fn-body> BODY </contract-fn-body>
        <live-contracts>
          .Bag => <live-contract>

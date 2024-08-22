@@ -36,6 +36,7 @@ module SOLIDITY-CONTRACT
                    <contract-fn-arg-types> getTypes(Params) </contract-fn-arg-types>
                    <contract-fn-param-names> getNames(Params) </contract-fn-param-names>
                    <contract-fn-return-types> getTypes(Rets) </contract-fn-return-types>
+                   <contract-fn-return-names> getNames(Rets) </contract-fn-return-names>
                    <contract-fn-body> Body </contract-fn-body>
                    ...
                  </contract-fn>
@@ -65,6 +66,7 @@ module SOLIDITY-CONTRACT
                    <contract-fn-id> X </contract-fn-id>
                    <contract-fn-visibility> public </contract-fn-visibility>
                    <contract-fn-return-types> ListItem(T) </contract-fn-return-types>
+                   <contract-fn-return-names> ListItem(noId) </contract-fn-return-names>
                    <contract-fn-body> return X ; </contract-fn-body>
                    ...
                  </contract-fn>
@@ -86,6 +88,7 @@ module SOLIDITY-CONTRACT
                    <contract-fn-id> X </contract-fn-id>
                    <contract-fn-visibility> public </contract-fn-visibility>
                    <contract-fn-return-types> ListItem(T) </contract-fn-return-types>
+                   <contract-fn-return-names> ListItem(noId) </contract-fn-return-names>
                    <contract-fn-body> return X ; </contract-fn-body>
                    ...
                  </contract-fn>
