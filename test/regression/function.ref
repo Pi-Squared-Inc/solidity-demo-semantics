@@ -2050,6 +2050,9 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <block-timestamp>
+      0p256
+    </block-timestamp>
     <this>
       2p160
     </this>
