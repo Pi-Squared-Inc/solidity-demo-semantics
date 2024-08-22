@@ -138,6 +138,8 @@ contract AaveLendingPool {
 
     ILendingPoolAddressesProvider public addressesProvider;
 
+    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+
     /* LendingPoolCore variables*/
     mapping(address => ReserveData) internal reserves;
     mapping(address => mapping(address => UserReserveData))
@@ -298,13 +300,13 @@ contract AaveLendingPool {
         );
 
         require(
-            _amount != type(uint256).max || msg.sender == _onBehalfOf,
+            _amount != UINT256_MAX || msg.sender == _onBehalfOf,
             "To repay on behalf of an user an explicit amount to repay is needed."
         );
 
         vars.paybackAmount = vars.compoundedBorrowBalance + vars.originationFee;
 
-        if (_amount != type(uint256).max && _amount < vars.paybackAmount) {
+        if (_amount != UINT256_MAX && _amount < vars.paybackAmount) {
             vars.paybackAmount = _amount;
         }
 
@@ -1173,7 +1175,7 @@ contract AaveLendingPool {
         uint256 totalFeesETH,
         uint256 liquidationThreshold
     ) internal returns (uint256) {
-        if (borrowBalanceETH == 0) return type(uint256).max;
+        if (borrowBalanceETH == 0) return UINT256_MAX;
 
         return
             ((collateralBalanceETH * liquidationThreshold) / 100) /

@@ -121,7 +121,7 @@ contract Lido{
 
     /*stETH variables start*/
     address internal INITIAL_TOKEN_HOLDER = address(0xdead);
-    uint256 internal INFINITE_ALLOWANCE = type(uint256).max;
+    uint256 internal INFINITE_ALLOWANCE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     mapping (address => uint256) private shares;
     mapping (address => mapping (address => uint256)) private allowances;
     uint256 internal TOTAL_SHARES_POSITION;
