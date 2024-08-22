@@ -22,5 +22,8 @@ module SOLIDITY-STATEMENT
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(V, RT, LT) ] </store>
+  rule <k> LT:TypeName X:Id = N:NumberLiteral ; => .K ...</k>
+       <env> E => E [ X <- var(!I:Int, LT) ] </env>
+       <store> S => S [ !I <- convert(Number2Int(N), LT) ] </store>
 
 endmodule
