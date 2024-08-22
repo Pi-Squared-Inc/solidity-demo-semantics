@@ -48,7 +48,7 @@ contract LiquidStaking {
         stakedTimestamps[msg.sender] = 0;
     }
 
-    function calculateRewards(address user) internal returns (uint256) {
+    function calculateRewards(address user) private returns (uint256) {
         uint256 stakedAmount = stakedBalances[user];
         uint256 stakingTime = block.timestamp - stakedTimestamps[user];
 

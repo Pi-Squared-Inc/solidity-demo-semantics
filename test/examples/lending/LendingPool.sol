@@ -70,24 +70,24 @@ contract LendingPool {
         bool supported;
     }
 
-    uint256 internal UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
-    uint256 internal MAX_PROTOCOL_FEE = 0.5e4; // 5%
+    uint256 private MAX_PROTOCOL_FEE = 0.5e4; // 5%
     uint256 public PRECISION = 1e18; // 18 decimals precision
     uint256 public BPS = 1e5; // 5 decimals precision
     uint256 public BLOCKS_PER_YEAR = 2102400; // Average Ethereum blocks per year
-    uint256 internal RATE_PRECISION = 1e18;
-    uint256 internal MIN_HEALTH_FACTOR = 1e18;
-    uint256 internal CLOSE_FACTOR_HF_THRESHOLD = 0.9e18;
-    uint256 internal LIQUIDATION_THRESHOLD = 8e4; // 80%
-    uint256 internal DEFAULT_LIQUIDATION_CLOSE_FACTOR = 5e4; // 50%
-    uint256 internal LIQUIDATION_REWARD = 5e3; // 5%
+    uint256 private RATE_PRECISION = 1e18;
+    uint256 private MIN_HEALTH_FACTOR = 1e18;
+    uint256 private CLOSE_FACTOR_HF_THRESHOLD = 0.9e18;
+    uint256 private LIQUIDATION_THRESHOLD = 8e4; // 80%
+    uint256 private DEFAULT_LIQUIDATION_CLOSE_FACTOR = 5e4; // 50%
+    uint256 private LIQUIDATION_REWARD = 5e3; // 5%
 
-    address[] internal supportedERC20s;
-    address[] internal supportedNFTs;
+    address[] private supportedERC20s;
+    address[] private supportedNFTs;
 
     mapping(address => TokenVault) private vaults;
-    mapping(address => SupportedToken) internal supportedTokens;
+    mapping(address => SupportedToken) private supportedTokens;
     mapping(address => mapping(address => AccountShares)) private userShares;
 
     event AddSupportedToken(address token, TokenType tokenType);
@@ -435,7 +435,7 @@ contract LendingPool {
     function vaultAboveReserveRatio(
         address token,
         uint256 pulledAmount
-    ) internal returns (bool isAboveReserveRatio) {
+    ) private returns (bool isAboveReserveRatio) {
         uint256 minVaultReserve = (vaults[token].totalAsset.amount *
             vaults[token].vaultInfo.reserveRatio) / BPS;
         isAboveReserveRatio =
@@ -449,7 +449,7 @@ contract LendingPool {
         uint256 amount,
         uint256 minAmountOutOrMaxShareIn,
         bool share
-    ) internal {
+    ) private {
         _accrueInterest(token);
         uint256 userCollShares = userShares[msg.sender][token].collateral;
         uint256 shares;
@@ -477,7 +477,7 @@ contract LendingPool {
         emit Withdraw(msg.sender, token, amount, shares);
     }
 
-    function _accrueInterest(address token) internal {
+    function _accrueInterest(address token) private {
         uint256 _interestEarned;
         uint256 _feesAmount;
         uint256 _feesShare;
@@ -548,7 +548,7 @@ contract LendingPool {
         TokenType tokenType,
         VaultSetupParams memory params,
         bool addToken
-    ) internal {
+    ) private {
         if (addToken) {
             _addSupportedToken(token, priceFeed, tokenType);
         }
@@ -582,7 +582,7 @@ contract LendingPool {
         address token,
         address priceFeed,
         TokenType tokenType
-    ) internal {
+    ) private {
         require(
             !supportedTokens[token].supported,
             "LendingPool: adding support for already supported token"
@@ -614,7 +614,7 @@ contract LendingPool {
     }
     function _getPrice(
         AggregatorV3Interface priceFeed
-    ) internal returns (uint256 price) {
+    ) private returns (uint256 price) {
         uint256[] memory returndata = priceFeed.latestRoundData();
         uint256 roundId = returndata[0];
         uint256 answer = returndata[1];
@@ -634,7 +634,7 @@ contract LendingPool {
         address _from,
         address _to,
         uint256 _amount
-    ) internal {
+    ) private {
         bool success;
         if (_from == address(this)) {
             success = IERC20(_token).transfer(_to, _amount);
@@ -648,7 +648,7 @@ contract LendingPool {
         Vault memory total,
         uint256 amount,
         bool roundUp
-    ) internal returns (uint256 shares) {
+    ) private returns (uint256 shares) {
         if (total.amount == 0) {
             shares = amount;
         } else {
@@ -663,7 +663,7 @@ contract LendingPool {
         Vault memory total,
         uint256 shares,
         bool roundUp
-    ) internal returns (uint256 amount) {
+    ) private returns (uint256 amount) {
         if (total.shares == 0) {
             amount = shares;
         } else {
@@ -677,7 +677,7 @@ contract LendingPool {
     function _calculateInterestRate(
         VaultInfo memory _interestRateInfo,
         uint256 utilization
-    ) internal returns (uint256 newRatePerSec) {
+    ) private returns (uint256 newRatePerSec) {
         uint256 optimalUtilization = _interestRateInfo.optimalUtilization;
         uint256 baseRate = uint256(_interestRateInfo.baseRate);
         uint256 slope1 = uint256(_interestRateInfo.slope1);
