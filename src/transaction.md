@@ -7,10 +7,11 @@ module SOLIDITY-TRANSACTION
   imports INT
   imports private SOLIDITY-EXPRESSION
 
-  rule <k> create(FROM, VALUE, CTOR, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ...</k>
+  rule <k> create(FROM, VALUE, NOW, CTOR, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <block-timestamp> _ => Int2MInt(Number2Int(NOW)) </block-timestamp>
        <this> _ => ADDR </this>
        <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
@@ -32,10 +33,11 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     requires isKResult(ARGS)
 
-  rule <k> create(FROM, VALUE, CTOR, .TypedVals) => List2Statements(INIT) ...</k>
+  rule <k> create(FROM, VALUE, NOW, CTOR, .TypedVals) => List2Statements(INIT) ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <block-timestamp> _ => Int2MInt(Number2Int(NOW)) </block-timestamp>
        <this> _ => ADDR </this>
        <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
@@ -53,13 +55,14 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     [owise]
 
-  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, func: Id, args: CallArgumentList) [strict(5)]
-  rule txn(FROM, TO, VALUE, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, FUNC, ARGS)
+  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [strict(5)]
+  rule txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, NOW, FUNC, ARGS)
 
-  rule <k> txn(FROM, TO, VALUE, FUNC, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
+  rule <k> txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <block-timestamp> _ => Int2MInt(Number2Int(NOW)) </block-timestamp>
        <this> _ => TO </this>
        <this-type> _ => TYPE </this-type>
        <env> _ => .Map </env>

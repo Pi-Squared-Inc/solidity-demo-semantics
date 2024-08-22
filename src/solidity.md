@@ -61,6 +61,7 @@ module SOLIDITY-CONFIGURATION
         <msg-sender> 0p160 </msg-sender>
         <msg-value> 0p256 </msg-value>
         <tx-origin> 0p160 </tx-origin>
+        <block-timestamp> 0p256 </block-timestamp>
         <this> 0p160 </this>
         <this-type> Id </this-type>
         <env> .Map </env>
@@ -94,8 +95,8 @@ module SOLIDITY-DATA-SYNTAX
   syntax MInt{256}
 
   syntax Transactions ::= List{Transaction, ","}
-  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, func: Id, args: CallArgumentList) [function]
-  syntax Transaction ::= create(from: Decimal, value: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
+  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [function]
+  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
 endmodule
 
 module SOLIDITY-DATA
