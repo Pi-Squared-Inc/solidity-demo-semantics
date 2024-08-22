@@ -158,7 +158,7 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 
-  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id)
+  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id, value: MInt{256})
   syntax Event ::= event(name: Id, args: TypedVals)
 
 endmodule

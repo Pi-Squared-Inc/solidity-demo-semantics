@@ -12,11 +12,12 @@ module SOLIDITY-STATEMENT
   // return statement
   rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
        <msg-sender> THIS => FROM </msg-sender>
+       <msg-value> _ => VALUE </msg-value>
        <this> _ => THIS </this>
        <this-type> _ => TYPE </this-type>
        <env> _ => E </env>
        <store> _ => S </store>
-       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE)) => .List </call-stack>
+       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
 
   // variable declaration
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>
