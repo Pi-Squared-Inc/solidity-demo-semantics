@@ -202,7 +202,10 @@ module SOLIDITY-EXPRESSION
   rule convert(V, T, T) => V
 
   syntax Value ::= convert(Int, TypeName) [function]
+  rule convert(I:Int, uint8)   => Int2MInt(I)::MInt{8}
+  rule convert(I:Int, uint32)  => Int2MInt(I)::MInt{32}
   rule convert(I:Int, uint112) => Int2MInt(I)::MInt{112}
+  rule convert(I:Int, address) => Int2MInt(I)::MInt{160}
   rule convert(I:Int, uint256) => Int2MInt(I)::MInt{256}
 
   syntax Value ::= default(TypeName) [function]
