@@ -30,7 +30,7 @@
             ListItem ( address )
           </iface-fn-arg-types>
           <iface-fn-return-types>
-            ListItem ( uint )
+            ListItem ( uint256 )
           </iface-fn-return-types>
         </iface-fn> <iface-fn>
           <iface-fn-id>
@@ -38,7 +38,7 @@
           </iface-fn-id>
           <iface-fn-arg-types>
             ListItem ( address )
-            ListItem ( uint )
+            ListItem ( uint256 )
           </iface-fn-arg-types>
           <iface-fn-return-types>
             ListItem ( bool )
@@ -50,7 +50,7 @@
           <iface-fn-arg-types>
             ListItem ( address )
             ListItem ( address )
-            ListItem ( uint )
+            ListItem ( uint256 )
           </iface-fn-arg-types>
           <iface-fn-return-types>
             ListItem ( bool )
@@ -94,6 +94,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -113,6 +116,9 @@
           <contract-fn-return-types>
             ListItem ( IERC20 )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return dai ;  .Statements
           </contract-fn-body>
@@ -132,6 +138,9 @@
           <contract-fn-return-types>
             ListItem ( UniswapV2Router02 )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return router ;  .Statements
           </contract-fn-body>
@@ -153,6 +162,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -174,6 +186,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -195,6 +210,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -216,6 +234,9 @@
           <contract-fn-return-types>
             .List
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
           <contract-fn-body>
             .Statements
           </contract-fn-body>
@@ -235,6 +256,9 @@
           <contract-fn-return-types>
             ListItem ( IERC20 )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return usdc ;  .Statements
           </contract-fn-body>
@@ -254,6 +278,9 @@
           <contract-fn-return-types>
             ListItem ( IERC20 )
           </contract-fn-return-types>
+          <contract-fn-return-names>
+            ListItem ( noId )
+          </contract-fn-return-names>
           <contract-fn-body>
             return weth ;  .Statements
           </contract-fn-body>
@@ -274,16 +301,25 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      UniswapV2Swap
+    </this-type>
     <env>
-      _dai |-> 1
-      _usdc |-> 2
-      _weth |-> 0
+      _dai |-> var ( 1 , address )
+      _usdc |-> var ( 2 , address )
+      _weth |-> var ( 0 , address )
     </env>
     <store>
       0 |-> 2p160
       1 |-> 3p160
       2 |-> 4p160
     </store>
+    <call-stack>
+      .List
+    </call-stack>
     <live-contracts>
       <live-contract>
         <contract-address>
