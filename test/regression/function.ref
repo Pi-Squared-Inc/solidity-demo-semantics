@@ -335,6 +335,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         USDCMock
@@ -622,6 +625,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         UniswapV2Pair
@@ -943,6 +949,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         UniswapV2Router02
@@ -1304,6 +1313,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         UniswapV2Swap
@@ -1530,6 +1542,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         UniswapV2SwapTest
@@ -1656,6 +1671,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract> <contract>
       <contract-id>
         WETHMock
@@ -1810,6 +1828,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract>
   </contracts>
   <exec>
