@@ -52,4 +52,28 @@ module SOLIDITY-TRANSACTION
        </live-contracts>
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     [owise]
+
+  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, func: Id, args: CallArgumentList) [strict(5)]
+  rule txn(FROM, TO, VALUE, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, FUNC, ARGS)
+
+  rule <k> txn(FROM, TO, VALUE, FUNC, ARGS) => bind(PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
+       <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
+       <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
+       <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
+       <this> _ => TO </this>
+       <this-type> _ => TYPE </this-type>
+       <env> _ => .Map </env>
+       <store> _ => .Map </store>
+       <live-contracts>
+         <contract-address> TO </contract-address>
+         <contract-type> TYPE </contract-type>
+         ...
+       </live-contracts>
+       <contract-id> TYPE </contract-id>
+       <contract-fn-id> FUNC </contract-fn-id>
+       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+       <contract-fn-body> BODY </contract-fn-body>
+    requires isKResult(ARGS)
+
 endmodule
