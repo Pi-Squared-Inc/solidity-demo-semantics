@@ -168,7 +168,7 @@ In each code block, various statments and nested blocks can be present.
                         | VariableDeclarationStatement
                         | ExpressionStatement
                         | IfStatement
-                        | ForStatement
+                        | WhileStatement
                         | EmitStatement
                         | ReturnStatement
                         | RevertStatement
@@ -188,10 +188,9 @@ Following is a list of supported statements.
     syntax IfStatement ::= "if" "(" Expression ")" Statement [strict(1)]
                          | "if" "(" Expression ")" Statement "else" Statement [avoid, strict(1)]
 
-    syntax ForStatement ::= "for" "(" InitStatement ConditionStatement PostLoopStatement ")" Statement
-    syntax InitStatement ::= VariableDeclarationStatement | ExpressionStatement | ";"
-    syntax ConditionStatement ::= ExpressionStatement | ";"
-    syntax PostLoopStatement ::= Expression | ""
+    syntax WhileStatement ::= "while" "(" Expression ")" Statement
+    syntax Block ::= "for" "(" VariableDeclarationStatement Expression ";" Expression ")" Statement [function]
+    rule for (Init Cond ; Post) Body => { Init while(Cond) { Body Post; } }
 
     syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";" [strict(2)]
 
