@@ -463,6 +463,7 @@ module SOLIDITY-EXPRESSION
        <iface-id> X </iface-id>
   rule default(uint256) => 0p256
   rule default(_ []) => .List
+  rule default(mapping(_ => _)) => .Map
 
   syntax Expression ::= retval(List) [function] 
   rule retval(.List) => void
