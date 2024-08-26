@@ -191,7 +191,7 @@ Following is a list of supported statements.
     syntax ConditionStatement ::= ExpressionStatement | ";"
     syntax PostLoopStatement ::= Expression | ""
 
-    syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";"
+    syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";" [strict(2)]
 
     syntax ReturnStatement ::= "return" ";"
                             | "return" Expression ";" [strict]

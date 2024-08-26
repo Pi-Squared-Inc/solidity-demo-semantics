@@ -26,4 +26,9 @@ module SOLIDITY-STATEMENT
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(Number2Int(N), LT) ] </store>
 
+  // emit statement
+  rule <k> emit X:Id ( ARGS ) ; => .K ...</k>
+       <events>... .List => ListItem(event(X, ARGS)) </events>
+    requires isKResult(ARGS)
+
 endmodule
