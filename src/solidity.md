@@ -86,6 +86,8 @@ module SOLIDITY-DATA-SYNTAX
   imports STRING-SYNTAX
   imports SOLIDITY-SYNTAX
 
+  syntax MInt{8}
+  syntax MInt{32}
   syntax MInt{112}
   syntax MInt{160}
   syntax MInt{256}
@@ -114,7 +116,7 @@ module SOLIDITY-DATA
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
   syntax KResult ::= TypedVal
-  syntax Value ::= MInt{112} | MInt{160} | MInt{256} | Bool | String
+  syntax Value ::= MInt{8} | MInt{32} | MInt{112} | MInt{160} | MInt{256} | Bool | String
 
   syntax List ::= getTypes(ParameterList) [function]
   rule getTypes(.ParameterList) => .List
