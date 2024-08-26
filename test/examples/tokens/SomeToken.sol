@@ -77,7 +77,7 @@ contract SomeToken {
 
     function _update(address from, address to, uint256 value) private {
         if (from == address(0)) {
-            _totalSupply += value;
+            _totalSupply = _totalSupply + value;
         } else {
             uint256 fromBalance = _balances[from];
             require(fromBalance >= value, "SomeToken: insufficient balance");
@@ -86,9 +86,9 @@ contract SomeToken {
         }
 
         if (to == address(0)) {
-            _totalSupply -= value; 
+            _totalSupply = _totalSupply - value; 
         } else {
-            _balances[to] += value;
+            _balances[to] = _balances[to] + value;
         }
 
         emit Transfer(from, to, value);

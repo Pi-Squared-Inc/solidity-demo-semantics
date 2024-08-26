@@ -106,7 +106,7 @@ contract SomeMultiToken{
             }
 
             if (to != address(0)) {
-                _balances[id][to] += value;
+                _balances[id][to] = _balances[id][to] + value;
             }
         }
 

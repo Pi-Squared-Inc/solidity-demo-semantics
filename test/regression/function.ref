@@ -455,7 +455,7 @@
             .List
           </contract-fn-return-names>
           <contract-fn-body>
-            if ( from == address ( 0 , .TypedVals ) ) { _totalSupply += value ;  .Statements } else { uint256 fromBalance = _balances [ from ] ;  require ( fromBalance >= value , "USDC: insufficient balance" , .TypedVals ) ;  _balances [ from ] = fromBalance - value ;  .Statements }  if ( to == address ( 0 , .TypedVals ) ) { _totalSupply -= value ;  .Statements } else { _balances [ to ] += value ;  .Statements }  .Statements
+            if ( from == address ( 0 , .TypedVals ) ) { _totalSupply = _totalSupply + value ;  .Statements } else { uint256 fromBalance = _balances [ from ] ;  require ( fromBalance >= value , "USDC: insufficient balance" , .TypedVals ) ;  _balances [ from ] = fromBalance - value ;  .Statements }  if ( to == address ( 0 , .TypedVals ) ) { _totalSupply = _totalSupply - value ;  .Statements } else { _balances [ to ] = _balances [ to ] + value ;  .Statements }  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -697,7 +697,7 @@
             .List
           </contract-fn-return-names>
           <contract-fn-body>
-            require ( balance0 <= type ( uint112 , .TypedVals ) . max && balance1 <= type ( uint112 , .TypedVals ) . max , "UniswapV2: OVERFLOW" , .TypedVals ) ;  uint32 blockTimestamp = uint32 ( block . timestamp % 2 ** 32 , .TypedVals ) ;  uint32 timeElapsed = blockTimestamp - blockTimestampLast ;  if ( timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0 ) { price0CumulativeLast += _reserve1 / _reserve0 * timeElapsed ;  price1CumulativeLast += _reserve0 / _reserve1 * timeElapsed ;  .Statements }  reserve0 = uint112 ( balance0 , .TypedVals ) ;  reserve1 = uint112 ( balance1 , .TypedVals ) ;  blockTimestampLast = blockTimestamp ;  .Statements
+            require ( balance0 <= type ( uint112 , .TypedVals ) . max && balance1 <= type ( uint112 , .TypedVals ) . max , "UniswapV2: OVERFLOW" , .TypedVals ) ;  uint32 blockTimestamp = uint32 ( block . timestamp % 2 ** 32 , .TypedVals ) ;  uint32 timeElapsed = blockTimestamp - blockTimestampLast ;  if ( timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0 ) { price0CumulativeLast = price0CumulativeLast + _reserve1 / _reserve0 * timeElapsed ;  price1CumulativeLast = price1CumulativeLast + _reserve0 / _reserve1 * timeElapsed ;  .Statements }  reserve0 = uint112 ( balance0 , .TypedVals ) ;  reserve1 = uint112 ( balance1 , .TypedVals ) ;  blockTimestampLast = blockTimestamp ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -1798,7 +1798,7 @@
             ListItem ( noId )
           </contract-fn-return-names>
           <contract-fn-body>
-            if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  balanceOf [ to ] += value ;  .Statements } else { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
+            if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  balanceOf [ to ] = balanceOf [ to ] + value ;  .Statements } else { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -1824,7 +1824,7 @@
             ListItem ( noId )
           </contract-fn-return-names>
           <contract-fn-body>
-            if ( from != msg . sender ) { uint256 allowed = allowance [ from ] [ msg . sender ] ;  if ( allowed != type ( uint256 , .TypedVals ) . max ) { require ( allowed >= value , "WETH: request exceeds allowance" , .TypedVals ) ;  uint256 reduced = allowed - value ;  allowance [ from ] [ msg . sender ] = reduced ;  .Statements }  .Statements }  if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  balanceOf [ to ] += value ;  .Statements } else { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
+            if ( from != msg . sender ) { uint256 allowed = allowance [ from ] [ msg . sender ] ;  if ( allowed != type ( uint256 , .TypedVals ) . max ) { require ( allowed >= value , "WETH: request exceeds allowance" , .TypedVals ) ;  uint256 reduced = allowed - value ;  allowance [ from ] [ msg . sender ] = reduced ;  .Statements }  .Statements }  if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  balanceOf [ to ] = balanceOf [ to ] + value ;  .Statements } else { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
