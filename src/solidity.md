@@ -6,6 +6,7 @@ requires "interface.md"
 requires "contract.md"
 requires "transaction.md"
 requires "expression.md"
+requires "statement.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -41,6 +42,7 @@ module SOLIDITY-CONFIGURATION
               <contract-fn-arg-types> .List </contract-fn-arg-types>
               <contract-fn-param-names> .List </contract-fn-param-names>
               <contract-fn-return-types> .List </contract-fn-return-types>
+              <contract-fn-return-names> .List </contract-fn-return-names>
               <contract-fn-body> .Statements </contract-fn-body>
             </contract-fn>
           </contract-fns>
@@ -58,8 +60,11 @@ module SOLIDITY-CONFIGURATION
         <msg-sender> 0p160 </msg-sender>
         <msg-value> 0p256 </msg-value>
         <tx-origin> 0p160 </tx-origin>
+        <this> 0p160 </this>
+        <this-type> Id </this-type>
         <env> .Map </env>
         <store> .Map </store>
+        <call-stack> .List </call-stack>
         <live-contracts>
           <live-contract multiplicity="*" type="Map">
             <contract-address> 0p160 </contract-address>
@@ -80,11 +85,12 @@ module SOLIDITY-DATA-SYNTAX
   imports STRING-SYNTAX
   imports SOLIDITY-SYNTAX
 
+  syntax MInt{112}
   syntax MInt{160}
   syntax MInt{256}
 
   syntax Transactions ::= List{Transaction, ","}
-  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, func: Id, args: CallArgumentList) [strict(5)]
+  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, func: Id, args: CallArgumentList) [function]
   syntax Transaction ::= create(from: Decimal, value: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
 endmodule
 
@@ -96,17 +102,18 @@ module SOLIDITY-DATA
   imports ID
   imports LIST
   imports SET
+  imports MAP
   imports SOLIDITY-DATA-SYNTAX
 
   syntax KItem ::= "noId"
   syntax Id ::= "constructor" [token]
 
-  syntax TypedVal ::= v(Value, TypeName)
+  syntax TypedVal ::= v(Value, TypeName) | NumberLiteral | String | "void"
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
   syntax KResult ::= TypedVal
-  syntax Value ::= MInt{160} | MInt{256} | Bool | String
+  syntax Value ::= MInt{112} | MInt{160} | MInt{256} | Bool | String
 
   syntax List ::= getTypes(ParameterList) [function]
   rule getTypes(.ParameterList) => .List
@@ -141,6 +148,9 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed _:Id, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
+
+  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id)
+
 endmodule
 ```
 
@@ -151,6 +161,7 @@ module SOLIDITY
   imports SOLIDITY-CONTRACT
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
 
   rule _:PragmaDefinition Ss:SourceUnits => Ss
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
