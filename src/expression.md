@@ -52,6 +52,10 @@ module SOLIDITY-EXPRESSION
        </live-contracts>
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
+  // new array
+  rule <k> new T[](Len:Int) => lv(!I:Int, .List, T) ...</k>
+       <store> S => S [ !I:Int <- makeList(Len, default(T)) ] </store>
+
   // literal assignment to state variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
        <this-type> TYPE </this-type>
