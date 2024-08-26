@@ -14,6 +14,8 @@ We use `bool`, `string` and `id` modules, `int`s are defined in a custom way due
     imports BOOL-SYNTAX
     imports STRING-SYNTAX
     imports ID-SYNTAX
+
+    syntax KResult
 ```
 
 ## Tokens-keywords
