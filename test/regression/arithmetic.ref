@@ -44,6 +44,9 @@
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
     </contract>
   </contracts>
   <exec>
@@ -98,6 +101,9 @@
         </contract-storage>
       </live-contract>
     </live-contracts>
+    <events>
+      .List
+    </events>
     <next-address>
       3p160
     </next-address>
