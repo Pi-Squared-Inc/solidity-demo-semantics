@@ -148,13 +148,24 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, L, T []) [ Idx:Int ] => v(read(V, L ListItem(Idx), T[]), T) ...</k>
        <store>... I |-> V ...</store>
     requires notBool isAggregateType(T)
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName => T2)) [ v(Key, RT) ] => v(read({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT, T1)), T), T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T2)
 
   rule <k> lv(R, L, T []) [ Idx:Int ] => lv(R, L ListItem(Idx), T) ...</k>
     requires isAggregateType(T)
+  rule <k> lv(R, L, mapping(T1:ElementaryTypeName => T2)) [ v(V, RT) ] => lv(R, L ListItem(convert(V, RT, T1)), T2) ...</k>
+    requires isAggregateType(T2)
 
   syntax Value ::= read(Value, List, TypeName) [function]
   rule read(V, .List, _) => V
   rule read(L1:List, ListItem(I:Int) L2, T[]) => read({L1 [ I ]}:>Value, L2, T)
+  rule read(M:Map, ListItem(V:Value) L, mapping(_ => T)) => read({M [ V ] orDefault default(T)}:>Value, L, T)
 
   // external call
   context HOLE . _ ( _:CallArgumentList )
