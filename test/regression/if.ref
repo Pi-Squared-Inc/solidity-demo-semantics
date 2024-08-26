@@ -40,7 +40,7 @@
             .List
           </contract-fn-return-names>
           <contract-fn-body>
-            bool x = true ;  if ( x ) { .Statements } else { require ( false , "" , .TypedVals ) ;  .Statements }  x = false ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements } else { .Statements }  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements }  .Statements
+            bool x = true ;  bool y = false ;  if ( x ) { y = true ;  .Statements } else { require ( false , "" , .TypedVals ) ;  .Statements }  require ( y , "" , .TypedVals ) ;  y = false ;  x = false ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements } else { y = true ;  .Statements }  require ( y , "" , .TypedVals ) ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements }  .Statements
           </contract-fn-body>
         </contract-fn>
       </contract-fns>
@@ -67,9 +67,11 @@
     </this-type>
     <env>
       x |-> var ( 0 , bool )
+      y |-> var ( 1 , bool )
     </env>
     <store>
       0 |-> false
+      1 |-> true
     </store>
     <call-stack>
       .List
