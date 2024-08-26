@@ -29,7 +29,7 @@ contract LiquidStaking {
 
         require(stakingToken.transferFrom(msg.sender, address(this), amount), "Token transfer failed");
 
-        stakedBalances[msg.sender] += amount;
+        stakedBalances[msg.sender] = stakedBalances[msg.sender] + amount;
         stakedTimestamps[msg.sender] = block.timestamp;
     }
 
