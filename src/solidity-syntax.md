@@ -256,10 +256,6 @@ Following is a list of supported expressions. Operator precendences are taken fr
                         > left: Expression "||" Expression [strict(1)]
                         > right:
                             Expression "?" Expression ":" Expression [strict(1)]
-                            | Expression "+=" Expression [strict(2)]
-                            | Expression "-=" Expression [strict(2)]
-                            | Expression "*=" Expression [strict(2)]
-                            | Expression "/=" Expression [strict(2)]
                             | Expression "=" Expression [strict(2)]
 
 endmodule

@@ -136,9 +136,9 @@ contract LendingPool {
         uint256 shares = _toShares(vaults[token].totalAsset, amount, false);
         require(shares >= minSharesOut, "LendingPool: too high slippage");
 
-        vaults[token].totalAsset.shares += uint128(shares);
-        vaults[token].totalAsset.amount += uint128(amount);
-        userShares[msg.sender][token].collateral += shares;
+        vaults[token].totalAsset.shares = vaults[token].totalAsset.shares + uint128(shares);
+        vaults[token].totalAsset.amount = vaults[token].totalAsset.amount + uint128(amount);
+        userShares[msg.sender][token].collateral = userShares[msg.sender][token].collateral + shares;
 
         emit Deposit(msg.sender, token, amount, shares);
     }
@@ -148,9 +148,9 @@ contract LendingPool {
         _accrueInterest(token);
 
         uint256 shares = _toShares(vaults[token].totalBorrow, amount, false);
-        vaults[token].totalBorrow.shares += uint128(shares);
-        vaults[token].totalBorrow.amount += uint128(amount);
-        userShares[msg.sender][token].borrow += shares;
+        vaults[token].totalBorrow.shares = vaults[token].totalBorrow.shares + uint128(shares);
+        vaults[token].totalBorrow.amount = vaults[token].totalBorrow.amount + uint128(amount);
+        userShares[msg.sender][token].borrow = userShares[msg.sender][token].borrow + shares;
 
         _transferERC20(token, address(this), msg.sender, amount);
         require(
@@ -170,8 +170,8 @@ contract LendingPool {
             amount = _toAmount(vaults[token].totalBorrow, shares, true);
         }
         _transferERC20(token, msg.sender, address(this), amount);
-        vaults[token].totalBorrow.shares -= uint128(shares);
-        vaults[token].totalBorrow.amount -= uint128(amount);
+        vaults[token].totalBorrow.shares = vaults[token].totalBorrow.shares - uint128(shares);
+        vaults[token].totalBorrow.amount = vaults[token].totalBorrow.amount - uint128(amount);
         userShares[msg.sender][token].borrow = userBorrowShare - shares;
         emit Repay(msg.sender, token, amount, shares);
     }
@@ -267,8 +267,8 @@ contract LendingPool {
                     false
                 )
             );
-            vaults[borrowToken].totalBorrow.shares -= repaidBorrowShares;
-            vaults[borrowToken].totalBorrow.amount -= uint128(
+            vaults[borrowToken].totalBorrow.shares = vaults[borrowToken].totalBorrow.shares - repaidBorrowShares;
+            vaults[borrowToken].totalBorrow.amount = vaults[borrowToken].totalBorrow.amount - uint128(
                 liquidationAmount
             );
 
@@ -279,12 +279,12 @@ contract LendingPool {
                     false
                 )
             );
-            vaults[collToken].totalAsset.shares -= liquidatedCollShares;
-            vaults[collToken].totalAsset.amount -= uint128(
+            vaults[collToken].totalAsset.shares = vaults[collToken].totalAsset.shares - liquidatedCollShares;
+            vaults[collToken].totalAsset.amount = vaults[collToken].totalAsset.amount - uint128(
                 collateralAmountToLiquidate + liquidationReward
             );
-            userShares[user][borrowToken].borrow -= repaidBorrowShares;
-            userShares[user][collToken].collateral -= liquidatedCollShares;
+            userShares[user][borrowToken].borrow = userShares[user][borrowToken].borrow - repaidBorrowShares;
+            userShares[user][collToken].collateral = userShares[user][collToken].collateral - liquidatedCollShares;
         }
 
         _transferERC20(
@@ -330,7 +330,7 @@ contract LendingPool {
                 false
             );
             if (tokenAmount != 0) {
-                totalValueUSD += getAmountInUSD(token, tokenAmount);
+                totalValueUSD = totalValueUSD + getAmountInUSD(token, tokenAmount);
             }
         }
     }
@@ -347,7 +347,7 @@ contract LendingPool {
                 false
             );
             if (tokenAmount != 0) {
-                totalValueUSD += getAmountInUSD(token, tokenAmount);
+                totalValueUSD = totalValueUSD + getAmountInUSD(token, tokenAmount);
             }
         }
     }
@@ -465,9 +465,9 @@ contract LendingPool {
             userCollShares >= shares && IERC20(token).balanceOf(address(this)) >= amount,
             "LendingPool: insufficient balance"
         );
-        vaults[token].totalAsset.shares -= uint128(shares);
-        vaults[token].totalAsset.amount -= uint128(amount);
-        userShares[msg.sender][token].collateral -= shares;
+        vaults[token].totalAsset.shares = vaults[token].totalAsset.shares - uint128(shares);
+        vaults[token].totalAsset.amount = vaults[token].totalAsset.amount - uint128(amount);
+        userShares[msg.sender][token].collateral = userShares[msg.sender][token].collateral - shares;
 
         _transferERC20(token, address(this), msg.sender, amount);
         require(
@@ -518,8 +518,8 @@ contract LendingPool {
                     _currentRateInfo.ratePerSec) /
                 (PRECISION * BLOCKS_PER_YEAR);
 
-            _vault.totalBorrow.amount += uint128(_interestEarned);
-            _vault.totalAsset.amount += uint128(_interestEarned);
+            _vault.totalBorrow.amount = _vault.totalBorrow.amount + uint128(_interestEarned);
+            _vault.totalAsset.amount = _vault.totalAsset.amount + uint128(_interestEarned);
             _vault.vaultInfo = _currentRateInfo;
             if (_currentRateInfo.feeToProtocolRate > 0) {
                 _feesAmount =
@@ -528,9 +528,9 @@ contract LendingPool {
                 _feesShare =
                     (_feesAmount * _vault.totalAsset.shares) /
                     (_vault.totalAsset.amount - _feesAmount);
-                _vault.totalAsset.shares += uint128(_feesShare);
+                _vault.totalAsset.shares = _vault.totalAsset.shares + uint128(_feesShare);
 
-                userShares[address(this)][token].collateral += _feesShare;
+                userShares[address(this)][token].collateral = userShares[address(this)][token].collateral + _feesShare;
             }
             emit AccruedInterest(
                 _currentRateInfo.ratePerSec,

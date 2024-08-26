@@ -306,8 +306,8 @@ contract UniswapV2Pair{
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
         if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
-            price0CumulativeLast += (_reserve1/_reserve0) * timeElapsed;
-            price1CumulativeLast += (_reserve0/_reserve1) * timeElapsed;
+            price0CumulativeLast = price0CumulativeLast + (_reserve1/_reserve0) * timeElapsed;
+            price1CumulativeLast = price1CumulativeLast + (_reserve0/_reserve1) * timeElapsed;
         }
         reserve0 = uint112(balance0);
         reserve1 = uint112(balance1);
@@ -331,7 +331,7 @@ contract WETHMock {
     }
 
     function deposit() external payable {
-        balanceOf[msg.sender] += msg.value;
+        balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
         emit Transfer(address(0), msg.sender, msg.value);
     }
     
@@ -348,7 +348,7 @@ contract WETHMock {
             require(balance >= value, "WETH: transfer amount exceeds balance");
 
             balanceOf[msg.sender] = balance - value;
-            balanceOf[to] += value;
+            balanceOf[to] = balanceOf[to] + value;
             emit Transfer(msg.sender, to, value);
         } else { // Withdraw
             uint256 balance = balanceOf[msg.sender];
@@ -379,7 +379,7 @@ contract WETHMock {
             require(balance >= value, "WETH: transfer amount exceeds balance");
 
             balanceOf[from] = balance - value;
-            balanceOf[to] += value;
+            balanceOf[to] = balanceOf[to] + value;
             emit Transfer(from, to, value);
         } else { 
             uint256 balance = balanceOf[from];
@@ -515,7 +515,7 @@ contract USDCMock {
 
     function _update(address from, address to, uint256 value) private {
         if (from == address(0)) {
-            _totalSupply += value;
+            _totalSupply = _totalSupply + value;
         } else {
             uint256 fromBalance = _balances[from];
             require(fromBalance >= value, "USDC: insufficient balance");
@@ -524,10 +524,10 @@ contract USDCMock {
         }
 
         if (to == address(0)) {
-            _totalSupply -= value;
+            _totalSupply = _totalSupply - value;
             
         } else {
-            _balances[to] += value;
+            _balances[to] = _balances[to] + value;
         }
 
         emit Transfer(from, to, value);
