@@ -110,6 +110,9 @@
         </contract-storage>
       </live-contract>
     </live-contracts>
+    <events>
+      .List
+    </events>
     <next-address>
       3p160
     </next-address>
