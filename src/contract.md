@@ -79,13 +79,32 @@ module SOLIDITY-CONTRACT
          .Bag => <contract-fn>
                    <contract-fn-id> X </contract-fn-id>
                    <contract-fn-visibility> public </contract-fn-visibility>
+                   <contract-fn-arg-types> accessorTypes(T) </contract-fn-arg-types>
+                   <contract-fn-param-names> accessorNames(T, 0) </contract-fn-param-names>
                    <contract-fn-return-types> ListItem(T) </contract-fn-return-types>
                    <contract-fn-return-names> ListItem(noId) </contract-fn-return-names>
-                   <contract-fn-body> return X ; </contract-fn-body>
+                   <contract-fn-body> return accessor(X, T, 0) ; </contract-fn-body>
                    ...
                  </contract-fn>
          ...
        </contract-fns>
+
+  syntax List ::= accessorTypes(TypeName) [function]
+  rule accessorTypes(_:ElementaryTypeName) => .List
+  rule accessorTypes(_:Id) => .List
+  rule accessorTypes(mapping(T1 _ => T2 _)) => ListItem(T1) accessorTypes(T2)
+
+  syntax List ::= accessorNames(TypeName, Int) [function]
+  rule accessorNames(_:ElementaryTypeName, _) => .List
+  rule accessorNames(_:Id, _) => .List
+  rule accessorNames(mapping(_ X:Id => T2 _), I) => ListItem(X) accessorNames(T2, I)
+  rule accessorNames(mapping(_ => T2 _), I) => ListItem(String2Id("$" +String Int2String(I))) accessorNames(T2, I +Int 1)
+
+  syntax Expression ::= accessor(Expression, TypeName, Int) [function]
+  rule accessor(X, _:ElementaryTypeName, _) => X
+  rule accessor(X, _:Id, _) => X
+  rule accessor(X, mapping(_ Y:Id => T2 _), I) => accessor(X [ Y ], T2, I)
+  rule accessor(X, mapping(_ => T2 _), I) => accessor(X [ String2Id("$" +String Int2String(I)) ], T2, I +Int 1)
 
   rule <k> T:TypeName private X:Id ; => .K ...</k>
        <current-body> C </current-body>
@@ -101,9 +120,11 @@ module SOLIDITY-CONTRACT
          .Bag => <contract-fn>
                    <contract-fn-id> X </contract-fn-id>
                    <contract-fn-visibility> public </contract-fn-visibility>
+                   <contract-fn-arg-types> accessorTypes(T) </contract-fn-arg-types>
+                   <contract-fn-param-names> accessorNames(T, 0) </contract-fn-param-names>
                    <contract-fn-return-types> ListItem(T) </contract-fn-return-types>
                    <contract-fn-return-names> ListItem(noId) </contract-fn-return-names>
-                   <contract-fn-body> return X ; </contract-fn-body>
+                   <contract-fn-body> return accessor(X, T, 0) ; </contract-fn-body>
                    ...
                  </contract-fn>
          ...
