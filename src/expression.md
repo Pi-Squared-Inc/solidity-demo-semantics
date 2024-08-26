@@ -150,6 +150,12 @@ module SOLIDITY-EXPRESSION
   rule v(true, bool) ? X : _ => X
   rule v(false, bool) ? _ : X => X
 
+  // boolean and/or
+  rule v(true, bool) && E => E
+  rule v(false, bool) && _ => v(false, bool)
+  rule v(true, bool) || _ => v(true, bool)
+  rule v(false, bool) || E => E
+
   // helpers
   syntax Int ::= Number2Int(NumberLiteral) [function]
   rule Number2Int(X:HexNumber) => HexNumberString2Int(HexNumber2String(X))

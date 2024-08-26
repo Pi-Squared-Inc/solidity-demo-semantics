@@ -31,4 +31,18 @@ module SOLIDITY-STATEMENT
        <events>... .List => ListItem(event(X, ARGS)) </events>
     requires isKResult(ARGS)
 
+  // if statement
+  rule if ( v(true, bool ) ) S => S
+  rule if ( v(false, bool ) ) _ => .K
+  rule if ( v(true, bool ) ) S else _ => S
+  rule if ( v(false, bool ) ) _ else S => S
+
+  // blocks
+  rule <k> { S } => S ~> restoreEnv(E) ...</k>
+       <env> E </env>
+
+  syntax KItem ::= restoreEnv(Map)
+  rule <k> restoreEnv(E) => .K ...</k>
+       <env> _ => E </env>
+
 endmodule
