@@ -80,6 +80,20 @@ module SOLIDITY-EXPRESSION
        <env>... X |-> var(I, LT) ...</env>
        <store> S => S [ I <- convert(V, RT, LT) ] </store>
 
+  // reference assignment to local
+  rule <k> X:Id = lv(I:Int, .List, T) => lv(I:Int, .List, T) ...</k>
+       <env>... X |-> var(_ => I, T[]) ...</env>
+
+  // assignment to array element
+  context HOLE [ _ ] = _
+  context _ [ HOLE ] = _
+  rule <k> lv(I:Int, L, LT []) [ Idx:Int ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
+
+  syntax Value ::= write(Value, List, Value, TypeName) [function]
+  rule write(_, .List, V, _) => V
+  rule write(L1:List, ListItem(I:Int) L2, V, T[]) => L1 [ I <- write({L1 [ I ]}:>Value, L2, V, T) ]
+
   // type conversion
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
   context _:Id ( HOLE:CallArgumentList )
