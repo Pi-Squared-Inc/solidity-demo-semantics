@@ -89,10 +89,18 @@ module SOLIDITY-EXPRESSION
   context _ [ HOLE ] = _
   rule <k> lv(I:Int, L, LT []) [ Idx:Int ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName => T2)) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ X <- write({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT1, LT1)), convert(V, RT, T2), T) ] </contract-storage>
 
   syntax Value ::= write(Value, List, Value, TypeName) [function]
   rule write(_, .List, V, _) => V
   rule write(L1:List, ListItem(I:Int) L2, V, T[]) => L1 [ I <- write({L1 [ I ]}:>Value, L2, V, T) ]
+  rule write(M:Map, ListItem(Key:Value) L2, V, mapping(_ => T2)) => M [ Key <- write({M [ Key ] orDefault default(T2)}:>Value, L2, V, T2) ]
 
   // type conversion
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
