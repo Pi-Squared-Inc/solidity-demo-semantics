@@ -116,11 +116,37 @@ module SOLIDITY-EXPRESSION
        <contract-state>... X |-> T ...</contract-state>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => lv(X, .List, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+    requires isAggregateType(T)
 
   // local variable lookup
   rule <k> X:Id => v(V, T) ...</k>
        <env>... X |-> var(I, T) ...</env>
        <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => lv(I, .List, T) ...</k>
+       <env>... X |-> var(I, T) ...</env>
+    requires isAggregateType(T)
+
+  // array element lookup
+  context HOLE:Expression [ _:Expression ]
+  context _:Expression [ HOLE:Expression ]
+  rule <k> lv(I:Int, L, T []) [ Idx:Int ] => v(read(V, L ListItem(Idx), T[]), T) ...</k>
+       <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+
+  rule <k> lv(R, L, T []) [ Idx:Int ] => lv(R, L ListItem(Idx), T) ...</k>
+    requires isAggregateType(T)
+
+  syntax Value ::= read(Value, List, TypeName) [function]
+  rule read(V, .List, _) => V
+  rule read(L1:List, ListItem(I:Int) L2, T[]) => read({L1 [ I ]}:>Value, L2, T)
 
   // external call
   context HOLE . _ ( _:CallArgumentList )
