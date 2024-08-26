@@ -1,0 +1,115 @@
+<solidity>
+  <k>
+    .K
+  </k>
+  <current-body>
+    EmitTest
+  </current-body>
+  <ifaces>
+    .IfaceCellMap
+  </ifaces>
+  <contracts>
+    <contract>
+      <contract-id>
+        EmitTest
+      </contract-id>
+      <contract-state>
+        .Map
+      </contract-state>
+      <contract-init>
+        .List
+      </contract-init>
+      <contract-fns>
+        <contract-fn>
+          <contract-fn-id>
+            constructor
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
+          <contract-fn-body>
+            emit Approval ( address ( 1 , .TypedVals ) , address ( 0 , .TypedVals ) , address ( 2 , .TypedVals ) , .TypedVals ) ;  .Statements
+          </contract-fn-body>
+        </contract-fn>
+      </contract-fns>
+      <contract-events>
+        <contract-event>
+          <contract-event-id>
+            Approval
+          </contract-event-id>
+          <contract-event-arg-types>
+            ListItem ( address )
+            ListItem ( address )
+            ListItem ( uint256 )
+          </contract-event-arg-types>
+          <contract-event-param-names>
+            ListItem ( owner )
+            ListItem ( spender )
+            ListItem ( value )
+          </contract-event-param-names>
+          <contract-event-indexed-pos>
+            SetItem ( 0 )
+            SetItem ( 1 )
+          </contract-event-indexed-pos>
+        </contract-event>
+      </contract-events>
+    </contract>
+  </contracts>
+  <exec>
+    <msg-sender>
+      1p160
+    </msg-sender>
+    <msg-value>
+      10p256
+    </msg-value>
+    <tx-origin>
+      1p160
+    </tx-origin>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      EmitTest
+    </this-type>
+    <env>
+      .Map
+    </env>
+    <store>
+      .Map
+    </store>
+    <call-stack>
+      .List
+    </call-stack>
+    <live-contracts>
+      <live-contract>
+        <contract-address>
+          2p160
+        </contract-address>
+        <contract-type>
+          EmitTest
+        </contract-type>
+        <contract-storage>
+          .Map
+        </contract-storage>
+      </live-contract>
+    </live-contracts>
+    <events>
+      ListItem ( event (... name: Approval , args: v ( 1p160 , address ) , v ( 0p160 , address ) , v ( 2p160 , address ) , .TypedVals ) )
+    </events>
+    <next-address>
+      3p160
+    </next-address>
+  </exec>
+</solidity>
