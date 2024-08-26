@@ -72,6 +72,7 @@ module SOLIDITY-CONFIGURATION
             <contract-storage> .Map </contract-storage>
           </live-contract>
         </live-contracts>
+        <events> .List </events>
         <next-address> 2p160 </next-address>
       </exec>
     </solidity>
@@ -152,6 +153,7 @@ module SOLIDITY-DATA
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 
   syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id)
+  syntax Event ::= event(name: Id, args: TypedVals)
 
 endmodule
 ```
