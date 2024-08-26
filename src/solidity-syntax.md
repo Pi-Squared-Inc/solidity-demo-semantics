@@ -183,8 +183,8 @@ Following is a list of supported statements.
                                             | VariableDeclaration "=" Expression ";" [strict(2)]
                                             | "(" VariableDeclaration "," ")" "=" Expression ";" [strict(2)]
 
-    syntax IfStatement ::= "if" "(" Expression ")" Statement
-                         | "if" "(" Expression ")" Statement "else" Statement
+    syntax IfStatement ::= "if" "(" Expression ")" Statement [strict(1)]
+                         | "if" "(" Expression ")" Statement "else" Statement [avoid, strict(1)]
 
     syntax ForStatement ::= "for" "(" InitStatement ConditionStatement PostLoopStatement ")" Statement
     syntax InitStatement ::= VariableDeclarationStatement | ExpressionStatement | ";"
