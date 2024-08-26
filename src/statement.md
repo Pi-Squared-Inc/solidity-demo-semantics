@@ -30,6 +30,8 @@ module SOLIDITY-STATEMENT
   rule <k> LT:TypeName X:Id = N:Int ; => .K ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(N, LT) ] </store>
+  rule <k> T:TypeName memory X:Id = lv(I:Int, .List, T) ; => .K ...</k>
+       <env> E => E [ X <- var(I, T) ] </env>
 
   // emit statement
   rule <k> emit X:Id ( ARGS ) ; => .K ...</k>
