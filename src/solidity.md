@@ -155,6 +155,11 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 
+  syntax Bool ::= isAggregateType(TypeName) [function]
+  rule isAggregateType(_[]) => true
+  rule isAggregateType(mapping(_ => _)) => true
+  rule isAggregateType(_) => false [owise]
+
   // external frame
   syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id, value: MInt{256})
   // internal frame

@@ -488,9 +488,4 @@ module SOLIDITY-EXPRESSION
   rule retval(.List) => void
   rule retval(ListItem(noId)) => void
   rule retval(ListItem(X:Id)) => X
-
-  syntax Bool ::= isAggregateType(TypeName) [function]
-  rule isAggregateType(_[]) => true
-  rule isAggregateType(mapping(_ => _)) => true
-  rule isAggregateType(_) => false [owise]
 endmodule
