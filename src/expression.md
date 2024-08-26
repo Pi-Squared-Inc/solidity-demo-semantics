@@ -185,7 +185,7 @@ module SOLIDITY-EXPRESSION
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
-  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
