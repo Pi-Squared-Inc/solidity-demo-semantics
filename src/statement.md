@@ -19,6 +19,10 @@ module SOLIDITY-STATEMENT
        <store> _ => S </store>
        <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
 
+  rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
+       <env> _ => E </env>
+       <call-stack>... ListItem(frame(K, E)) => .List </call-stack>
+
   // variable declaration
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>

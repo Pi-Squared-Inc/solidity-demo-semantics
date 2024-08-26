@@ -154,13 +154,8 @@ module SOLIDITY-EXPRESSION
 
   // internal call
   rule <k> F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM </msg-sender>
-       <msg-value> VALUE </msg-value>
-       <this-type> TYPE </this-type>
        <env> E => .Map </env>
-       <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
-       <contract-id> TYPE </contract-id>
+       <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
        <contract-fn-arg-types> TYPES </contract-fn-arg-types>
