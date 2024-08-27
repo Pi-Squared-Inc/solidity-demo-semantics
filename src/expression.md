@@ -346,8 +346,9 @@ module SOLIDITY-EXPRESSION
   rule I1:Int >= I2:Int => v(I1  >=Int I2, bool)
 
   // require expression
-  syntax Id ::= "require" [token]
+  syntax Id ::= "require" [token] | "assert" [token]
   rule require(v(true, bool), _) => void
+  rule assert(v(true, bool)) => void
 
   // ternary expression
   rule v(true, bool) ? X : _ => X
