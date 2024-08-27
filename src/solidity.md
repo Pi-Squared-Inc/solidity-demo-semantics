@@ -17,46 +17,48 @@ module SOLIDITY-CONFIGURATION
   configuration
     <solidity>
       <k parser="TXN, SOLIDITY-DATA-SYNTAX"> $PGM:Program ~> $TXN:Transactions </k>
-      <current-body> Id </current-body>
-      <ifaces>
-        <iface multiplicity="*" type="Map">
-          <iface-id> Id </iface-id>
-          <iface-fns>
-            <iface-fn multiplicity="*" type="Map">
-              <iface-fn-id> Id </iface-fn-id>
-              <iface-fn-arg-types> .List </iface-fn-arg-types>
-              <iface-fn-return-types> .List </iface-fn-return-types>
-            </iface-fn>
-          </iface-fns>
-        </iface>
-      </ifaces>
-      <contracts>
-        <contract multiplicity="*" type="Map">
-          <contract-id> Id </contract-id>
-          <contract-state> .Map </contract-state>
-          <contract-init> .List </contract-init>
-          <contract-fns>
-            <contract-fn multiplicity="*" type="Map">
-              <contract-fn-id> Id </contract-fn-id>
-              <contract-fn-visibility> public </contract-fn-visibility>
-              <contract-fn-arg-types> .List </contract-fn-arg-types>
-              <contract-fn-param-names> .List </contract-fn-param-names>
-              <contract-fn-return-types> .List </contract-fn-return-types>
-              <contract-fn-return-names> .List </contract-fn-return-names>
-              <contract-fn-payable> false </contract-fn-payable>
-              <contract-fn-body> .Statements </contract-fn-body>
-            </contract-fn>
-          </contract-fns>
-          <contract-events>
-            <contract-event multiplicity="*" type="Map">
-              <contract-event-id> Id </contract-event-id>
-              <contract-event-arg-types> .List </contract-event-arg-types>
-              <contract-event-param-names> .List </contract-event-param-names>
-              <contract-event-indexed-pos> .Set </contract-event-indexed-pos>
-            </contract-event>
-          </contract-events>
-        </contract>
-      </contracts>
+      <compile>
+        <current-body> Id </current-body>
+        <ifaces>
+          <iface multiplicity="*" type="Map">
+            <iface-id> Id </iface-id>
+            <iface-fns>
+              <iface-fn multiplicity="*" type="Map">
+                <iface-fn-id> Id </iface-fn-id>
+                <iface-fn-arg-types> .List </iface-fn-arg-types>
+                <iface-fn-return-types> .List </iface-fn-return-types>
+              </iface-fn>
+            </iface-fns>
+          </iface>
+        </ifaces>
+        <contracts>
+          <contract multiplicity="*" type="Map">
+            <contract-id> Id </contract-id>
+            <contract-state> .Map </contract-state>
+            <contract-init> .List </contract-init>
+            <contract-fns>
+              <contract-fn multiplicity="*" type="Map">
+                <contract-fn-id> Id </contract-fn-id>
+                <contract-fn-visibility> public </contract-fn-visibility>
+                <contract-fn-arg-types> .List </contract-fn-arg-types>
+                <contract-fn-param-names> .List </contract-fn-param-names>
+                <contract-fn-return-types> .List </contract-fn-return-types>
+                <contract-fn-return-names> .List </contract-fn-return-names>
+                <contract-fn-payable> false </contract-fn-payable>
+                <contract-fn-body> .Statements </contract-fn-body>
+              </contract-fn>
+            </contract-fns>
+            <contract-events>
+              <contract-event multiplicity="*" type="Map">
+                <contract-event-id> Id </contract-event-id>
+                <contract-event-arg-types> .List </contract-event-arg-types>
+                <contract-event-param-names> .List </contract-event-param-names>
+                <contract-event-indexed-pos> .Set </contract-event-indexed-pos>
+              </contract-event>
+            </contract-events>
+          </contract>
+        </contracts>
+      </compile>
       <exec>
         <msg-sender> 0p160 </msg-sender>
         <msg-value> 0p256 </msg-value>
