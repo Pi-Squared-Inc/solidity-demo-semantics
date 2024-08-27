@@ -55,6 +55,8 @@ module SOLIDITY-EXPRESSION
   // new array
   rule <k> new T[](Len:Int) => lv(!I:Int, .List, T[]) ...</k>
        <store> S => S [ !I:Int <- makeList(Len, default(T)) ] </store>
+  rule <k> new T[](v(Len:MInt{256}, _)) => lv(!I:Int, .List, T[]) ...</k>
+       <store> S => S [ !I:Int <- makeList(MInt2Unsigned(Len), default(T)) ] </store>
 
   // literal assignment to state variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
@@ -89,6 +91,8 @@ module SOLIDITY-EXPRESSION
   context _ [ HOLE ] = _
   rule <k> lv(I:Int, L, LT []) [ Idx:Int ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
+  rule <k> lv(I:Int, L, LT []) [ v(Idx:MInt{256}, _) ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(MInt2Unsigned(Idx)), convert(V, RT, LT), LT[]) ] </store>
   rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => T2)) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
@@ -146,6 +150,9 @@ module SOLIDITY-EXPRESSION
   context HOLE:Expression [ _:Expression ]
   context _:Expression [ HOLE:Expression ]
   rule <k> lv(I:Int, L, T []) [ Idx:Int ] => v(read(V, L ListItem(Idx), T[]), T) ...</k>
+       <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+  rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
        <store>... I |-> V ...</store>
     requires notBool isAggregateType(T)
   rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v(read({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT, T1)), T), T2) ...</k>
