@@ -82,7 +82,7 @@ module SOLIDITY-EXPRESSION
 
   // reference assignment to local
   rule <k> X:Id = lv(I:Int, .List, T) => lv(I:Int, .List, T) ...</k>
-       <env>... X |-> var(_ => I, T[]) ...</env>
+       <env>... X |-> var(_ => I, T) ...</env>
 
   // assignment to array element
   context HOLE [ _ ] = _
