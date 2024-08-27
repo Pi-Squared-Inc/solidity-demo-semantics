@@ -53,7 +53,7 @@ module SOLIDITY-EXPRESSION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
   // new array
-  rule <k> new T[](Len:Int) => lv(!I:Int, .List, T) ...</k>
+  rule <k> new T[](Len:Int) => lv(!I:Int, .List, T[]) ...</k>
        <store> S => S [ !I:Int <- makeList(Len, default(T)) ] </store>
 
   // literal assignment to state variable
