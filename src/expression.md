@@ -77,6 +77,8 @@ module SOLIDITY-EXPRESSION
   // type conversion
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
   context _:Id ( HOLE:CallArgumentList )
+  rule uint32(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{32}, uint32)
+  rule uint112(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{112}, uint112)
   rule address(v(ADDR:MInt{160}, _)) => v(ADDR, address)
   rule address ( I:Int ) => v(Int2MInt(I)::MInt{160}, address)
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
