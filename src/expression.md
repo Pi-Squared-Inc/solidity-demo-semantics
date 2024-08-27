@@ -146,6 +146,7 @@ module SOLIDITY-EXPRESSION
   rule v(V1:Value, T)  - v(V2:Value, T) => v(sub(V1, V2), T)
   rule v(V1:Value, T)  * v(V2:Value, T) => v(mul(V1, V2), T)
   rule v(V1:Value, T)  / v(V2:Value, T) => v(div(V1, V2), T)
+  rule v(V1:Value, T)  % v(V2:Value, T) => v(mod(V1, V2), T)
   rule v(V1:Value, T) ** v(V2:Value, T) => v(exp(V1, V2), T)
 
   rule v(_:Value, T)  + (I:Int => v(convert(I, T), T))
@@ -156,6 +157,8 @@ module SOLIDITY-EXPRESSION
   rule (I:Int => v(convert(I, T), T))  * v(_:Value, T)
   rule v(_:Value, T)  / (I:Int => v(convert(I, T), T))
   rule (I:Int => v(convert(I, T), T))  / v(_:Value, T)
+  rule v(_:Value, T)  % (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  % v(_:Value, T)
   rule v(_:Value, T) ** (I:Int => v(convert(I, T), T))
   rule (I:Int => v(convert(I, T), T)) ** v(_:Value, T) 
 
@@ -163,6 +166,7 @@ module SOLIDITY-EXPRESSION
   rule I1:Int  - I2:Int => I1 -Int I2
   rule I1:Int  * I2:Int => I1 *Int I2
   rule I1:Int  / I2:Int => I1 /Int I2
+  rule I1:Int  % I2:Int => I1 %Int I2
   rule I1:Int ** I2:Int => I1 ^Int I2
 
   // equality and inequality
