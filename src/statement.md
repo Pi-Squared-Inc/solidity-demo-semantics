@@ -10,7 +10,7 @@ module SOLIDITY-STATEMENT
   rule _:TypedVal ; => .K
 
   // return statement
-  rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
+  rule <k> return v(V, T) ; ~> _ => v(V, T) ~> K </k>
        <msg-sender> THIS => FROM </msg-sender>
        <msg-value> _ => VALUE </msg-value>
        <this> _ => THIS </this>
@@ -18,6 +18,18 @@ module SOLIDITY-STATEMENT
        <env> _ => E </env>
        <store> _ => S </store>
        <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
+
+  rule <k> return void ; ~> _ => void ~> K </k>
+       <msg-sender> THIS => FROM </msg-sender>
+       <msg-value> _ => VALUE </msg-value>
+       <this> _ => THIS </this>
+       <this-type> _ => TYPE </this-type>
+       <env> _ => E </env>
+       <store> _ => S </store>
+       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
+
+  rule <k> return lv(I:Int, .List, T) ; => return v(L, T) ; ...</k>
+       <store>... I |-> L ...</store>
 
   rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
        <env> _ => E </env>
