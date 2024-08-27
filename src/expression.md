@@ -79,8 +79,10 @@ module SOLIDITY-EXPRESSION
   context _:Id ( HOLE:CallArgumentList )
   rule uint32(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{32}, uint32)
   rule uint112(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{112}, uint112)
+  rule uint256(v(V:MInt{112}, _)) => v(roundMInt(V)::MInt{256}, uint256)
+  rule uint256(I:Int) => v(Int2MInt(I)::MInt{256}, uint256)
   rule address(v(ADDR:MInt{160}, _)) => v(ADDR, address)
-  rule address ( I:Int ) => v(Int2MInt(I)::MInt{160}, address)
+  rule address(I:Int) => v(Int2MInt(I)::MInt{160}, address)
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
        <contract-id> TYPE </contract-id>
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
@@ -171,6 +173,19 @@ module SOLIDITY-EXPRESSION
   rule I1:Int  % I2:Int => I1 %Int I2
   rule I1:Int ** I2:Int => I1 ^Int I2
 
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  + v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  - v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  * v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  / v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  % v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256)) ** v(_, uint256)
+  rule v(_, uint256)  + (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  - (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  * (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  / (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  % (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256) ** (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+ 
   // equality and inequality
   rule v(V1:Value, T) == v(V2:Value, T) => v(eq(V1, V2), bool)
   rule v(V1:Value, T) != v(V2:Value, T) => v(neq(V1, V2), bool)
@@ -178,6 +193,8 @@ module SOLIDITY-EXPRESSION
   rule v(V1:Value, T) <= v(V2:Value, T) => v(leq(V1, V2), bool)
   rule v(V1:Value, T) > v(V2:Value, T) => v(gt(V1, V2), bool)
   rule v(V1:Value, T) >= v(V2:Value, T) => v(geq(V1, V2), bool)
+
+  rule v(_, uint256) < (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
 
   rule v(_:Value, T) == (I:Int => v(convert(I, T), T))
   rule (I:Int => v(convert(I, T), T)) == v(_:Value, T)
@@ -250,6 +267,10 @@ module SOLIDITY-EXPRESSION
 
   syntax Value ::= convert(Value, from: TypeName, to: TypeName) [function]
   rule convert(V, T, T) => V
+  rule convert(V:MInt{32},   uint32, uint112) => roundMInt(V)::MInt{112}
+  rule convert(V:MInt{112}, uint112, uint256) => roundMInt(V)::MInt{256}
+  rule convert(V:MInt{160}, address, uint256) => roundMInt(V)::MInt{256}
+  rule convert(V:MInt{256}, uint256, uint112) => roundMInt(V)::MInt{112}
 
   // this is kind of ugly, but we don't have parametric axioms.
   syntax Value ::= convert(Int, TypeName) [function]
