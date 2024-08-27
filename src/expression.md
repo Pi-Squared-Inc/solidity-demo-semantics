@@ -261,6 +261,7 @@ module SOLIDITY-EXPRESSION
                  | sub(Value, Value) [function]
                  | mul(Value, Value) [function]
                  | div(Value, Value) [function]
+                 | mod(Value, Value) [function]
                  | exp(Value, Value) [function]
   rule add(V1:MInt{8},   V2:MInt{8})   => V1  +MInt V2
   rule add(V1:MInt{32},  V2:MInt{32})  => V1  +MInt V2
@@ -282,6 +283,11 @@ module SOLIDITY-EXPRESSION
   rule div(V1:MInt{112}, V2:MInt{112}) => V1 /uMInt V2
   rule div(V1:MInt{160}, V2:MInt{160}) => V1 /uMInt V2
   rule div(V1:MInt{256}, V2:MInt{256}) => V1 /uMInt V2
+  rule mod(V1:MInt{8},   V2:MInt{8})   => V1 %uMInt V2
+  rule mod(V1:MInt{32},  V2:MInt{32})  => V1 %uMInt V2
+  rule mod(V1:MInt{112}, V2:MInt{112}) => V1 %uMInt V2
+  rule mod(V1:MInt{160}, V2:MInt{160}) => V1 %uMInt V2
+  rule mod(V1:MInt{256}, V2:MInt{256}) => V1 %uMInt V2
   rule exp( _:MInt{8},   V2:MInt{8})          => 1p8 requires V2 ==MInt 0p8
   rule exp(V1:MInt{8},   V2:MInt{8})   => V1 *MInt {exp(V1, V2 -MInt 1p8)}:>MInt{8} [owise]
   rule exp( _:MInt{32},  V2:MInt{32})         => 1p32 requires V2 ==MInt 0p32
