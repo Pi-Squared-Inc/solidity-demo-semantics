@@ -7,7 +7,7 @@ module SOLIDITY-EXPRESSION
   imports INT
 
   // new contract
-  rule <k> new X:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
+  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
@@ -176,7 +176,7 @@ module SOLIDITY-EXPRESSION
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
-  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
@@ -201,7 +201,7 @@ module SOLIDITY-EXPRESSION
   context _ . _ { value: HOLE } ( _ )
   context _ . _ { _ } ( HOLE:CallArgumentList )
 
-  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => VALUE' </msg-value>
        <this> THIS => ADDR </this>
@@ -222,8 +222,9 @@ module SOLIDITY-EXPRESSION
     requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
 
   // internal call
-  rule <k> F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <env> E => .Map </env>
+       <store> S </store>
        <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
@@ -371,14 +372,17 @@ module SOLIDITY-EXPRESSION
 
   syntax KItem ::= var(Int, TypeName)
 
-  syntax KItem ::= bind(List, List, CallArgumentList, List, List)
-  rule bind(.List, .List, .CallArgumentList, .List, .List) => .K
-  rule bind(ListItem(noId) PARAMS, ListItem(_) TYPES, _, ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2)
-  rule bind(.List, .List, .CallArgumentList, ListItem(_) TYPES, ListItem(noId) NAMES) => bind(.List, .List, .CallArgumentList, TYPES, NAMES)
-  rule <k> bind(ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2) ...</k>
+  syntax KItem ::= bind(Map, List, List, CallArgumentList, List, List)
+  rule bind(_, .List, .List, .CallArgumentList, .List, .List) => .K
+  rule bind(STORE, ListItem(noId) PARAMS, ListItem(_) TYPES, _, ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2)
+  rule bind(STORE, .List, .List, .CallArgumentList, ListItem(_) TYPES, ListItem(noId) NAMES) => bind(STORE, .List, .List, .CallArgumentList, TYPES, NAMES)
+  rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(T:TypeName) TYPES, lv(I:Int, .List, T:TypeName), ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
+       <env> E => E [ X <- var(!I:Int, T) ] </env>
+       <store> S => S [ !I <- STORE [ I ] ] </store>
+  rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(V, RT, LT) ] </store>
-  rule <k> bind(.List, .List, .CallArgumentList, ListItem(LT:TypeName) TYPES, ListItem(X:Id) NAMES) => bind(.List, .List, .CallArgumentList, TYPES, NAMES) ...</k>
+  rule <k> bind(STORE, .List, .List, .CallArgumentList, ListItem(LT:TypeName) TYPES, ListItem(X:Id) NAMES) => bind(STORE, .List, .List, .CallArgumentList, TYPES, NAMES) ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- default(LT) ] </store>
 
