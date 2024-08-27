@@ -271,6 +271,7 @@ module SOLIDITY-EXPRESSION
   rule convert(V:MInt{112}, uint112, uint256) => roundMInt(V)::MInt{256}
   rule convert(V:MInt{160}, address, uint256) => roundMInt(V)::MInt{256}
   rule convert(V:MInt{256}, uint256, uint112) => roundMInt(V)::MInt{112}
+  rule convert(V:MInt{256}, uint256, address) => roundMInt(V)::MInt{160}
 
   // this is kind of ugly, but we don't have parametric axioms.
   syntax Value ::= convert(Int, TypeName) [function]
