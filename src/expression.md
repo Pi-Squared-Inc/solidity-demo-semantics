@@ -167,6 +167,12 @@ module SOLIDITY-EXPRESSION
   rule read(L1:List, ListItem(I:Int) L2, T[]) => read({L1 [ I ]}:>Value, L2, T)
   rule read(M:Map, ListItem(V:Value) L, mapping(_ => T)) => read({M [ V ] orDefault default(T)}:>Value, L, T)
 
+  // array length
+  syntax Id ::= "length" [token]
+  context HOLE . length
+  rule <k> lv(I:Int, .List, T) . length => v(Int2MInt(size({read(V, .List, T)}:>List))::MInt{256}, uint) ...</k>
+       <store>... I |-> V ...</store>
+
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
