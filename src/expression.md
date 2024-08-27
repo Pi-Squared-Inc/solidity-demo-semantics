@@ -235,6 +235,8 @@ module SOLIDITY-EXPRESSION
        <env> E => .Map </env>
        <store> S </store>
        <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
        <contract-fn-arg-types> TYPES </contract-fn-arg-types>
