@@ -1,0 +1,4 @@
+#!/bin/bash -ex
+dretesteth.sh -t GeneralStateTests -- --clients t8ntool --fillchain --filltests --testfile /tests/swaps/uniswap01Filler.yml --testpath "$(realpath "$(dirname "$0")/../test/retesteth/")"
+dretesteth.sh -t GeneralStateTests -- --clients t8ntool --fillchain --filltests --testfile /tests/swaps/uniswap02Filler.yml --testpath "$(realpath "$(dirname "$0")/../test/retesteth/")"
+sudo chown -R "$USER":"$(id -gn)" test/retesteth/swaps/filled
