@@ -1,5 +1,5 @@
 ARG K_VERSION
-FROM runtimeverificationinc/kframework-k:ubuntu-jammy-${K_VERSION}
+FROM runtimeverificationinc/kframework-k:ubuntu-noble-${K_VERSION}
 
 ARG USER=user
 ARG GROUP
