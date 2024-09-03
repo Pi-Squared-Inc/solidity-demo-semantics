@@ -45,7 +45,4 @@ module SOLIDITY-STATEMENT
   rule <k> restoreEnv(E) => .K ...</k>
        <env> _ => E </env>
 
-  // while statement
-  rule while (Cond) Body => if (Cond) {Body while(Cond) Body} else {.Statements}
-
 endmodule
