@@ -11,13 +11,14 @@ module SOLIDITY-CONTRACT
          ...
        </contracts>
 
-  rule <k> function X ( Params ) V:VisibilitySpecifier { Body } => .K ...</k>
+  rule <k> function X ( Params ) F:FunctionSpecifiers { Body } => .K ...</k>
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-fns>
          .Bag => <contract-fn>
                    <contract-fn-id> X </contract-fn-id>
-                   <contract-fn-visibility> V </contract-fn-visibility>
+                   <contract-fn-visibility> getVisibility(F) </contract-fn-visibility>
+                   <contract-fn-payable> getPayable(F) </contract-fn-payable>
                    <contract-fn-arg-types> getTypes(Params) </contract-fn-arg-types>
                    <contract-fn-param-names> getNames(Params) </contract-fn-param-names>
                    <contract-fn-body> Body </contract-fn-body>
@@ -26,13 +27,14 @@ module SOLIDITY-CONTRACT
          ...
        </contract-fns>
 
-  rule <k> function X ( Params ) V:VisibilitySpecifier returns ( Rets ) { Body } => .K ...</k>
+  rule <k> function X ( Params ) F:FunctionSpecifiers returns ( Rets ) { Body } => .K ...</k>
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-fns>
          .Bag => <contract-fn>
                    <contract-fn-id> X </contract-fn-id>
-                   <contract-fn-visibility> V </contract-fn-visibility>
+                   <contract-fn-visibility> getVisibility(F) </contract-fn-visibility>
+                   <contract-fn-payable> getPayable(F) </contract-fn-payable>
                    <contract-fn-arg-types> getTypes(Params) </contract-fn-arg-types>
                    <contract-fn-param-names> getNames(Params) </contract-fn-param-names>
                    <contract-fn-return-types> getTypes(Rets) </contract-fn-return-types>
@@ -42,6 +44,18 @@ module SOLIDITY-CONTRACT
                  </contract-fn>
          ...
        </contract-fns>
+
+  syntax VisibilitySpecifier ::= getVisibility(FunctionSpecifiers) [function]
+  rule getVisibility(private _) => private
+  rule getVisibility(public _) => public
+  rule getVisibility(external _) => external
+  rule getVisibility(internal _) => internal
+  rule getVisibility(_ F) => getVisibility(F) [owise]
+
+  syntax Bool ::= getPayable(FunctionSpecifiers) [function]
+  rule getPayable(.FunctionSpecifiers) => false
+  rule getPayable(payable _) => true
+  rule getPayable(_ F) => getPayable(F) [owise]
 
   rule <k> constructor ( Params ) { Body } => .K ...</k>
        <current-body> C </current-body>

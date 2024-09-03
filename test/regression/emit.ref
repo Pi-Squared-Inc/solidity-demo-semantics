@@ -39,6 +39,9 @@
           <contract-fn-return-names>
             .List
           </contract-fn-return-names>
+          <contract-fn-payable>
+            false
+          </contract-fn-payable>
           <contract-fn-body>
             emit Approval ( address ( 1 , .TypedVals ) , address ( 0 , .TypedVals ) , address ( 2 , .TypedVals ) , .TypedVals ) ;  .Statements
           </contract-fn-body>
@@ -77,6 +80,9 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <block-timestamp>
+      0p256
+    </block-timestamp>
     <this>
       2p160
     </this>

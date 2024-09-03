@@ -39,6 +39,9 @@
           <contract-fn-return-names>
             .List
           </contract-fn-return-names>
+          <contract-fn-payable>
+            false
+          </contract-fn-payable>
           <contract-fn-body>
             bool x = true ;  bool y = false ;  if ( x ) { y = true ;  .Statements } else { require ( false , "" , .TypedVals ) ;  .Statements }  require ( y , "" , .TypedVals ) ;  y = false ;  x = false ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements } else { y = true ;  .Statements }  require ( y , "" , .TypedVals ) ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements }  .Statements
           </contract-fn-body>
@@ -59,6 +62,9 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <block-timestamp>
+      0p256
+    </block-timestamp>
     <this>
       2p160
     </this>

@@ -9,11 +9,12 @@ module SOLIDITY-EXPRESSION
   // new contract
   rule <k> new X:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
        <msg-sender> FROM => THIS </msg-sender>
+       <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE)) </call-stack>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <contract-fn-id> constructor </contract-fn-id>
@@ -33,11 +34,12 @@ module SOLIDITY-EXPRESSION
 
   rule <k> new X:Id ( .TypedVals ) ~> K => List2Statements(INIT) ~> return v(ADDR, X) ; </k>
        <msg-sender> FROM => THIS </msg-sender>
+       <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE)) </call-stack>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <live-contracts>
@@ -107,11 +109,12 @@ module SOLIDITY-EXPRESSION
   context (_ . _) ( HOLE:CallArgumentList )
   rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
+       <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => TYPE' </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE)) </call-stack>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
        <contract-id> TYPE' </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
@@ -123,13 +126,40 @@ module SOLIDITY-EXPRESSION
        <contract-type> TYPE' </contract-type>
     requires isKResult(ARGS)
 
+  syntax Id ::= "value" [token]
+
+  context HOLE . _ { value: _ } ( _ )
+  context _ . _ { value: HOLE } ( _ )
+  context _ . _ { _ } ( HOLE:CallArgumentList )
+
+  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+       <msg-sender> FROM => THIS </msg-sender>
+       <msg-value> VALUE => VALUE' </msg-value>
+       <this> THIS => ADDR </this>
+       <this-type> TYPE => TYPE' </this-type>
+       <env> E => .Map </env>
+       <store> S => .Map </store>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <contract-id> TYPE' </contract-id>
+       <contract-fn-id> F </contract-fn-id>
+       <contract-fn-payable> PAYABLE </contract-fn-payable>
+       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+       <contract-fn-body> BODY </contract-fn-body>
+       <contract-address> ADDR </contract-address>
+       <contract-type> TYPE' </contract-type>
+    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
+
   // internal call
   rule <k> F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM </msg-sender>
+       <msg-value> VALUE </msg-value>
        <this-type> TYPE </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE)) </call-stack>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
        <contract-id> TYPE </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
@@ -144,6 +174,21 @@ module SOLIDITY-EXPRESSION
 
   // integer literal
   rule N:NumberLiteral => Number2Int(N)
+
+  // automatic variables
+  syntax Id ::= "msg" [token] | "sender" [token] | "this" [token] | "tx" [token] | "origin" [token] | "block" [token] | "timestamp" [token]
+
+  rule <k> (msg . sender)::Expression => v(FROM, address) ...</k>
+       <msg-sender> FROM </msg-sender>
+  rule <k> (msg . value)::Expression => v(VALUE, uint) ...</k>
+       <msg-value> VALUE </msg-value>
+  rule <k> this => v(THIS, TYPE) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+  rule <k> (tx . origin)::Expression => v(ORIGIN, address) ...</k>
+       <tx-origin> ORIGIN </tx-origin>
+  rule <k> (block . timestamp)::Expression => v(NOW, uint) ...</k>
+       <block-timestamp> NOW </block-timestamp>
 
   // basic arithmetic
   rule v(V1:Value, T)  + v(V2:Value, T) => v(add(V1, V2), T)

@@ -43,6 +43,7 @@ module SOLIDITY-CONFIGURATION
               <contract-fn-param-names> .List </contract-fn-param-names>
               <contract-fn-return-types> .List </contract-fn-return-types>
               <contract-fn-return-names> .List </contract-fn-return-names>
+              <contract-fn-payable> false </contract-fn-payable>
               <contract-fn-body> .Statements </contract-fn-body>
             </contract-fn>
           </contract-fns>
@@ -60,6 +61,7 @@ module SOLIDITY-CONFIGURATION
         <msg-sender> 0p160 </msg-sender>
         <msg-value> 0p256 </msg-value>
         <tx-origin> 0p160 </tx-origin>
+        <block-timestamp> 0p256 </block-timestamp>
         <this> 0p160 </this>
         <this-type> Id </this-type>
         <env> .Map </env>
@@ -93,8 +95,8 @@ module SOLIDITY-DATA-SYNTAX
   syntax MInt{256}
 
   syntax Transactions ::= List{Transaction, ","}
-  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, func: Id, args: CallArgumentList) [function]
-  syntax Transaction ::= create(from: Decimal, value: Decimal, ctor: Id, args: CallArgumentList) [strict(4)]
+  syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [function]
+  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList) [strict(5)]
 endmodule
 
 module SOLIDITY-DATA
@@ -157,7 +159,7 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 
-  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id)
+  syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id, value: MInt{256})
   syntax Event ::= event(name: Id, args: TypedVals)
 
 endmodule

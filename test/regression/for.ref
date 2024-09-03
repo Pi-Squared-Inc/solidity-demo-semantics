@@ -39,6 +39,9 @@
           <contract-fn-return-names>
             .List
           </contract-fn-return-names>
+          <contract-fn-payable>
+            false
+          </contract-fn-payable>
           <contract-fn-body>
             uint256 x = 5 ;  uint256 y = 0 ;  { uint256 x = 0 ;  while ( x < 10 ) { { y = y + 2 ;  .Statements }  x = x + 1 ;  .Statements }  .Statements }  require ( y == 20 , "" , .TypedVals ) ;  require ( x == 5 , "" , .TypedVals ) ;  .Statements
           </contract-fn-body>
@@ -59,6 +62,9 @@
     <tx-origin>
       1p160
     </tx-origin>
+    <block-timestamp>
+      0p256
+    </block-timestamp>
     <this>
       2p160
     </this>
