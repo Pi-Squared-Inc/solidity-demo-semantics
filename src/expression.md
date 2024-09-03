@@ -186,6 +186,14 @@ module SOLIDITY-EXPRESSION
   rule v(_, uint256)  % (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
   rule v(_, uint256) ** (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
  
+  // local increment and decrement
+  rule <k> X:Id ++ => v(V, T) ...</k>
+       <env>... X |-> var(I, T) ...</env>
+       <store>... I |-> (V => add(V, convert(1, T))) ...</store>
+  rule <k> X:Id -- => v(V, T) ...</k>
+       <env>... X |-> var(I, T) ...</env>
+       <store>... I |-> (V => sub(V, convert(1, T))) ...</store>
+
   // equality and inequality
   rule v(V1:Value, T) == v(V2:Value, T) => v(eq(V1, V2), bool)
   rule v(V1:Value, T) != v(V2:Value, T) => v(neq(V1, V2), bool)
