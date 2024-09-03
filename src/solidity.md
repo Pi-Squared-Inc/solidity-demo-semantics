@@ -111,7 +111,7 @@ module SOLIDITY-DATA
   syntax KItem ::= "noId"
   syntax Id ::= "constructor" [token]
 
-  syntax TypedVal ::= v(Value, TypeName) | NumberLiteral | String | "void"
+  syntax TypedVal ::= v(Value, TypeName) | Int | String | "void"
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals

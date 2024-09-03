@@ -1,11 +1,11 @@
 ARG K_VERSION
-FROM runtimeverificationinc/kframework-k:ubuntu-jammy-${K_VERSION}
+FROM runtimeverificationinc/kframework-k:ubuntu-noble-${K_VERSION}
 
 ARG USER=user
 ARG GROUP
 ARG USER_ID
 ARG GROUP_ID
-RUN groupadd -g ${GROUP_ID} ${GROUP} && useradd -m -u ${USER_ID} -s /bin/sh -g ${GROUP} ${USER}
+RUN groupadd -g 1001 ${GROUP} && useradd -m -u 1001 -s /bin/sh -g ${GROUP} ${USER}
 
 USER ${USER}:${GROUP}
 RUN mkdir /home/${USER}/workspace

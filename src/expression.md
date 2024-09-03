@@ -51,7 +51,7 @@ module SOLIDITY-EXPRESSION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
   // literal assignment to state variable
-  rule <k> X:Id = N:NumberLiteral => X = v(convert(Number2Int(N), LT), LT) ...</k>
+  rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> LT </contract-state>
@@ -65,6 +65,10 @@ module SOLIDITY-EXPRESSION
        <contract-address> THIS </contract-address>
        <contract-storage> S => S [ X <- convert(V, RT, LT) ] </contract-storage>
 
+  // literal assignment to local variable
+  rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
+       <env>... X |-> var(_, LT) ...</env>
+
   // assignment to local variable
   rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <env>... X |-> var(I, LT) ...</env>
@@ -73,8 +77,12 @@ module SOLIDITY-EXPRESSION
   // type conversion
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
   context _:Id ( HOLE:CallArgumentList )
+  rule uint32(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{32}, uint32)
+  rule uint112(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{112}, uint112)
+  rule uint256(v(V:MInt{112}, _)) => v(roundMInt(V)::MInt{256}, uint256)
+  rule uint256(I:Int) => v(Int2MInt(I)::MInt{256}, uint256)
   rule address(v(ADDR:MInt{160}, _)) => v(ADDR, address)
-  rule address ( I:NumberLiteral ) => v(Int2MInt(Number2Int(I))::MInt{160}, address)
+  rule address(I:Int) => v(Int2MInt(I)::MInt{160}, address)
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
        <contract-id> TYPE </contract-id>
   rule <k> TYPE(v(ADDR:MInt{160}, _)) => v(ADDR, TYPE) ...</k>
@@ -134,13 +142,79 @@ module SOLIDITY-EXPRESSION
   // boolean literal
   rule B:Bool => v(B, bool)
 
+  // integer literal
+  rule N:NumberLiteral => Number2Int(N)
+
+  // basic arithmetic
+  rule v(V1:Value, T)  + v(V2:Value, T) => v(add(V1, V2), T)
+  rule v(V1:Value, T)  - v(V2:Value, T) => v(sub(V1, V2), T)
+  rule v(V1:Value, T)  * v(V2:Value, T) => v(mul(V1, V2), T)
+  rule v(V1:Value, T)  / v(V2:Value, T) => v(div(V1, V2), T)
+  rule v(V1:Value, T)  % v(V2:Value, T) => v(mod(V1, V2), T)
+  rule v(V1:Value, T) ** v(V2:Value, T) => v(exp(V1, V2), T)
+
+  rule v(_:Value, T)  + (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  + v(_:Value, T)
+  rule v(_:Value, T)  - (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  - v(_:Value, T)
+  rule v(_:Value, T)  * (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  * v(_:Value, T)
+  rule v(_:Value, T)  / (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  / v(_:Value, T)
+  rule v(_:Value, T)  % (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T))  % v(_:Value, T)
+  rule v(_:Value, T) ** (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) ** v(_:Value, T) 
+
+  rule I1:Int  + I2:Int => I1 +Int I2
+  rule I1:Int  - I2:Int => I1 -Int I2
+  rule I1:Int  * I2:Int => I1 *Int I2
+  rule I1:Int  / I2:Int => I1 /Int I2
+  rule I1:Int  % I2:Int => I1 %Int I2
+  rule I1:Int ** I2:Int => I1 ^Int I2
+
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  + v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  - v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  * v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  / v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))  % v(_, uint256)
+  rule (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256)) ** v(_, uint256)
+  rule v(_, uint256)  + (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  - (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  * (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  / (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256)  % (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+  rule v(_, uint256) ** (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+ 
   // equality and inequality
-  rule v(V1:MInt{160}, _) == v(V2, _) => v(V1 ==MInt V2, bool)
-  rule v(V1:MInt{160}, _) != v(V2, _) => v(V1 =/=MInt V2, bool)
-  rule v(V1:MInt{160}, _) < v(V2, _) => v(V1 <uMInt V2, bool)
-  rule v(V1:MInt{160}, _) <= v(V2, _) => v(V1 <=uMInt V2, bool)
-  rule v(V1:MInt{160}, _) > v(V2, _) => v(V1 >uMInt V2, bool)
-  rule v(V1:MInt{160}, _) >= v(V2, _) => v(V1 >=uMInt V2, bool)
+  rule v(V1:Value, T) == v(V2:Value, T) => v(eq(V1, V2), bool)
+  rule v(V1:Value, T) != v(V2:Value, T) => v(neq(V1, V2), bool)
+  rule v(V1:Value, T) < v(V2:Value, T) => v(lt(V1, V2), bool)
+  rule v(V1:Value, T) <= v(V2:Value, T) => v(leq(V1, V2), bool)
+  rule v(V1:Value, T) > v(V2:Value, T) => v(gt(V1, V2), bool)
+  rule v(V1:Value, T) >= v(V2:Value, T) => v(geq(V1, V2), bool)
+
+  rule v(_, uint256) < (v(V:MInt{112}, uint112) => v(roundMInt(V)::MInt{256}, uint256))
+
+  rule v(_:Value, T) == (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) == v(_:Value, T)
+  rule v(_:Value, T) != (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) != v(_:Value, T)
+  rule v(_:Value, T) <  (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) <  v(_:Value, T)
+  rule v(_:Value, T) <= (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) <= v(_:Value, T)
+  rule v(_:Value, T) >  (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) >  v(_:Value, T)
+  rule v(_:Value, T) >= (I:Int => v(convert(I, T), T))
+  rule (I:Int => v(convert(I, T), T)) >= v(_:Value, T)
+
+  rule I1:Int == I2:Int => v(I1  ==Int I2, bool)
+  rule I1:Int != I2:Int => v(I1 =/=Int I2, bool)
+  rule I1:Int <  I2:Int => v(I1   <Int I2, bool)
+  rule I1:Int <= I2:Int => v(I1  <=Int I2, bool)
+  rule I1:Int >  I2:Int => v(I1   >Int I2, bool)
+  rule I1:Int >= I2:Int => v(I1  >=Int I2, bool)
 
   // require expression
   syntax Id ::= "require" [token]
@@ -171,6 +245,8 @@ module SOLIDITY-EXPRESSION
   syntax Int ::= DecimalString2Int(String) [function]
   rule DecimalString2Int(S) => String2Int(replaceAll(S, "_", ""))
     requires findChar(S, "eE.", 0) ==Int -1
+  rule DecimalString2Int(S) => String2Int(replaceAll(substrString(S, 0, findChar(S, "eE", 0)), "_", "")) *Int 10 ^Int String2Int(replaceAll(substrString(S, findChar(S, "eE", 0) +Int 1, lengthString(S)), "_", ""))
+    requires findChar(S, ".", 0) ==Int -1 [owise]
 
   syntax Statements ::= List2Statements(List) [function]
   rule List2Statements(.List) => .Statements
@@ -191,10 +267,98 @@ module SOLIDITY-EXPRESSION
 
   syntax Value ::= convert(Value, from: TypeName, to: TypeName) [function]
   rule convert(V, T, T) => V
+  rule convert(V:MInt{32},   uint32, uint112) => roundMInt(V)::MInt{112}
+  rule convert(V:MInt{112}, uint112, uint256) => roundMInt(V)::MInt{256}
+  rule convert(V:MInt{160}, address, uint256) => roundMInt(V)::MInt{256}
+  rule convert(V:MInt{256}, uint256, uint112) => roundMInt(V)::MInt{112}
+  rule convert(V:MInt{256}, uint256, address) => roundMInt(V)::MInt{160}
 
+  // this is kind of ugly, but we don't have parametric axioms.
   syntax Value ::= convert(Int, TypeName) [function]
+  rule convert(I:Int, uint8)   => Int2MInt(I)::MInt{8}
+  rule convert(I:Int, uint32)  => Int2MInt(I)::MInt{32}
   rule convert(I:Int, uint112) => Int2MInt(I)::MInt{112}
+  rule convert(I:Int, address) => Int2MInt(I)::MInt{160}
   rule convert(I:Int, uint256) => Int2MInt(I)::MInt{256}
+
+  syntax Value ::= add(Value, Value) [function]
+                 | sub(Value, Value) [function]
+                 | mul(Value, Value) [function]
+                 | div(Value, Value) [function]
+                 | mod(Value, Value) [function]
+                 | exp(Value, Value) [function]
+  rule add(V1:MInt{8},   V2:MInt{8})   => V1  +MInt V2
+  rule add(V1:MInt{32},  V2:MInt{32})  => V1  +MInt V2
+  rule add(V1:MInt{112}, V2:MInt{112}) => V1  +MInt V2
+  rule add(V1:MInt{160}, V2:MInt{160}) => V1  +MInt V2
+  rule add(V1:MInt{256}, V2:MInt{256}) => V1  +MInt V2
+  rule sub(V1:MInt{8},   V2:MInt{8})   => V1  -MInt V2
+  rule sub(V1:MInt{32},  V2:MInt{32})  => V1  -MInt V2
+  rule sub(V1:MInt{112}, V2:MInt{112}) => V1  -MInt V2
+  rule sub(V1:MInt{160}, V2:MInt{160}) => V1  -MInt V2
+  rule sub(V1:MInt{256}, V2:MInt{256}) => V1  -MInt V2
+  rule mul(V1:MInt{8},   V2:MInt{8})   => V1  *MInt V2
+  rule mul(V1:MInt{32},  V2:MInt{32})  => V1  *MInt V2
+  rule mul(V1:MInt{112}, V2:MInt{112}) => V1  *MInt V2
+  rule mul(V1:MInt{160}, V2:MInt{160}) => V1  *MInt V2
+  rule mul(V1:MInt{256}, V2:MInt{256}) => V1  *MInt V2
+  rule div(V1:MInt{8},   V2:MInt{8})   => V1 /uMInt V2
+  rule div(V1:MInt{32},  V2:MInt{32})  => V1 /uMInt V2
+  rule div(V1:MInt{112}, V2:MInt{112}) => V1 /uMInt V2
+  rule div(V1:MInt{160}, V2:MInt{160}) => V1 /uMInt V2
+  rule div(V1:MInt{256}, V2:MInt{256}) => V1 /uMInt V2
+  rule mod(V1:MInt{8},   V2:MInt{8})   => V1 %uMInt V2
+  rule mod(V1:MInt{32},  V2:MInt{32})  => V1 %uMInt V2
+  rule mod(V1:MInt{112}, V2:MInt{112}) => V1 %uMInt V2
+  rule mod(V1:MInt{160}, V2:MInt{160}) => V1 %uMInt V2
+  rule mod(V1:MInt{256}, V2:MInt{256}) => V1 %uMInt V2
+  rule exp( _:MInt{8},   V2:MInt{8})          => 1p8 requires V2 ==MInt 0p8
+  rule exp(V1:MInt{8},   V2:MInt{8})   => V1 *MInt {exp(V1, V2 -MInt 1p8)}:>MInt{8} [owise]
+  rule exp( _:MInt{32},  V2:MInt{32})         => 1p32 requires V2 ==MInt 0p32
+  rule exp(V1:MInt{32},  V2:MInt{32})  => V1 *MInt {exp(V1, V2 -MInt 1p32)}:>MInt{32} [owise]
+  rule exp( _:MInt{112}, V2:MInt{112})        => 1p112 requires V2 ==MInt 0p112
+  rule exp(V1:MInt{112}, V2:MInt{112}) => V1 *MInt {exp(V1, V2 -MInt 1p112)}:>MInt{112} [owise]
+  rule exp( _:MInt{160}, V2:MInt{160})        => 1p160 requires V2 ==MInt 0p160
+  rule exp(V1:MInt{160}, V2:MInt{160}) => V1 *MInt {exp(V1, V2 -MInt 1p160)}:>MInt{160} [owise]
+  rule exp( _:MInt{256}, V2:MInt{256})        => 1p256 requires V2 ==MInt 0p256
+  rule exp(V1:MInt{256}, V2:MInt{256}) => V1 *MInt {exp(V1, V2 -MInt 1p256)}:>MInt{256} [owise]
+
+  syntax Value ::= eq (Value, Value) [function]
+                 | neq(Value, Value) [function]
+                 | lt (Value, Value) [function]
+                 | leq(Value, Value) [function]
+                 | gt (Value, Value) [function]
+                 | geq(Value, Value) [function]
+  rule eq (V1:MInt{8},   V2:MInt{8})   => V1  ==MInt V2
+  rule eq (V1:MInt{32},  V2:MInt{32})  => V1  ==MInt V2
+  rule eq (V1:MInt{112}, V2:MInt{112}) => V1  ==MInt V2
+  rule eq (V1:MInt{160}, V2:MInt{160}) => V1  ==MInt V2
+  rule eq (V1:MInt{256}, V2:MInt{256}) => V1  ==MInt V2
+  rule neq(V1:MInt{8},   V2:MInt{8})   => V1 =/=MInt V2
+  rule neq(V1:MInt{32},  V2:MInt{32})  => V1 =/=MInt V2
+  rule neq(V1:MInt{112}, V2:MInt{112}) => V1 =/=MInt V2
+  rule neq(V1:MInt{160}, V2:MInt{160}) => V1 =/=MInt V2
+  rule neq(V1:MInt{256}, V2:MInt{256}) => V1 =/=MInt V2
+  rule lt (V1:MInt{8},   V2:MInt{8})   => V1  <uMInt V2
+  rule lt (V1:MInt{32},  V2:MInt{32})  => V1  <uMInt V2
+  rule lt (V1:MInt{112}, V2:MInt{112}) => V1  <uMInt V2
+  rule lt (V1:MInt{160}, V2:MInt{160}) => V1  <uMInt V2
+  rule lt (V1:MInt{256}, V2:MInt{256}) => V1  <uMInt V2
+  rule leq(V1:MInt{8},   V2:MInt{8})   => V1 <=uMInt V2
+  rule leq(V1:MInt{32},  V2:MInt{32})  => V1 <=uMInt V2
+  rule leq(V1:MInt{112}, V2:MInt{112}) => V1 <=uMInt V2
+  rule leq(V1:MInt{160}, V2:MInt{160}) => V1 <=uMInt V2
+  rule leq(V1:MInt{256}, V2:MInt{256}) => V1 <=uMInt V2
+  rule gt (V1:MInt{8},   V2:MInt{8})   => V1  >uMInt V2
+  rule gt (V1:MInt{32},  V2:MInt{32})  => V1  >uMInt V2
+  rule gt (V1:MInt{112}, V2:MInt{112}) => V1  >uMInt V2
+  rule gt (V1:MInt{160}, V2:MInt{160}) => V1  >uMInt V2
+  rule gt (V1:MInt{256}, V2:MInt{256}) => V1  >uMInt V2
+  rule geq(V1:MInt{8},   V2:MInt{8})   => V1 >=uMInt V2
+  rule geq(V1:MInt{32},  V2:MInt{32})  => V1 >=uMInt V2
+  rule geq(V1:MInt{112}, V2:MInt{112}) => V1 >=uMInt V2
+  rule geq(V1:MInt{160}, V2:MInt{160}) => V1 >=uMInt V2
+  rule geq(V1:MInt{256}, V2:MInt{256}) => V1 >=uMInt V2
 
   syntax Value ::= default(TypeName) [function]
   rule default(uint8)   => 0p8

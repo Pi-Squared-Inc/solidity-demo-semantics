@@ -1,0 +1,111 @@
+<solidity>
+  <k>
+    .K
+  </k>
+  <current-body>
+    TestArithmetic
+  </current-body>
+  <ifaces>
+    .IfaceCellMap
+  </ifaces>
+  <contracts>
+    <contract>
+      <contract-id>
+        TestArithmetic
+      </contract-id>
+      <contract-state>
+        .Map
+      </contract-state>
+      <contract-init>
+        .List
+      </contract-init>
+      <contract-fns>
+        <contract-fn>
+          <contract-fn-id>
+            constructor
+          </contract-fn-id>
+          <contract-fn-visibility>
+            public
+          </contract-fn-visibility>
+          <contract-fn-arg-types>
+            .List
+          </contract-fn-arg-types>
+          <contract-fn-param-names>
+            .List
+          </contract-fn-param-names>
+          <contract-fn-return-types>
+            .List
+          </contract-fn-return-types>
+          <contract-fn-return-names>
+            .List
+          </contract-fn-return-names>
+          <contract-fn-body>
+            uint8 i8_1 = 2 ;  uint8 i8_2 = 2 ;  uint8 i32_1 = 2 ;  uint8 i32_2 = 2 ;  uint8 i112_1 = 2 ;  uint8 i112_2 = 2 ;  uint8 i256_1 = 2 ;  uint8 i256_2 = 2 ;  require ( i8_1 + i8_2 == 4 , "" , .TypedVals ) ;  require ( i32_1 + i32_2 == 4 , "" , .TypedVals ) ;  require ( i112_1 + i112_2 == 4 , "" , .TypedVals ) ;  require ( i256_1 + i256_2 == 4 , "" , .TypedVals ) ;  require ( i8_1 + 2 == 4 , "" , .TypedVals ) ;  require ( 2 + i8_2 == 4 , "" , .TypedVals ) ;  require ( 2 + 2 == 4 , "" , .TypedVals ) ;  require ( i8_1 - i8_2 == 0 , "" , .TypedVals ) ;  require ( i32_1 - i32_2 == 0 , "" , .TypedVals ) ;  require ( i112_1 - i112_2 == 0 , "" , .TypedVals ) ;  require ( i256_1 - i256_2 == 0 , "" , .TypedVals ) ;  require ( i8_1 - 2 == 0 , "" , .TypedVals ) ;  require ( 2 - i8_2 == 0 , "" , .TypedVals ) ;  require ( 2 - 2 == 0 , "" , .TypedVals ) ;  require ( i8_1 * i8_2 == 4 , "" , .TypedVals ) ;  require ( i32_1 * i32_2 == 4 , "" , .TypedVals ) ;  require ( i112_1 * i112_2 == 4 , "" , .TypedVals ) ;  require ( i256_1 * i256_2 == 4 , "" , .TypedVals ) ;  require ( i8_1 * 2 == 4 , "" , .TypedVals ) ;  require ( 2 * i8_2 == 4 , "" , .TypedVals ) ;  require ( 2 * 2 == 4 , "" , .TypedVals ) ;  require ( i8_1 / i8_2 == 1 , "" , .TypedVals ) ;  require ( i32_1 / i32_2 == 1 , "" , .TypedVals ) ;  require ( i112_1 / i112_2 == 1 , "" , .TypedVals ) ;  require ( i256_1 / i256_2 == 1 , "" , .TypedVals ) ;  require ( i8_1 / 2 == 1 , "" , .TypedVals ) ;  require ( 2 / i8_2 == 1 , "" , .TypedVals ) ;  require ( 2 / 2 == 1 , "" , .TypedVals ) ;  require ( i8_1 == i8_2 , "" , .TypedVals ) ;  require ( i32_1 == i32_2 , "" , .TypedVals ) ;  require ( i112_1 == i112_2 , "" , .TypedVals ) ;  require ( i256_1 == i256_2 , "" , .TypedVals ) ;  require ( 2 == i8_2 , "" , .TypedVals ) ;  require ( 2 == 2 , "" , .TypedVals ) ;  require ( i8_1 <= i8_2 , "" , .TypedVals ) ;  require ( i32_1 <= i32_2 , "" , .TypedVals ) ;  require ( i112_1 <= i112_2 , "" , .TypedVals ) ;  require ( i256_1 <= i256_2 , "" , .TypedVals ) ;  require ( i8_1 <= 2 , "" , .TypedVals ) ;  require ( 2 <= i8_2 , "" , .TypedVals ) ;  require ( 2 <= 2 , "" , .TypedVals ) ;  require ( i8_1 >= i8_2 , "" , .TypedVals ) ;  require ( i32_1 >= i32_2 , "" , .TypedVals ) ;  require ( i112_1 >= i112_2 , "" , .TypedVals ) ;  require ( i256_1 >= i256_2 , "" , .TypedVals ) ;  require ( i8_1 >= 2 , "" , .TypedVals ) ;  require ( 2 >= i8_2 , "" , .TypedVals ) ;  require ( 2 >= 2 , "" , .TypedVals ) ;  i8_2 = 4 ;  i32_2 = 4 ;  i112_2 = 4 ;  i256_2 = 4 ;  require ( i8_1 ** i8_2 == 16 , "" , .TypedVals ) ;  require ( i32_1 ** i32_2 == 16 , "" , .TypedVals ) ;  require ( i112_1 ** i112_2 == 16 , "" , .TypedVals ) ;  require ( i256_1 ** i256_2 == 16 , "" , .TypedVals ) ;  require ( i8_1 ** 4 == 16 , "" , .TypedVals ) ;  require ( 2 ** i8_2 == 16 , "" , .TypedVals ) ;  require ( 2 ** 4 == 16 , "" , .TypedVals ) ;  require ( i8_1 < i8_2 , "" , .TypedVals ) ;  require ( i32_1 < i32_2 , "" , .TypedVals ) ;  require ( i112_1 < i112_2 , "" , .TypedVals ) ;  require ( i256_1 < i256_2 , "" , .TypedVals ) ;  require ( i8_1 < 4 , "" , .TypedVals ) ;  require ( 2 < i8_2 , "" , .TypedVals ) ;  require ( 2 < 4 , "" , .TypedVals ) ;  require ( i8_1 != i8_2 , "" , .TypedVals ) ;  require ( i32_1 != i32_2 , "" , .TypedVals ) ;  require ( i112_1 != i112_2 , "" , .TypedVals ) ;  require ( i256_1 != i256_2 , "" , .TypedVals ) ;  require ( i8_1 != 4 , "" , .TypedVals ) ;  require ( 2 != i8_2 , "" , .TypedVals ) ;  require ( 2 != 4 , "" , .TypedVals ) ;  require ( i8_2 > i8_1 , "" , .TypedVals ) ;  require ( i32_2 > i32_1 , "" , .TypedVals ) ;  require ( i112_2 > i112_1 , "" , .TypedVals ) ;  require ( i256_2 > i256_1 , "" , .TypedVals ) ;  require ( i8_2 > 2 , "" , .TypedVals ) ;  require ( 4 > i8_1 , "" , .TypedVals ) ;  require ( 4 > 2 , "" , .TypedVals ) ;  .Statements
+          </contract-fn-body>
+        </contract-fn>
+      </contract-fns>
+      <contract-events>
+        .ContractEventCellMap
+      </contract-events>
+    </contract>
+  </contracts>
+  <exec>
+    <msg-sender>
+      1p160
+    </msg-sender>
+    <msg-value>
+      0p256
+    </msg-value>
+    <tx-origin>
+      1p160
+    </tx-origin>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      TestArithmetic
+    </this-type>
+    <env>
+      i8_1 |-> var ( 0 , uint8 )
+      i8_2 |-> var ( 1 , uint8 )
+      i32_1 |-> var ( 2 , uint8 )
+      i32_2 |-> var ( 3 , uint8 )
+      i112_1 |-> var ( 4 , uint8 )
+      i112_2 |-> var ( 5 , uint8 )
+      i256_1 |-> var ( 6 , uint8 )
+      i256_2 |-> var ( 7 , uint8 )
+    </env>
+    <store>
+      0 |-> 2p8
+      1 |-> 4p8
+      2 |-> 2p8
+      3 |-> 4p8
+      4 |-> 2p8
+      5 |-> 4p8
+      6 |-> 2p8
+      7 |-> 4p8
+    </store>
+    <call-stack>
+      .List
+    </call-stack>
+    <live-contracts>
+      <live-contract>
+        <contract-address>
+          2p160
+        </contract-address>
+        <contract-type>
+          TestArithmetic
+        </contract-type>
+        <contract-storage>
+          .Map
+        </contract-storage>
+      </live-contract>
+    </live-contracts>
+    <events>
+      .List
+    </events>
+    <next-address>
+      3p160
+    </next-address>
+  </exec>
+</solidity>

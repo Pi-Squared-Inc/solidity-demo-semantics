@@ -236,7 +236,7 @@ Following is a list of supported expressions. Operator precendences are taken fr
                         | Expression "(" CallArgumentList ")"
                         > "++" Expression | "--" Expression
                         | "!" Expression
-                        > left: Expression "**" Expression
+                        > left: Expression "**" Expression [strict]
                         > left:
                               Expression "*" Expression [strict]
                             | Expression "/" Expression [strict]
