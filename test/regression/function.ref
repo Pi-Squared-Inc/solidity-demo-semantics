@@ -81,10 +81,12 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
+            ListItem ( $1 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => mapping ( address  => uint256  )  ) )
@@ -96,7 +98,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return allowance ;  .Statements
+            return allowance [ $0 ] [ $1 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -133,10 +135,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => uint256  ) )
@@ -148,7 +150,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return balanceOf ;  .Statements
+            return balanceOf [ $0 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -779,10 +781,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => uint256  ) )
@@ -794,7 +796,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return balanceOf ;  .Statements
+            return balanceOf [ $0 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -1132,10 +1134,12 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
+            ListItem ( $1 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => mapping ( address  => address  )  ) )
@@ -1147,7 +1151,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return local_pairs ;  .Statements
+            return local_pairs [ $0 ] [ $1 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -1883,10 +1887,12 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
+            ListItem ( $1 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => mapping ( address  => uint256  )  ) )
@@ -1898,7 +1904,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return allowance ;  .Statements
+            return allowance [ $0 ] [ $1 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -1935,10 +1941,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => uint256  ) )
@@ -1950,7 +1956,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return balanceOf ;  .Statements
+            return balanceOf [ $0 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
