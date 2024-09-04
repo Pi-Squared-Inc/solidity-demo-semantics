@@ -29,10 +29,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( uint256 )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( uint256 [ ] )
@@ -44,7 +44,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return arr ;  .Statements
+            return arr [ $0 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>

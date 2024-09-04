@@ -113,17 +113,13 @@ module SOLIDITY-DATA
   syntax KItem ::= "noId"
   syntax Id ::= "constructor" [token]
 
-  syntax TypedVal ::= v(Value, TypeName) | Int | String | "void"
+  syntax TypedVal ::= v(Value, TypeName) | lv(BaseRef, List, TypeName) | Int | String | "void"
   syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
   syntax KResult ::= TypedVal
-  syntax Value ::= MInt{8} | MInt{32} | MInt{112} | MInt{160} | MInt{256} | Bool | String
-  syntax Reference ::= stateVarRef(Id)
-                     | localVarRef(Int)
-                     | mappingValueRef(Reference, Value)
-                     | arrayElementRef(Reference, Value)
-  syntax Value ::= Reference
+  syntax Value ::= MInt{8} | MInt{32} | MInt{112} | MInt{160} | MInt{256} | Bool | String | List | Map
+  syntax BaseRef ::= Id | Int
 
   syntax List ::= getTypes(ParameterList) [function]
   rule getTypes(.ParameterList) => .List
@@ -159,7 +155,15 @@ module SOLIDITY-DATA
   rule getIndexed(_:TypeName indexed, Ep:EventParameters, N:Int) => SetItem(N) getIndexed(Ep, N +Int 1)
   rule getIndexed(_, Ep:EventParameters, N:Int) => getIndexed(Ep, N +Int 1) [owise]
 
+  syntax Bool ::= isAggregateType(TypeName) [function]
+  rule isAggregateType(_[]) => true
+  rule isAggregateType(mapping(_ _ => _ _)) => true
+  rule isAggregateType(_) => false [owise]
+
+  // external frame
   syntax Frame ::= frame(continuation: K, env: Map, store: Map, from: MInt{160}, type: Id, value: MInt{256})
+  // internal frame
+                 | frame(continuation: K, env: Map)
   syntax Event ::= event(name: Id, args: TypedVals)
 
 endmodule

@@ -55,10 +55,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( $0 )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address  => uint256  ) )
@@ -70,7 +70,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return testMap ;  .Statements
+            return testMap [ $0 ] ;  .Statements
           </contract-fn-body>
         </contract-fn> <contract-fn>
           <contract-fn-id>
@@ -80,10 +80,10 @@
             public
           </contract-fn-visibility>
           <contract-fn-arg-types>
-            .List
+            ListItem ( address )
           </contract-fn-arg-types>
           <contract-fn-param-names>
-            .List
+            ListItem ( key )
           </contract-fn-param-names>
           <contract-fn-return-types>
             ListItem ( mapping ( address key => uint256 val ) )
@@ -95,7 +95,7 @@
             false
           </contract-fn-payable>
           <contract-fn-body>
-            return testMapWithOptIds ;  .Statements
+            return testMapWithOptIds [ key ] ;  .Statements
           </contract-fn-body>
         </contract-fn>
       </contract-fns>

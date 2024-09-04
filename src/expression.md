@@ -7,7 +7,7 @@ module SOLIDITY-EXPRESSION
   imports INT
 
   // new contract
-  rule <k> new X:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
+  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
@@ -52,6 +52,12 @@ module SOLIDITY-EXPRESSION
        </live-contracts>
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
+  // new array
+  rule <k> new T[](Len:Int) => lv(!I:Int, .List, T[]) ...</k>
+       <store> S => S [ !I:Int <- makeList(Len, default(T)) ] </store>
+  rule <k> new T[](v(Len:MInt{256}, _)) => lv(!I:Int, .List, T[]) ...</k>
+       <store> S => S [ !I:Int <- makeList(MInt2Unsigned(Len), default(T)) ] </store>
+
   // literal assignment to state variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
        <this-type> TYPE </this-type>
@@ -76,6 +82,30 @@ module SOLIDITY-EXPRESSION
        <env>... X |-> var(I, LT) ...</env>
        <store> S => S [ I <- convert(V, RT, LT) ] </store>
 
+  // reference assignment to local
+  rule <k> X:Id = lv(I:Int, .List, T) => lv(I:Int, .List, T) ...</k>
+       <env>... X |-> var(_ => I, T) ...</env>
+
+  // assignment to array element
+  context HOLE [ _ ] = _
+  context _ [ HOLE ] = _
+  rule <k> lv(I:Int, L, LT []) [ Idx:Int ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
+  rule <k> lv(I:Int, L, LT []) [ v(Idx:MInt{256}, _) ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(MInt2Unsigned(Idx)), convert(V, RT, LT), LT[]) ] </store>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => T2)) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ X <- write({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT1, LT1)), convert(V, RT, T2), T) ] </contract-storage>
+
+  syntax Value ::= write(Value, List, Value, TypeName) [function]
+  rule write(_, .List, V, _) => V
+  rule write(L1:List, ListItem(I:Int) L2, V, T[]) => L1 [ I <- write({L1 [ I ]}:>Value, L2, V, T) ]
+  rule write(M:Map, ListItem(Key:Value) L2, V, mapping(_ _ => T2)) => M [ Key <- write({M [ Key ] orDefault default(T2)}:>Value, L2, V, T2) ]
+
   // type conversion
   context _:ElementaryTypeName ( HOLE:CallArgumentList )
   context _:Id ( HOLE:CallArgumentList )
@@ -98,16 +128,64 @@ module SOLIDITY-EXPRESSION
        <contract-state>... X |-> T ...</contract-state>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => lv(X, .List, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+    requires isAggregateType(T)
 
   // local variable lookup
   rule <k> X:Id => v(V, T) ...</k>
        <env>... X |-> var(I, T) ...</env>
        <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => lv(I, .List, T) ...</k>
+       <env>... X |-> var(I, T) ...</env>
+    requires isAggregateType(T)
+
+  // array element lookup
+  context HOLE:Expression [ _:Expression ]
+  context _:Expression [ HOLE:Expression ]
+  rule <k> lv(I:Int, L, T []) [ Idx:Int ] => v(read(V, L ListItem(Idx), T[]), T) ...</k>
+       <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+  rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
+       <store>... I |-> V ...</store>
+    requires notBool isAggregateType(T)
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v(read({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT, T1)), T), T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T2)
+
+  rule <k> lv(R, L, T []) [ Idx:Int ] => lv(R, L ListItem(Idx), T) ...</k>
+    requires isAggregateType(T)
+  rule <k> lv(R, L, T []) [ v(Idx:MInt{256}, _) ] => lv(R, L ListItem(MInt2Unsigned(Idx)), T) ...</k>
+    requires isAggregateType(T)
+  rule <k> lv(R, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(V, RT) ] => lv(R, L ListItem(convert(V, RT, T1)), T2) ...</k>
+    requires isAggregateType(T2)
+
+  syntax Value ::= read(Value, List, TypeName) [function]
+  rule read(V, .List, _) => V
+  rule read(L1:List, ListItem(I:Int) L2, T[]) => read({L1 [ I ]}:>Value, L2, T)
+  rule read(M:Map, ListItem(V:Value) L, mapping(_ _ => T)) => read({M [ V ] orDefault default(T)}:>Value, L, T)
+
+  // array length
+  syntax Id ::= "length" [token]
+  context HOLE . length
+  rule <k> lv(I:Int, .List, T) . length => v(Int2MInt(size({read(V, .List, T)}:>List))::MInt{256}, uint) ...</k>
+       <store>... I |-> V ...</store>
 
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
-  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
@@ -132,7 +210,7 @@ module SOLIDITY-EXPRESSION
   context _ . _ { value: HOLE } ( _ )
   context _ . _ { _ } ( HOLE:CallArgumentList )
 
-  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => VALUE' </msg-value>
        <this> THIS => ADDR </this>
@@ -153,14 +231,10 @@ module SOLIDITY-EXPRESSION
     requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
 
   // internal call
-  rule <k> F:Id ( ARGS ) ~> K => bind(PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM </msg-sender>
-       <msg-value> VALUE </msg-value>
-       <this-type> TYPE </this-type>
+  rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <env> E => .Map </env>
-       <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
-       <contract-id> TYPE </contract-id>
+       <store> S </store>
+       <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
        <contract-fn-arg-types> TYPES </contract-fn-arg-types>
@@ -307,14 +381,17 @@ module SOLIDITY-EXPRESSION
 
   syntax KItem ::= var(Int, TypeName)
 
-  syntax KItem ::= bind(List, List, CallArgumentList, List, List)
-  rule bind(.List, .List, .CallArgumentList, .List, .List) => .K
-  rule bind(ListItem(noId) PARAMS, ListItem(_) TYPES, _, ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2)
-  rule bind(.List, .List, .CallArgumentList, ListItem(_) TYPES, ListItem(noId) NAMES) => bind(.List, .List, .CallArgumentList, TYPES, NAMES)
-  rule <k> bind(ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(PARAMS, TYPES, ARGS, L1, L2) ...</k>
+  syntax KItem ::= bind(Map, List, List, CallArgumentList, List, List)
+  rule bind(_, .List, .List, .CallArgumentList, .List, .List) => .K
+  rule bind(STORE, ListItem(noId) PARAMS, ListItem(_) TYPES, _, ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2)
+  rule bind(STORE, .List, .List, .CallArgumentList, ListItem(_) TYPES, ListItem(noId) NAMES) => bind(STORE, .List, .List, .CallArgumentList, TYPES, NAMES)
+  rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(T:TypeName) TYPES, lv(I:Int, .List, T:TypeName), ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
+       <env> E => E [ X <- var(!I:Int, T) ] </env>
+       <store> S => S [ !I <- STORE [ I ] ] </store>
+  rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- convert(V, RT, LT) ] </store>
-  rule <k> bind(.List, .List, .CallArgumentList, ListItem(LT:TypeName) TYPES, ListItem(X:Id) NAMES) => bind(.List, .List, .CallArgumentList, TYPES, NAMES) ...</k>
+  rule <k> bind(STORE, .List, .List, .CallArgumentList, ListItem(LT:TypeName) TYPES, ListItem(X:Id) NAMES) => bind(STORE, .List, .List, .CallArgumentList, TYPES, NAMES) ...</k>
        <env> E => E [ X <- var(!I:Int, LT) ] </env>
        <store> S => S [ !I <- default(LT) ] </store>
 
@@ -423,6 +500,8 @@ module SOLIDITY-EXPRESSION
   rule [[ default(X:Id) => 0p160 ]]
        <iface-id> X </iface-id>
   rule default(uint256) => 0p256
+  rule default(_ []) => .List
+  rule default(mapping(_ _ => _ _)) => .Map
 
   syntax Expression ::= retval(List) [function] 
   rule retval(.List) => void
