@@ -2,202 +2,204 @@
   <k>
     .K
   </k>
-  <current-body>
-    TestEventsContract
-  </current-body>
-  <ifaces>
-    .IfaceCellMap
-  </ifaces>
-  <contracts>
-    <contract>
-      <contract-id>
-        TestEventsContract
-      </contract-id>
-      <contract-state>
-        .Map
-      </contract-state>
-      <contract-init>
-        .List
-      </contract-init>
-      <contract-fns>
-        <contract-fn>
-          <contract-fn-id>
-            constructor
-          </contract-fn-id>
-          <contract-fn-visibility>
-            public
-          </contract-fn-visibility>
-          <contract-fn-arg-types>
-            .List
-          </contract-fn-arg-types>
-          <contract-fn-param-names>
-            .List
-          </contract-fn-param-names>
-          <contract-fn-return-types>
-            .List
-          </contract-fn-return-types>
-          <contract-fn-return-names>
-            .List
-          </contract-fn-return-names>
-          <contract-fn-payable>
-            false
-          </contract-fn-payable>
-          <contract-fn-body>
-            .Statements
-          </contract-fn-body>
-        </contract-fn>
-      </contract-fns>
-      <contract-events>
-        <contract-event>
-          <contract-event-id>
-            Event0
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( arg0 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            .Set
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event1
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( arg0 )
-            ListItem ( arg1 )
-            ListItem ( arg2 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            .Set
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event2
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( noId )
-            ListItem ( noId )
-            ListItem ( noId )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            .Set
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event3
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( idxarg0 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event4
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( noId )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event5
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( idxarg0 )
-            ListItem ( idxarg1 )
-            ListItem ( arg2 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-            SetItem ( 1 )
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event6
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( idxarg0 )
-            ListItem ( noId )
-            ListItem ( arg2 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-            SetItem ( 1 )
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event7
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( noId )
-            ListItem ( idxarg1 )
-            ListItem ( arg2 )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-            SetItem ( 1 )
-          </contract-event-indexed-pos>
-        </contract-event> <contract-event>
-          <contract-event-id>
-            Event8
-          </contract-event-id>
-          <contract-event-arg-types>
-            ListItem ( address )
-            ListItem ( address )
-            ListItem ( uint256 )
-          </contract-event-arg-types>
-          <contract-event-param-names>
-            ListItem ( noId )
-            ListItem ( noId )
-            ListItem ( noId )
-          </contract-event-param-names>
-          <contract-event-indexed-pos>
-            SetItem ( 0 )
-            SetItem ( 1 )
-            SetItem ( 2 )
-          </contract-event-indexed-pos>
-        </contract-event>
-      </contract-events>
-    </contract>
-  </contracts>
+  <compile>
+    <current-body>
+      TestEventsContract
+    </current-body>
+    <ifaces>
+      .IfaceCellMap
+    </ifaces>
+    <contracts>
+      <contract>
+        <contract-id>
+          TestEventsContract
+        </contract-id>
+        <contract-state>
+          .Map
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              constructor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          <contract-event>
+            <contract-event-id>
+              Event0
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( arg0 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              .Set
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event1
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( arg0 )
+              ListItem ( arg1 )
+              ListItem ( arg2 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              .Set
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event2
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( noId )
+              ListItem ( noId )
+              ListItem ( noId )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              .Set
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event3
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( idxarg0 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event4
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( noId )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event5
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( idxarg0 )
+              ListItem ( idxarg1 )
+              ListItem ( arg2 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event6
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( idxarg0 )
+              ListItem ( noId )
+              ListItem ( arg2 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event7
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( noId )
+              ListItem ( idxarg1 )
+              ListItem ( arg2 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Event8
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( noId )
+              ListItem ( noId )
+              ListItem ( noId )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+              SetItem ( 2 )
+            </contract-event-indexed-pos>
+          </contract-event>
+        </contract-events>
+      </contract>
+    </contracts>
+  </compile>
   <exec>
     <msg-sender>
       1p160
