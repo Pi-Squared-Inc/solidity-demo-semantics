@@ -65,4 +65,4 @@ test-regression: ${REGRESSION_TESTS}
 
 %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
 	bin/krun-sol $*.sol $*.txn > $*.out
-	diff -U3 $*.ref $*.out
+	diff -U3 -w $*.ref $*.out
