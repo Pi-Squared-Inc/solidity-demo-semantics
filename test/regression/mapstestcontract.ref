@@ -2,108 +2,110 @@
   <k>
     .K
   </k>
-  <current-body>
-    TestMapsContract
-  </current-body>
-  <ifaces>
-    .IfaceCellMap
-  </ifaces>
-  <contracts>
-    <contract>
-      <contract-id>
-        TestMapsContract
-      </contract-id>
-      <contract-state>
-        testMap |-> mapping ( address  => uint256  )
-        testMapWithOptIds |-> mapping ( address key => uint256 val )
-        testNestedMap |-> mapping ( address  => mapping ( uint256  => address  )  )
-      </contract-state>
-      <contract-init>
-        .List
-      </contract-init>
-      <contract-fns>
-        <contract-fn>
-          <contract-fn-id>
-            constructor
-          </contract-fn-id>
-          <contract-fn-visibility>
-            public
-          </contract-fn-visibility>
-          <contract-fn-arg-types>
-            .List
-          </contract-fn-arg-types>
-          <contract-fn-param-names>
-            .List
-          </contract-fn-param-names>
-          <contract-fn-return-types>
-            .List
-          </contract-fn-return-types>
-          <contract-fn-return-names>
-            .List
-          </contract-fn-return-names>
-          <contract-fn-payable>
-            false
-          </contract-fn-payable>
-          <contract-fn-body>
-            .Statements
-          </contract-fn-body>
-        </contract-fn> <contract-fn>
-          <contract-fn-id>
-            testMap
-          </contract-fn-id>
-          <contract-fn-visibility>
-            public
-          </contract-fn-visibility>
-          <contract-fn-arg-types>
-            ListItem ( address )
-          </contract-fn-arg-types>
-          <contract-fn-param-names>
-            ListItem ( $0 )
-          </contract-fn-param-names>
-          <contract-fn-return-types>
-            ListItem ( mapping ( address  => uint256  ) )
-          </contract-fn-return-types>
-          <contract-fn-return-names>
-            ListItem ( noId )
-          </contract-fn-return-names>
-          <contract-fn-payable>
-            false
-          </contract-fn-payable>
-          <contract-fn-body>
-            return testMap [ $0 ] ;  .Statements
-          </contract-fn-body>
-        </contract-fn> <contract-fn>
-          <contract-fn-id>
-            testMapWithOptIds
-          </contract-fn-id>
-          <contract-fn-visibility>
-            public
-          </contract-fn-visibility>
-          <contract-fn-arg-types>
-            ListItem ( address )
-          </contract-fn-arg-types>
-          <contract-fn-param-names>
-            ListItem ( key )
-          </contract-fn-param-names>
-          <contract-fn-return-types>
-            ListItem ( mapping ( address key => uint256 val ) )
-          </contract-fn-return-types>
-          <contract-fn-return-names>
-            ListItem ( noId )
-          </contract-fn-return-names>
-          <contract-fn-payable>
-            false
-          </contract-fn-payable>
-          <contract-fn-body>
-            return testMapWithOptIds [ key ] ;  .Statements
-          </contract-fn-body>
-        </contract-fn>
-      </contract-fns>
-      <contract-events>
-        .ContractEventCellMap
-      </contract-events>
-    </contract>
-  </contracts>
+  <compile>
+    <current-body>
+      TestMapsContract
+    </current-body>
+    <ifaces>
+      .IfaceCellMap
+    </ifaces>
+    <contracts>
+      <contract>
+        <contract-id>
+          TestMapsContract
+        </contract-id>
+        <contract-state>
+          testMap |-> mapping ( address  => uint256  )
+          testMapWithOptIds |-> mapping ( address key => uint256 val )
+          testNestedMap |-> mapping ( address  => mapping ( uint256  => address  )  )
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              constructor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testMap
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => uint256  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return testMap [ $0 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testMapWithOptIds
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( key )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address key => uint256 val ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return testMapWithOptIds [ key ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          .ContractEventCellMap
+        </contract-events>
+      </contract>
+    </contracts>
+  </compile>
   <exec>
     <msg-sender>
       1p160

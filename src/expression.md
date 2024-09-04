@@ -185,7 +185,7 @@ module SOLIDITY-EXPRESSION
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
-  rule <k> v(ADDR, TYPE') . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
@@ -235,6 +235,8 @@ module SOLIDITY-EXPRESSION
        <env> E => .Map </env>
        <store> S </store>
        <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
        <contract-fn-arg-types> TYPES </contract-fn-arg-types>
@@ -344,8 +346,9 @@ module SOLIDITY-EXPRESSION
   rule I1:Int >= I2:Int => v(I1  >=Int I2, bool)
 
   // require expression
-  syntax Id ::= "require" [token]
+  syntax Id ::= "require" [token] | "assert" [token]
   rule require(v(true, bool), _) => void
+  rule assert(v(true, bool)) => void
 
   // ternary expression
   rule v(true, bool) ? X : _ => X
