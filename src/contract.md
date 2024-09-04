@@ -93,18 +93,21 @@ module SOLIDITY-CONTRACT
   rule accessorTypes(_:ElementaryTypeName) => .List
   rule accessorTypes(_:Id) => .List
   rule accessorTypes(mapping(T1 _ => T2 _)) => ListItem(T1) accessorTypes(T2)
+  rule accessorTypes(T []) => ListItem(T)
 
   syntax List ::= accessorNames(TypeName, Int) [function]
   rule accessorNames(_:ElementaryTypeName, _) => .List
   rule accessorNames(_:Id, _) => .List
   rule accessorNames(mapping(_ X:Id => T2 _), I) => ListItem(X) accessorNames(T2, I)
   rule accessorNames(mapping(_ => T2 _), I) => ListItem(String2Id("$" +String Int2String(I))) accessorNames(T2, I +Int 1)
+  rule accessorNames(T [], I) => ListItem(String2Id("$" +String Int2String(I))) accessorNames(T, I +Int 1)
 
   syntax Expression ::= accessor(Expression, TypeName, Int) [function]
   rule accessor(X, _:ElementaryTypeName, _) => X
   rule accessor(X, _:Id, _) => X
   rule accessor(X, mapping(_ Y:Id => T2 _), I) => accessor(X [ Y ], T2, I)
   rule accessor(X, mapping(_ => T2 _), I) => accessor(X [ String2Id("$" +String Int2String(I)) ], T2, I +Int 1)
+  rule accessor(X, T [], I) => accessor(X [ String2Id("$" +String Int2String(I)) ], T, I +Int 1)
 
   rule <k> T:TypeName private X:Id ; => .K ...</k>
        <current-body> C </current-body>
