@@ -38,8 +38,7 @@ contract UniswapV2Swap {
         weth.transferFrom(msg.sender, address(this), amountIn);
         weth.approve(address(router), amountIn);
 
-        address[] memory path;
-        path = new address[](2);
+        address[] memory path = new address[](2);
         path[0] = address(weth);
         path[1] = address(dai);
 
@@ -55,8 +54,7 @@ contract UniswapV2Swap {
         dai.transferFrom(msg.sender, address(this), amountIn);
         dai.approve(address(router), amountIn);
 
-        address[] memory path;
-        path = new address[](3);
+        address[] memory path = new address[](3);
         path[0] = address(dai);
         path[1] = address(weth);
         path[2] = address(usdc);
@@ -73,8 +71,7 @@ contract UniswapV2Swap {
         weth.transferFrom(msg.sender, address(this), amountInMax);
         weth.approve(address(router), amountInMax);
 
-        address[] memory path;
-        path = new address[](2);
+        address[] memory path = new address[](2);
         path[0] = address(weth);
         path[1] = address(dai);
 
@@ -94,8 +91,7 @@ contract UniswapV2Swap {
         dai.transferFrom(msg.sender, address(this), amountInMax);
         dai.approve(address(router), amountInMax);
 
-        address[] memory path;
-        path = new address[](3);
+        address[] memory path = new address[](3);
         path[0] = address(dai);
         path[1] = address(weth);
         path[2] = address(usdc);
@@ -229,7 +225,7 @@ contract UniswapV2Router02 {
 
 contract UniswapV2Pair{
 
-    uint112 private UINT112_MAX = 0xffffffffffffffffffffffffffff;
+    uint256 private UINT112_MAX = 0xffffffffffffffffffffffffffff;
 
     address public token0;
     address public token1;
