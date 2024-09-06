@@ -31,7 +31,7 @@ module SOLIDITY-STATEMENT
        <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
 
   rule <k> return lv(I:Int, .List, T) ; => return v(L, T) ; ...</k>
-       <store>... I |-> L ...</store>
+       <store> _ [ I <- L ] </store>
 
   rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
        <env> _ => E </env>
@@ -39,19 +39,19 @@ module SOLIDITY-STATEMENT
 
   // variable declaration
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>
-       <env> E => E [ X <- var(!I:Int, LT) ] </env>
-       <store> S => S [ !I <- convert(V, RT, LT) ] </store>
+       <env> E => E [ X <- var(size(S), LT) ] </env>
+       <store> S => S ListItem(convert(V, RT, LT)) </store>
   rule <k> LT:TypeName X:Id = N:Int ; => .K ...</k>
-       <env> E => E [ X <- var(!I:Int, LT) ] </env>
-       <store> S => S [ !I <- convert(N, LT) ] </store>
+       <env> E => E [ X <- var(size(S), LT) ] </env>
+       <store> S => S ListItem(convert(N, LT)) </store>
   rule <k> LT:TypeName memory X:Id = v(V, RT) ; => .K ...</k>
-       <env> E => E [ X <- var(!I:Int, LT) ] </env>
-       <store> S => S [ !I <- convert(V, RT, LT) ] </store>
+       <env> E => E [ X <- var(size(S), LT) ] </env>
+       <store> S => S ListItem(convert(V, RT, LT)) </store>
   rule <k> T:TypeName memory X:Id = lv(I:Int, .List, T) ; => .K ...</k>
        <env> E => E [ X <- var(I, T) ] </env>
   rule <k> T:TypeName X:Id ;::VariableDeclarationStatement => .K ...</k>
-       <env> E => E [ X <- var(!I:Int, T) ] </env>
-       <store> S => S [ !I <- default(T) ] </store>
+       <env> E => E [ X <- var(size(S), T) ] </env>
+       <store> S => S ListItem(default(T)) </store>
 
   // emit statement
   rule <k> emit X:Id ( ARGS ) ; => discard(Event2String(ARGS, ((.StringBuffer +String Id2String(X)) +String "("))) ...</k>
