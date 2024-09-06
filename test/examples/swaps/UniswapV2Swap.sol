@@ -377,15 +377,15 @@ contract UniswapV2Pair {
         uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
         if (_totalSupply == 0) {
             liquidity = math_sqrt(amount0 * amount1) - MINIMUM_LIQUIDITY;
-            totalSupply += MINIMUM_LIQUIDITY;
-            balanceOf[address(0)] += MINIMUM_LIQUIDITY;
+            totalSupply = totalSupply + MINIMUM_LIQUIDITY;
+            balanceOf[address(0)] = balanceOf[address(0)] + MINIMUM_LIQUIDITY;
         } else {
             liquidity =
                 math_min((amount0 * _totalSupply) / pair_reserves[0], (amount1 * _totalSupply) / pair_reserves[1]);
         }
         require(liquidity > 0, "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED");
-        totalSupply += liquidity;
-        balanceOf[to] += liquidity;
+        totalSupply = totalSupply + liquidity;
+        balanceOf[to] = balanceOf[to] + liquidity;
 
         _update(balance0, balance1, pair_reserves[0], pair_reserves[1]);
         //if (feeOn) kLast = uint(reserve0) * reserve1; // reserve0 and reserve1 are up-to-date
