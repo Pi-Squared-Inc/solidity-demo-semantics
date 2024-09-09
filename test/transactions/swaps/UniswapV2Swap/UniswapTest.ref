@@ -99,6 +99,9 @@ Transfer(6, 2, 1999999999998955749)
   <k>
     .K
   </k>
+  <summarize>
+    false
+  </summarize>
   <compile>
     <current-body>
       UniswapV2SwapTest
