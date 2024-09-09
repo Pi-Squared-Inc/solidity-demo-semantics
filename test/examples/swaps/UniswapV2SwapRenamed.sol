@@ -21,14 +21,14 @@ contract uniswapV2Swap {
     iERC20 public usdc;
     uniswapV2Router02 public router;
 
-    constructor(address _weth, address _dai, address _usdc){
-        weth = iERC20(_weth);
-        dai = iERC20(_dai);
-        usdc = iERC20(_usdc);
+    constructor(address vidWeth, address vidDai, address vidUsdc){
+        weth = iERC20(vidWeth);
+        dai = iERC20(vidDai);
+        usdc = iERC20(vidUsdc);
         router = new uniswapV2Router02();
-        router.set_local_pair(_weth, _dai);
-        router.set_local_pair(_weth, _usdc);
-        router.set_local_pair(_usdc, _dai);
+        router.setLocalPair(vidWeth, vidDai);
+        router.setLocalPair(vidWeth, vidUsdc);
+        router.setLocalPair(vidUsdc, vidDai);
     }
 
     function swapSingleHopExactAmountIn(uint256 amountIn, uint256 amountOutMin)
@@ -108,7 +108,7 @@ contract uniswapV2Swap {
 
 contract uniswapV2Router02 {
 
-    mapping (address => mapping (address => address)) public local_pairs;
+    mapping (address => mapping (address => address)) public localPairs;
 
     function swapExactTokensForTokens(
         uint amountIn,
@@ -116,10 +116,10 @@ contract uniswapV2Router02 {
         address[] calldata path,
         address to
     ) external returns (uint[] memory amounts) {
-        amounts = uniswapV2Library_getAmountsOut(amountIn, path);
+        amounts = uniswapV2LibraryGetAmountsOut(amountIn, path);
         require(amounts[amounts.length - 1] >= amountOutMin, "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT");
-        iERC20(path[0]).transferFrom(msg.sender, uniswapV2Library_pairFor(path[0], path[1]), amounts[0]);
-        _swap(amounts, path, to);
+        iERC20(path[0]).transferFrom(msg.sender, uniswapV2LibraryPairFor(path[0], path[1]), amounts[0]);
+        fidSwap(amounts, path, to);
     }
 
     function swapTokensForExactTokens(
@@ -128,48 +128,48 @@ contract uniswapV2Router02 {
         address[] calldata path,
         address to
     ) external returns (uint[] memory amounts) {
-        amounts = uniswapV2Library_getAmountsIn(amountOut, path);
+        amounts = uniswapV2LibraryGetAmountsIn(amountOut, path);
         require(amounts[0] <= amountInMax, "UniswapV2Router: EXCESSIVE_INPUT_AMOUNT");
-        iERC20(path[0]).transferFrom(msg.sender, uniswapV2Library_pairFor(path[0], path[1]), amounts[0]);
-        _swap(amounts, path, to);
+        iERC20(path[0]).transferFrom(msg.sender, uniswapV2LibraryPairFor(path[0], path[1]), amounts[0]);
+        fidSwap(amounts, path, to);
     }
 
-    function set_local_pair(address tokenA, address tokenB) public{
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        local_pairs[tokens[0]][tokens[1]] = address(new uniswapV2Pair(address(tokens[0]), address(tokens[1])));
+    function setLocalPair(address tokenA, address tokenB) public{
+        address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
+        localPairs[tokens[0]][tokens[1]] = address(new uniswapV2Pair(address(tokens[0]), address(tokens[1])));
     }
 
-    function get_local_pair(address tokenA, address tokenB) public returns(address pair){
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        pair = local_pairs[tokens[0]][tokens[1]];
+    function getLocalPair(address tokenA, address tokenB) public returns(address pair){
+        address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
+        pair = localPairs[tokens[0]][tokens[1]];
     }
 
-    function sync_local_pair(address tokenA, address tokenB) public{
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        uniswapV2Pair(local_pairs[tokens[0]][tokens[1]]).sync();
+    function syncLocalPair(address tokenA, address tokenB) public{
+        address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
+        uniswapV2Pair(localPairs[tokens[0]][tokens[1]]).sync();
     }
 
-    function _swap(uint[] memory amounts, address[] memory path, address _to) private {
+    function fidSwap(uint[] memory amounts, address[] memory path, address vidTo) private {
         for (uint i; i < path.length - 1; i++) {
             address input = path[i];
             address output = path[i + 1];
-            address[] memory tokens = uniswapV2Library_sortTokens(input, output);
+            address[] memory tokens = uniswapV2LibrarySortTokens(input, output);
             uint amountOut = amounts[i + 1];
             
             uint amount0Out = input == tokens[0] ? uint(0) : amountOut;
             uint amount1Out = input == tokens[0] ? amountOut : uint(0);
-            address to = i < path.length - 2 ? uniswapV2Library_pairFor(output, path[i + 2]) : _to;
-            uniswapV2Pair(uniswapV2Library_pairFor(input, output)).swap(
+            address to = i < path.length - 2 ? uniswapV2LibraryPairFor(output, path[i + 2]) : vidTo;
+            uniswapV2Pair(uniswapV2LibraryPairFor(input, output)).swap(
                 amount0Out, amount1Out, to);
         }
     }
 
-    function uniswapV2Library_pairFor(address tokenA, address tokenB) private returns (address pair) {
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        pair = local_pairs[tokens[0]][tokens[1]];
+    function uniswapV2LibraryPairFor(address tokenA, address tokenB) private returns (address pair) {
+        address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
+        pair = localPairs[tokens[0]][tokens[1]];
     }
 
-    function uniswapV2Library_sortTokens(address tokenA, address tokenB) private returns (address[] memory tokens) {
+    function uniswapV2LibrarySortTokens(address tokenA, address tokenB) private returns (address[] memory tokens) {
         tokens = new address[](2);
         require(tokenA != tokenB, "UniswapV2Library: IDENTICAL_ADDRESSES");
         tokens[0] = tokenA < tokenB ? tokenA : tokenB;
@@ -177,17 +177,17 @@ contract uniswapV2Router02 {
         require(tokens[0] != address(0), "UniswapV2Library: ZERO_ADDRESS");
     }
 
-    function uniswapV2Library_getAmountsOut(uint amountIn, address[] memory path) private returns (uint[] memory amounts) {
+    function uniswapV2LibraryGetAmountsOut(uint amountIn, address[] memory path) private returns (uint[] memory amounts) {
         require(path.length >= 2, "UniswapV2Library: INVALID_PATH");
         amounts = new uint[](path.length);
         amounts[0] = amountIn;
         for (uint i; i < path.length - 1; i++) {
-            uint[] memory reserves = uniswapV2Library_getReserves(path[i], path[i + 1]);
-            amounts[i + 1] = uniswapV2Library_getAmountOut(amounts[i], reserves[0], reserves[1]);
+            uint[] memory reserves = uniswapV2LibraryGetReserves(path[i], path[i + 1]);
+            amounts[i + 1] = uniswapV2LibraryGetAmountOut(amounts[i], reserves[0], reserves[1]);
         }
     }
 
-    function uniswapV2Library_getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) private returns (uint amountOut) {
+    function uniswapV2LibraryGetAmountOut(uint amountIn, uint reserveIn, uint reserveOut) private returns (uint amountOut) {
         require(amountIn > 0, "UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "UniswapV2Library: INSUFFICIENT_LIQUIDITY");
         uint amountInWithFee = amountIn*997;
@@ -196,25 +196,25 @@ contract uniswapV2Router02 {
         amountOut = numerator / denominator;
     }
 
-    function uniswapV2Library_getReserves(address tokenA, address tokenB) private returns (uint[] memory reserves) {
+    function uniswapV2LibraryGetReserves(address tokenA, address tokenB) private returns (uint[] memory reserves) {
         reserves = new uint[](2);
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        uint112[] memory pair_reserves = uniswapV2Pair(uniswapV2Library_pairFor(tokenA, tokenB)).getReserves();
-        reserves[0] = tokenA == tokens[0] ? pair_reserves[0] : pair_reserves[1];
-        reserves[1] = tokenA == tokens[0] ? pair_reserves[1] : pair_reserves[0];
+        address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
+        uint112[] memory pairReserves = uniswapV2Pair(uniswapV2LibraryPairFor(tokenA, tokenB)).getReserves();
+        reserves[0] = tokenA == tokens[0] ? pairReserves[0] : pairReserves[1];
+        reserves[1] = tokenA == tokens[0] ? pairReserves[1] : pairReserves[0];
     }
     
-    function uniswapV2Library_getAmountsIn(uint amountOut, address[] memory path) private returns (uint[] memory amounts) {
+    function uniswapV2LibraryGetAmountsIn(uint amountOut, address[] memory path) private returns (uint[] memory amounts) {
         require(path.length >= 2, "UniswapV2Library: INVALID_PATH");
         amounts = new uint[](path.length);
         amounts[amounts.length - 1] = amountOut;
         for (uint i = path.length - 1; i > 0; i--) {
-            uint[] memory reserves = uniswapV2Library_getReserves(path[i - 1], path[i]);
-            amounts[i - 1] = uniswapV2Library_getAmountIn(amounts[i], reserves[0], reserves[1]);
+            uint[] memory reserves = uniswapV2LibraryGetReserves(path[i - 1], path[i]);
+            amounts[i - 1] = uniswapV2LibraryGetAmountIn(amounts[i], reserves[0], reserves[1]);
         }
     }
 
-    function uniswapV2Library_getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) private returns (uint amountIn) {
+    function uniswapV2LibraryGetAmountIn(uint amountOut, uint reserveIn, uint reserveOut) private returns (uint amountIn) {
         require(amountOut > 0, "UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "UniswapV2Library: INSUFFICIENT_LIQUIDITY");
         uint numerator = reserveIn*amountOut*1000;
@@ -252,9 +252,9 @@ contract uniswapV2Pair{
         address indexed to
     );
 
-    constructor(address _token0, address _token1) {
-        token0 = _token0;
-        token1 = _token1;
+    constructor(address vidToken0, address vidToken1) {
+        token0 = vidToken0;
+        token1 = vidToken1;
     }
 
     function swap(uint amount0Out, uint amount1Out, address to) external {
@@ -264,14 +264,14 @@ contract uniswapV2Pair{
 
         uint balance0;
         uint balance1;
-        { // scope for _token{0,1}, avoids stack too deep errors
-            address _token0 = token0;
-            address _token1 = token1;
-            require(to != _token0 && to != _token1, "UniswapV2: INVALID_TO");
-            if (amount0Out > 0) iERC20(_token0).transfer(to, amount0Out); // optimistically transfer tokens
-            if (amount1Out > 0) iERC20(_token1).transfer(to, amount1Out); // optimistically transfer tokens
-            balance0 = iERC20(_token0).balanceOf(address(this));
-            balance1 = iERC20(_token1).balanceOf(address(this));
+        { // scope for vidToken{0,1}, avoids stack too deep errors
+            address vidToken0 = token0;
+            address vidToken1 = token1;
+            require(to != vidToken0 && to != vidToken1, "UniswapV2: INVALID_TO");
+            if (amount0Out > 0) iERC20(vidToken0).transfer(to, amount0Out); // optimistically transfer tokens
+            if (amount1Out > 0) iERC20(vidToken1).transfer(to, amount1Out); // optimistically transfer tokens
+            balance0 = iERC20(vidToken0).balanceOf(address(this));
+            balance1 = iERC20(vidToken1).balanceOf(address(this));
         }
         uint amount0In = balance0 > reserves[0] - amount0Out ? balance0 - (reserves[0] - amount0Out) : 0;
         uint amount1In = balance1 > reserves[1] - amount1Out ? balance1 - (reserves[1] - amount1Out) : 0;
@@ -282,12 +282,12 @@ contract uniswapV2Pair{
             require(balance0Adjusted*balance1Adjusted >= uint(reserves[0])*reserves[1]*(1000**2), "UniswapV2: K");
         }
 
-        _update(balance0, balance1, reserves[0], reserves[1]);
+        fidUpdate(balance0, balance1, reserves[0], reserves[1]);
         emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
     }
 
     function sync() external {
-        _update(iERC20(token0).balanceOf(address(this)), iERC20(token1).balanceOf(address(this)), reserve0, reserve1);
+        fidUpdate(iERC20(token0).balanceOf(address(this)), iERC20(token1).balanceOf(address(this)), reserve0, reserve1);
     }
    
     function getReserves() public returns (uint112[] memory reserves) {
@@ -297,13 +297,13 @@ contract uniswapV2Pair{
         reserves[2] = blockTimestampLast;
     }
 
-    function _update(uint balance0, uint balance1, uint112 _reserve0, uint112 _reserve1) private {
+    function fidUpdate(uint balance0, uint balance1, uint112 vidReserve0, uint112 vidReserve1) private {
         require(balance0 <= constUINT112MAX && balance1 <= constUINT112MAX, "UniswapV2: OVERFLOW");
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
-        if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
-            price0CumulativeLast = price0CumulativeLast + (_reserve1/_reserve0) * timeElapsed;
-            price1CumulativeLast = price1CumulativeLast + (_reserve0/_reserve1) * timeElapsed;
+        if (timeElapsed > 0 && vidReserve0 != 0 && vidReserve1 != 0) {
+            price0CumulativeLast = price0CumulativeLast + (vidReserve1/vidReserve0) * timeElapsed;
+            price1CumulativeLast = price1CumulativeLast + (vidReserve0/vidReserve1) * timeElapsed;
         }
         reserve0 = uint112(balance0);
         reserve1 = uint112(balance1);
@@ -459,10 +459,10 @@ contract dAIMock {
 contract uSDCMock {
     uint256 private constUINT256MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
-    uint256 private _totalSupply;
+    uint256 private vidTotalSupply;
         
-    mapping(address account => uint256) private _balances;  
-    mapping(address account => mapping(address spender => uint256)) private _allowances;
+    mapping(address account => uint256) private vidBalances;  
+    mapping(address account => mapping(address spender => uint256)) private vidAllowances;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -473,77 +473,77 @@ contract uSDCMock {
 
     function mint(address account, uint256 value) public {
         require(account != address(0), "USDC: invalid receiver");
-        _update(address(0), account, value);
+        fidUpdate(address(0), account, value);
     }
 
     function balanceOf(address account) public returns (uint256) {
-        return _balances[account];
+        return vidBalances[account];
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
         address owner = msg.sender;
-        _transfer(owner, to, value);
+        fidTransfer(owner, to, value);
         return true;
     }
 
     function allowance(address owner, address spender) public returns (uint256) {
-        return _allowances[owner][spender];
+        return vidAllowances[owner][spender];
     }
 
     function approve(address spender, uint256 value) public returns (bool) {
         address owner = msg.sender;
-        _approve(owner, spender, value, true);
+        fidApprove(owner, spender, value, true);
         return true;
     }
 
     function transferFrom(address from, address to, uint256 value) public returns (bool) {
         address spender = msg.sender;
-        _spendAllowance(from, spender, value);
-        _transfer(from, to, value);
+        fidSpendAllowance(from, spender, value);
+        fidTransfer(from, to, value);
         return true;
     }
 
-    function _transfer(address from, address to, uint256 value) private {
+    function fidTransfer(address from, address to, uint256 value) private {
         require(from != address(0), "USDC: invalid sender");
         require(to != address(0), "USDC: invalid receiver");
-        _update(from, to, value);
+        fidUpdate(from, to, value);
     }
 
-    function _update(address from, address to, uint256 value) private {
+    function fidUpdate(address from, address to, uint256 value) private {
         if (from == address(0)) {
-            _totalSupply = _totalSupply + value;
+            vidTotalSupply = vidTotalSupply + value;
         } else {
-            uint256 fromBalance = _balances[from];
+            uint256 fromBalance = vidBalances[from];
             require(fromBalance >= value, "USDC: insufficient balance");
-            _balances[from] = fromBalance - value;
+            vidBalances[from] = fromBalance - value;
             
         }
 
         if (to == address(0)) {
-            _totalSupply = _totalSupply - value;
+            vidTotalSupply = vidTotalSupply - value;
             
         } else {
-            _balances[to] = _balances[to] + value;
+            vidBalances[to] = vidBalances[to] + value;
         }
 
         emit Transfer(from, to, value);
     }
 
 
-    function _approve(address owner, address spender, uint256 value, bool emitEvent) private {
+    function fidApprove(address owner, address spender, uint256 value, bool emitEvent) private {
         require(owner != address(0), "USDC: invalid approver");
         require(spender != address(0), "USDC: invalid spender");
-        _allowances[owner][spender] = value;
+        vidAllowances[owner][spender] = value;
         if (emitEvent) {
             emit Approval(owner, spender, value);
         }
     }
 
-    function _spendAllowance(address owner, address spender, uint256 value) private {
+    function fidSpendAllowance(address owner, address spender, uint256 value) private {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != constUINT256MAX) {
             require(currentAllowance >= value, "USDC: insufficient allowance");
-            _approve(owner, spender, currentAllowance - value, false);
+            fidApprove(owner, spender, currentAllowance - value, false);
             
         }
     }
@@ -553,32 +553,32 @@ contract uSDCMock {
 
 contract uniswapV2SwapTest {
 
-    uniswapV2Swap private _uni;
-    wETHMock private _weth;
-    dAIMock private _dai;
-    uSDCMock private _usdc;
+    uniswapV2Swap private vidUni;
+    wETHMock private vidWeth;
+    dAIMock private vidDai;
+    uSDCMock private vidUsdc;
 
     function setUp() public {
-        _weth = new wETHMock();
-        _dai = new dAIMock();
-        _usdc = new uSDCMock();
-        _uni = new uniswapV2Swap(address(_weth), address(_dai), address(_usdc));
+        vidWeth = new wETHMock();
+        vidDai = new dAIMock();
+        vidUsdc = new uSDCMock();
+        vidUni = new uniswapV2Swap(address(vidWeth), address(vidDai), address(vidUsdc));
     }
 
     function testSwapSingleHopExactAmountIn() public {
         uint256 wethAmount = 1e18;
-        _weth.deposit{value: 2*wethAmount}();
-        _weth.approve(address(_uni), 2*wethAmount);
-        _dai.mint(address(this), wethAmount);
-        _dai.approve(address(_uni), wethAmount);
+        vidWeth.deposit{value: 2*wethAmount}();
+        vidWeth.approve(address(vidUni), 2*wethAmount);
+        vidDai.mint(address(this), wethAmount);
+        vidDai.approve(address(vidUni), wethAmount);
         
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
 
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
 
         uint256 daiAmountMin = 1;
-        uint256 daiAmountOut = _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+        uint256 daiAmountOut = vidUni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
 
         assert(daiAmountOut >= daiAmountMin);
     }
@@ -586,84 +586,84 @@ contract uniswapV2SwapTest {
     function testSwapMultiHopExactAmountIn() public {
         uint256 wethAmount = 1e18;
         
-        _weth.deposit{value: 4*wethAmount}();
-        _weth.approve(address(_uni), 8*wethAmount);
-        _dai.mint(address(this), 3*wethAmount);
-        _dai.approve(address(_uni), 3*wethAmount);
-        _usdc.mint(address(this), 2*wethAmount);
-        _usdc.approve(address(_uni), 2*wethAmount);
+        vidWeth.deposit{value: 4*wethAmount}();
+        vidWeth.approve(address(vidUni), 8*wethAmount);
+        vidDai.mint(address(this), 3*wethAmount);
+        vidDai.approve(address(vidUni), 3*wethAmount);
+        vidUsdc.mint(address(this), 2*wethAmount);
+        vidUsdc.approve(address(vidUni), 2*wethAmount);
 
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
 
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
 
         uint256 daiAmountMin = 1;
-        _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+        vidUni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
 
         uint256 daiAmountIn = 1e18;
         
-        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
-        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
-        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
+        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
 
-        _uni.router().sync_local_pair(address(_dai), address(_weth));
-        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
 
         uint256 usdcAmountOutMin = 1;
         uint256 usdcAmountOut =
-            _uni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
+            vidUni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
 
         assert(usdcAmountOut >= usdcAmountOutMin);
     }
 
     function testSwapSingleHopExactAmountOut() public {
         uint256 wethAmount = 1e18;
-        _weth.deposit{value: 10*wethAmount}();
-        _weth.approve(address(_uni), 6*wethAmount);
-        _dai.mint(address(this), 10*wethAmount);
-        _dai.approve(address(_uni), 4*wethAmount);
+        vidWeth.deposit{value: 10*wethAmount}();
+        vidWeth.approve(address(vidUni), 6*wethAmount);
+        vidDai.mint(address(this), 10*wethAmount);
+        vidDai.approve(address(vidUni), 4*wethAmount);
         
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
 
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
 
         uint256 daiAmountDesired = 1e18;
         uint256 daiAmountOut =
-            _uni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
+            vidUni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
 
         assert(daiAmountOut == daiAmountDesired);
     }
 
     function testSwapMultiHopExactAmountOut() public {
         uint256 wethAmount = 1e18;
-        _weth.deposit{value: 20*wethAmount}();
-        _weth.approve(address(_uni), 20*wethAmount);
-        _dai.mint(address(this), 20*wethAmount);
-        _dai.approve(address(_uni), 20*wethAmount);
-        _usdc.mint(address(this), 10*wethAmount);
-        _usdc.approve(address(_uni), 10*wethAmount);
+        vidWeth.deposit{value: 20*wethAmount}();
+        vidWeth.approve(address(vidUni), 20*wethAmount);
+        vidDai.mint(address(this), 20*wethAmount);
+        vidDai.approve(address(vidUni), 20*wethAmount);
+        vidUsdc.mint(address(this), 10*wethAmount);
+        vidUsdc.approve(address(vidUni), 10*wethAmount);
 
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
 
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
 
         uint256 daiAmountOut = 2 * 1e18;
-        _uni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
+        vidUni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
         
-        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
-        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
-        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
-        _uni.router().sync_local_pair(address(_dai), address(_weth));
-        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
+        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
+        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
+        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
+        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
 
         uint256 amountOutDesired = 1e6;
         uint256 amountOut =
-            _uni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
+            vidUni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
 
         assert(amountOut == amountOutDesired);
     }
