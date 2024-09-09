@@ -108,7 +108,7 @@ contract uniswapV2Swap {
 
 contract uniswapV2Router02 {
 
-    mapping (address => mapping (address => address)) public localPairs;
+    mapping (address pairEl1 => mapping (address pairEl2 => address)) public localPairs;
 
     function swapExactTokensForTokens(
         uint amountIn,
@@ -240,7 +240,7 @@ contract uniswapV2Pair{
     uint public totalSupply;
     uint public kLast; 
     
-    mapping(address => uint) public balanceOf;
+    mapping(address act => uint) public balanceOf;
     
     event Sync(uint112 reserve0, uint112 reserve1);
     event Swap(
@@ -316,8 +316,8 @@ contract wETHMock {
 
     uint256 private constUINT256MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
-    mapping (address => uint256) public balanceOf;
-    mapping (address => mapping (address => uint256)) public allowance;
+    mapping (address wethact => uint256) public balanceOf;
+    mapping (address wethownr => mapping (address wethspdr => uint256)) public allowance;
     
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -397,8 +397,8 @@ contract dAIMock {
 
     uint256 public totalSupply;
 
-    mapping (address => uint)                      public balanceOf;
-    mapping (address => mapping (address => uint)) public allowance;
+    mapping (address daiact => uint)                      public balanceOf;
+    mapping (address daiownr => mapping (address daispdr => uint)) public allowance;
 
     event Approval(address indexed src, address indexed guy, uint wad);
     event Transfer(address indexed src, address indexed dst, uint wad);
