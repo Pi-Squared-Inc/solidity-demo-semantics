@@ -242,8 +242,8 @@ contract uniswapV2Pair{
     
     mapping(address act => uint) public balanceOf;
     
-    event Sync(uint112 reserve0, uint112 reserve1);
-    event Swap(
+    event syncEvent(uint112 reserve0, uint112 reserve1);
+    event swapEvent(
         address indexed sender,
         uint amount0In,
         uint amount1In,
@@ -283,7 +283,7 @@ contract uniswapV2Pair{
         }
 
         fidUpdate(balance0, balance1, reserves[0], reserves[1]);
-        emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
+        emit swapEvent(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
     }
 
     function sync() external {
@@ -308,7 +308,7 @@ contract uniswapV2Pair{
         reserve0 = uint112(balance0);
         reserve1 = uint112(balance1);
         blockTimestampLast = blockTimestamp;
-        emit Sync(reserve0, reserve1);
+        emit syncEvent(reserve0, reserve1);
     } 
 }
 
@@ -319,8 +319,8 @@ contract wETHMock {
     mapping (address wethact => uint256) public balanceOf;
     mapping (address wethownr => mapping (address wethspdr => uint256)) public allowance;
     
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-    event Transfer(address indexed from, address indexed to, uint256 value);
+    event approvalEvent(address indexed owner, address indexed spender, uint256 value);
+    event transferEvent(address indexed from, address indexed to, uint256 value);
 
     function decimals() external returns (uint8) {
         return 18;
@@ -328,12 +328,12 @@ contract wETHMock {
 
     function deposit() external payable {
         balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
-        emit Transfer(address(0), msg.sender, msg.value);
+        emit transferEvent(address(0), msg.sender, msg.value);
     }
     
     function approve(address spender, uint256 value) external returns (bool) {
         allowance[msg.sender][spender] = value;
-        emit Approval(msg.sender, spender, value);
+        emit approvalEvent(msg.sender, spender, value);
 
         return true;
     }
@@ -345,12 +345,12 @@ contract wETHMock {
 
             balanceOf[msg.sender] = balance - value;
             balanceOf[to] = balanceOf[to] + value;
-            emit Transfer(msg.sender, to, value);
+            emit transferEvent(msg.sender, to, value);
         } else { // Withdraw
             uint256 balance = balanceOf[msg.sender];
             require(balance >= value, "WETH: burn amount exceeds balance");
             balanceOf[msg.sender] = balance - value;
-            emit Transfer(msg.sender, address(0), value);
+            emit transferEvent(msg.sender, address(0), value);
 
             (bool success, ) = msg.sender.call{value: value}("");
             require(success, "WETH: ETH transfer failed");
@@ -366,7 +366,7 @@ contract wETHMock {
                 require(allowed >= value, "WETH: request exceeds allowance");
                 uint256 reduced = allowed - value;
                 allowance[from][msg.sender] = reduced;
-                emit Approval(from, msg.sender, reduced);
+                emit approvalEvent(from, msg.sender, reduced);
             }
         }
 
@@ -376,12 +376,12 @@ contract wETHMock {
 
             balanceOf[from] = balance - value;
             balanceOf[to] = balanceOf[to] + value;
-            emit Transfer(from, to, value);
+            emit transferEvent(from, to, value);
         } else { 
             uint256 balance = balanceOf[from];
             require(balance >= value, "WETH: burn amount exceeds balance");
             balanceOf[from] = balance - value;
-            emit Transfer(from, address(0), value);
+            emit transferEvent(from, address(0), value);
 
             (bool success, ) = msg.sender.call{value: value}("");
             require(success, "WETH: ETH transfer failed");
@@ -400,8 +400,8 @@ contract dAIMock {
     mapping (address daiact => uint)                      public balanceOf;
     mapping (address daiownr => mapping (address daispdr => uint)) public allowance;
 
-    event Approval(address indexed src, address indexed guy, uint wad);
-    event Transfer(address indexed src, address indexed dst, uint wad);
+    event approvalEvent(address indexed src, address indexed guy, uint wad);
+    event transferEvent(address indexed src, address indexed dst, uint wad);
 
     function decimals() external returns (uint8) {
         return 18;
@@ -410,7 +410,7 @@ contract dAIMock {
     function mint(address usr, uint wad) public {
         balanceOf[usr] = balanceOf[usr] + wad;
         totalSupply    = totalSupply + wad;
-        emit Transfer(address(0), usr, wad);
+        emit transferEvent(address(0), usr, wad);
     }
 
     function mintOnDeposit(address usr, uint wad) public {
@@ -426,7 +426,7 @@ contract dAIMock {
 
     function approve(address usr, uint wad) external returns (bool) {
         allowance[msg.sender][usr] = wad;
-        emit Approval(msg.sender, usr, wad);
+        emit approvalEvent(msg.sender, usr, wad);
         return true;
     }
 
@@ -445,7 +445,7 @@ contract dAIMock {
         }
         balanceOf[src] = balanceOf[src] - wad;
         balanceOf[dst] = balanceOf[dst] + wad;
-        emit Transfer(src, dst, wad);
+        emit transferEvent(src, dst, wad);
         return true;
     }
 
@@ -464,8 +464,8 @@ contract uSDCMock {
     mapping(address account => uint256) private vidBalances;  
     mapping(address account => mapping(address spender => uint256)) private vidAllowances;
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event transferEvent(address indexed from, address indexed to, uint256 value);
+    event approvalEvent(address indexed owner, address indexed spender, uint256 value);
 
     function decimals() external returns (uint8) {
         return 18;
@@ -526,7 +526,7 @@ contract uSDCMock {
             vidBalances[to] = vidBalances[to] + value;
         }
 
-        emit Transfer(from, to, value);
+        emit transferEvent(from, to, value);
     }
 
 
@@ -535,7 +535,7 @@ contract uSDCMock {
         require(spender != address(0), "USDC: invalid spender");
         vidAllowances[owner][spender] = value;
         if (emitEvent) {
-            emit Approval(owner, spender, value);
+            emit approvalEvent(owner, spender, value);
         }
     }
 
