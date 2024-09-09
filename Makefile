@@ -9,6 +9,7 @@ MAIN_MODULE = SOLIDITY
 OUTPUT_DIR = out
 
 UNISWAP_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2Swap.sol 2>&1 1>$(OUTPUT_DIR)/uniswap.ast
+UNISWAPRN_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2SwapRenamed.sol 2>&1 1>$(OUTPUT_DIR)/uniswaprn.ast
 SOMETOKEN_PARAMS = $(EXAMPLES_DIR)/tokens/SomeToken.sol 2>&1 1>$(OUTPUT_DIR)/sometoken.ast
 SOMEMULTITOKEN_PARAMS = $(EXAMPLES_DIR)/tokens/SomeMultiToken.sol 2>&1 1>$(OUTPUT_DIR)/somemultitoken.ast
 LIQUIDSTAKING_PARAMS = $(EXAMPLES_DIR)/staking/LiquidStaking.sol 2>&1 1>$(OUTPUT_DIR)/liquidstaking.ast
@@ -25,7 +26,9 @@ clean:
 	rm -Rf $(OUTPUT_DIR)
 	rm -Rf $(TEST_DIR)/regression/*.out
 
-test: test-swap test-tokens test-staking test-lending test-regression
+test: test-swaps test-tokens test-staking test-lending test-regression
+
+test-swaps: test-swap test-swaprn
 
 test-tokens: test-erc20 test-erc1155
 
@@ -36,6 +39,10 @@ test-lending: test-lendingpool test-aave
 test-swap:
 	mkdir -p $(OUTPUT_DIR)
 	kparse $(UNISWAP_PARAMS)
+
+test-swaprn:
+	mkdir -p $(OUTPUT_DIR)
+	kparse $(UNISWAPRN_PARAMS)
 
 test-erc20:
 	mkdir -p $(OUTPUT_DIR)
