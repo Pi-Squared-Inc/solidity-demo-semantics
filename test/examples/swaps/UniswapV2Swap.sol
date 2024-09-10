@@ -36,13 +36,13 @@ contract UniswapV2Swap {
     IERC20 public weth;
     IERC20 public dai;
     IERC20 public usdc;
-    UniswapV2Router02 public router;
+    IUniswapV2Router02 public router;
 
-    constructor(address _weth, address _dai, address _usdc) {
+    constructor(address _weth, address _dai, address _usdc, address _router) {
         weth = IERC20(_weth);
         dai = IERC20(_dai);
         usdc = IERC20(_usdc);
-        router = new UniswapV2Router02();
+        router = IUniswapV2Router02(_router);
     }
 
     function swapSingleHopExactAmountIn(uint256 amountIn, uint256 amountOutMin) external returns (uint256 amountOut) {
@@ -159,19 +159,22 @@ contract UniswapV2Router02 {
         amounts_liq[2] = IUniswapV2Pair(pair).mint(to);
     }
 
-    function set_local_pair(address tokenA, address tokenB) public {
-        address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        local_pairs[tokens[0]][tokens[1]] = address(new UniswapV2Pair(address(tokens[0]), address(tokens[1])));
+    function set_local_pair(address _token0, address _token1, address _pair) public {
+        local_pairs[_token0][_token1] = _pair;
     }
 
-    function get_local_pair(address tokenA, address tokenB) public returns (address pair) {
+    function get_local_pair(address tokenA, address tokenB) external returns (address pair) {
+        pair = _get_local_pair(tokenA, tokenB);
+    }
+
+    function _get_local_pair(address tokenA, address tokenB) public returns (address pair) {
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
         pair = local_pairs[tokens[0]][tokens[1]];
     }
 
-    function sync_local_pair(address tokenA, address tokenB) public {
+    function sync_local_pair(address tokenA, address tokenB) external {
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        UniswapV2Pair(local_pairs[tokens[0]][tokens[1]]).sync();
+        IUniswapV2Pair(local_pairs[tokens[0]][tokens[1]]).sync();
     }
 
     function _swap(uint256[] memory amounts, address[] memory path, address _to) private {
@@ -184,7 +187,7 @@ contract UniswapV2Router02 {
             uint256 amount0Out = input == tokens[0] ? uint256(0) : amountOut;
             uint256 amount1Out = input == tokens[0] ? amountOut : uint256(0);
             address to = i < path.length - 2 ? uniswapV2Library_pairFor(output, path[i + 2]) : _to;
-            UniswapV2Pair(uniswapV2Library_pairFor(input, output)).swap(amount0Out, amount1Out, to);
+            IUniswapV2Pair(uniswapV2Library_pairFor(input, output)).swap(amount0Out, amount1Out, to);
         }
     }
 
@@ -225,7 +228,7 @@ contract UniswapV2Router02 {
         pair = local_pairs[tokens[0]][tokens[1]];
     }
 
-    function uniswapV2Library_sortTokens(address tokenA, address tokenB) private returns (address[] memory tokens) {
+    function uniswapV2Library_sortTokens(address tokenA, address tokenB) public returns (address[] memory tokens) {
         tokens = new address[](2);
         require(tokenA != tokenB, "UniswapV2Library: IDENTICAL_ADDRESSES");
         tokens[0] = tokenA < tokenB ? tokenA : tokenB;
@@ -261,7 +264,7 @@ contract UniswapV2Router02 {
     function uniswapV2Library_getReserves(address tokenA, address tokenB) private returns (uint256[] memory reserves) {
         reserves = new uint256[](2);
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
-        uint112[] memory pair_reserves = UniswapV2Pair(uniswapV2Library_pairFor(tokenA, tokenB)).getReserves();
+        uint112[] memory pair_reserves = IUniswapV2Pair(uniswapV2Library_pairFor(tokenA, tokenB)).getReserves();
         reserves[0] = tokenA == tokens[0] ? pair_reserves[0] : pair_reserves[1];
         reserves[1] = tokenA == tokens[0] ? pair_reserves[1] : pair_reserves[0];
     }
@@ -327,6 +330,7 @@ contract UniswapV2Pair {
         uint256 amount1Out,
         address indexed to
     );
+    event Mint(address indexed sender, uint256 amount0, uint256 amount1);
 
     constructor(address _token0, address _token1) {
         token0 = _token0;
@@ -335,7 +339,7 @@ contract UniswapV2Pair {
 
     function swap(uint256 amount0Out, uint256 amount1Out, address to) external {
         require(amount0Out > 0 || amount1Out > 0, "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT");
-        uint112[] memory reserves = getReserves(); // gas savings
+        uint112[] memory reserves = _getReserves(); // gas savings
         require(amount0Out < reserves[0] && amount1Out < reserves[1], "UniswapV2: INSUFFICIENT_LIQUIDITY");
 
         uint256 balance0;
@@ -396,7 +400,11 @@ contract UniswapV2Pair {
         _update(IERC20(token0).balanceOf(address(this)), IERC20(token1).balanceOf(address(this)), reserve0, reserve1);
     }
 
-    function getReserves() public returns (uint112[] memory reserves) {
+    function getReserves() external returns (uint112[] memory reserves) {
+        return _getReserves();
+    }
+
+    function _getReserves() public returns (uint112[] memory reserves) {
         reserves = new uint112[](3);
         reserves[0] = reserve0;
         reserves[1] = reserve1;
@@ -674,7 +682,6 @@ contract UniswapV2SwapTest {
         _weth = new WETHMock();
         _dai = new DAIMock();
         _usdc = new USDCMock();
-        _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
         _router = new UniswapV2Router02();
 
         address[] memory tokens = _router.uniswapV2Library_sortTokens(address(_weth), address(_dai));
