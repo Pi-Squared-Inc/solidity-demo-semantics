@@ -3,4 +3,6 @@ txn(1, 2, 0, 1724300000, setUp, ),
 txn(1, 2, 0, 1724300000, testSwapSingleHopExactAmountIn, ),
 txn(1, 2, 0, 1724300000, testSwapMultiHopExactAmountIn, ),
 txn(1, 2, 0, 1724300000, testSwapSingleHopExactAmountOut, ),
-txn(1, 2, 0, 1724300000, testSwapMultiHopExactAmountOut, )
+txn(1, 2, 0, 1724300000, testSwapMultiHopExactAmountOut, ),
+txn(1, 2, 0, 1724300000, testRouterAddLiquidity, )
+
