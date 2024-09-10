@@ -954,6 +954,83 @@
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
+              math_min
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( x )
+              ListItem ( y )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( z )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              z = x < y ? x : y ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              math_sqrt
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( y )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( z )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( y > 3 ) { z = y ;  uint256 x = y / 2 + 1 ;  while ( x < z ) { z = x ;  x = ( y / x + x ) / 2 ;  .Statements }  .Statements } else if ( y != 0 ) { z = 1 ;  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mint
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( liquidity )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint112 [ ] memory pair_reserves = getReserves ( .TypedVals ) ;  uint256 balance0 = IERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 balance1 = IERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 amount0 = balance0 - pair_reserves [ 0 ] ;  uint256 amount1 = balance1 - pair_reserves [ 1 ] ;  uint256 _totalSupply = totalSupply ;  if ( _totalSupply == 0 ) { liquidity = math_sqrt ( amount0 * amount1 , .TypedVals ) - MINIMUM_LIQUIDITY ;  totalSupply = totalSupply + MINIMUM_LIQUIDITY ;  balanceOf [ address ( 0 , .TypedVals ) ] = balanceOf [ address ( 0 , .TypedVals ) ] + MINIMUM_LIQUIDITY ;  .Statements } else { liquidity = math_min ( amount0 * _totalSupply / pair_reserves [ 0 ] , amount1 * _totalSupply / pair_reserves [ 1 ] , .TypedVals ) ;  .Statements }  require ( liquidity > 0 , "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED" , .TypedVals ) ;  totalSupply = totalSupply + liquidity ;  balanceOf [ to ] = balanceOf [ to ] + liquidity ;  _update ( balance0 , balance1 , pair_reserves [ 0 ] , pair_reserves [ 1 ] , .TypedVals ) ;  emit Mint ( msg . sender , amount0 , amount1 , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
               price0CumulativeLast
             </contract-fn-id>
             <contract-fn-visibility>
@@ -1136,6 +1213,23 @@
         <contract-events>
           <contract-event>
             <contract-event-id>
+              Mint
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( sender )
+              ListItem ( amount0 )
+              ListItem ( amount1 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
               Swap
             </contract-event-id>
             <contract-event-arg-types>
@@ -1188,6 +1282,41 @@
         <contract-fns>
           <contract-fn>
             <contract-fn-id>
+              _addLiquidity
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+              ListItem ( amountADesired )
+              ListItem ( amountBDesired )
+              ListItem ( amountAMin )
+              ListItem ( amountBMin )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amounts = new uint256 [ ] ( 2 , .TypedVals ) ;  require ( get_local_pair ( tokenA , tokenB , .TypedVals ) != address ( 0 , .TypedVals ) , .TypedVals ) ;  uint256 [ ] memory reserves = uniswapV2Library_getReserves ( tokenA , tokenB , .TypedVals ) ;  if ( reserves [ 0 ] == 0 && reserves [ 1 ] == 0 ) { amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBDesired ;  .Statements } else { uint256 amountBOptimal = uniswapV2Library_quote ( amountADesired , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  if ( amountBOptimal <= amountBDesired ) { require ( amountBOptimal >= amountBMin , "UniswapV2Router: INSUFFICIENT_B_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBOptimal ;  .Statements } else { uint256 amountAOptimal = uniswapV2Library_quote ( amountBDesired , reserves [ 1 ] , reserves [ 0 ] , .TypedVals ) ;  assert ( amountAOptimal <= amountADesired , .TypedVals ) ;  require ( amountAOptimal >= amountAMin , "UniswapV2Router: INSUFFICIENT_A_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountAOptimal ;  amounts [ 1 ] = amountBDesired ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
               _swap
             </contract-fn-id>
             <contract-fn-visibility>
@@ -1214,6 +1343,43 @@
             </contract-fn-payable>
             <contract-fn-body>
               { uint256 i ;  while ( i < path . length - 1 ) { { address input = path [ i ] ;  address output = path [ i + 1 ] ;  address [ ] memory tokens = uniswapV2Library_sortTokens ( input , output , .TypedVals ) ;  uint256 amountOut = amounts [ i + 1 ] ;  uint256 amount0Out = input == tokens [ 0 ] ? uint256 ( 0 , .TypedVals ) : amountOut ;  uint256 amount1Out = input == tokens [ 0 ] ? amountOut : uint256 ( 0 , .TypedVals ) ;  address to = i < path . length - 2 ? uniswapV2Library_pairFor ( output , path [ i + 2 ] , .TypedVals ) : _to ;  UniswapV2Pair ( uniswapV2Library_pairFor ( input , output , .TypedVals ) , .TypedVals ) . swap ( amount0Out , amount1Out , to , .TypedVals ) ;  .Statements }  i ++ ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              addLiquidity
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+              ListItem ( amountADesired )
+              ListItem ( amountBDesired )
+              ListItem ( amountAMin )
+              ListItem ( amountBMin )
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts_liq )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amounts_liq = new uint256 [ ] ( 3 , .TypedVals ) ;  uint256 [ ] memory amounts = _addLiquidity ( tokenA , tokenB , amountADesired , amountBDesired , amountAMin , amountBMin , .TypedVals ) ;  amounts_liq [ 0 ] = amounts [ 0 ] ;  amounts_liq [ 1 ] = amounts [ 1 ] ;  address pair = uniswapV2Library_pairFor ( tokenA , tokenB , .TypedVals ) ;  IERC20 ( tokenA , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 0 ] , .TypedVals ) ;  IERC20 ( tokenB , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 1 ] , .TypedVals ) ;  amounts_liq [ 2 ] = UniswapV2Pair ( pair , .TypedVals ) . mint ( to , .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
@@ -1550,6 +1716,35 @@
             </contract-fn-payable>
             <contract-fn-body>
               address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  pair = local_pairs [ tokens [ 0 ] ] [ tokens [ 1 ] ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_quote
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountA )
+              ListItem ( reserveA )
+              ListItem ( reserveB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountB )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( amountA > 0 , "UniswapV2Library: INSUFFICIENT_AMOUNT" , .TypedVals ) ;  require ( reserveA > 0 && reserveB > 0 , "UniswapV2Library: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  amountB = amountA * reserveB / reserveA ;  .Statements
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
