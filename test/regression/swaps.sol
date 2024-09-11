@@ -134,21 +134,13 @@ contract UniswapV2Router02 {
         _swap(amounts, path, to);
     }
 
-    function myLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 amountADesired
-    ) external returns (uint[] memory amounts_liq) {
-        amounts_liq = new uint[](3);
-    }
-
     function addLiquidity(
         address tokenA,
         address tokenB,
-        uint256 amountADesired,
-        uint256 amountBDesired,
-        uint256 amountAMin,
-        uint256 amountBMin,
+        uint amountADesired,
+        uint amountBDesired,
+        uint amountAMin,
+        uint amountBMin,
         address to
     ) external returns (uint[] memory amounts_liq) {
         amounts_liq = new uint[](3);
@@ -732,10 +724,10 @@ contract UniswapV2SwapTest {
 
     function testRouterAddLiquidity() public {
         uint256 testAmount = 131072; // Hex: 0x20000
-        uint256 desiredA = 10000; 
-        uint256 desiredB = 10000; 
-        uint256 minA = 10000; 
-        uint256 minB = 10000; 
+        uint desiredA = 10000; 
+        uint desiredB = 10000; 
+        uint minA = 0; 
+        uint minB = 0; 
 
         _weth = new WETHMock();
         _dai = new DAIMock();
