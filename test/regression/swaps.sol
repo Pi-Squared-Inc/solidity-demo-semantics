@@ -706,6 +706,12 @@ contract UniswapV2SwapTest {
 
     function testSwapSingleHopExactAmountIn() public {
         uint256 wethAmount = 1e18;
+
+        _weth = new WETHMock();
+        _dai = new DAIMock();
+        _usdc = new USDCMock();
+        _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
+
         _weth.deposit{value: 2*wethAmount}();
         _weth.approve(address(_uni), 2*wethAmount);
         _dai.mint(address(this), wethAmount);
