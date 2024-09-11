@@ -134,6 +134,14 @@ contract UniswapV2Router02 {
         _swap(amounts, path, to);
     }
 
+    function myLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired
+    ) external returns (uint[] memory amounts_liq) {
+        amounts_liq = new uint[](3);
+    }
+
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -703,7 +711,7 @@ contract UniswapV2SwapTest {
           testSwapSingleHopExactAmountIn();
 	    }
     }
-    
+
     function testSwapSingleHopExactAmountIn() public {
         uint256 wethAmount = 1e18;
         _weth.deposit{value: 2*wethAmount}();
@@ -723,6 +731,12 @@ contract UniswapV2SwapTest {
     }
 
     function testRouterAddLiquidity() public {
+        uint256 testAmount = 131072; // Hex: 0x20000
+        uint256 desiredA = 10000; 
+        uint256 desiredB = 10000; 
+        uint256 minA = 10000; 
+        uint256 minB = 10000; 
+
         _weth = new WETHMock();
         _dai = new DAIMock();
         _usdc = new USDCMock();
@@ -732,14 +746,13 @@ contract UniswapV2SwapTest {
         _router.set_local_pair(address(_weth), address(_usdc));
         _router.set_local_pair(address(_usdc), address(_dai));
 
-        uint256 testAmount = 131072; // Hex: 0x20000
         _dai.mint(address(this), testAmount);
         _dai.approve(address(_router), testAmount);
         _usdc.mint(address(this), testAmount);
         _usdc.approve(address(_router), testAmount);
 
-        _router.addLiquidity(address(_dai), address(_usdc), 10000, 10000, 0, 0, address(this));
-
+        _router.addLiquidity(address(_dai), address(_usdc), desiredA, desiredB, minA, minB, address(this));
+        
         assert(_dai.balanceOf(address(this)) == 121072);
         assert(_usdc.balanceOf(address(this)) == 121072);
         assert(_dai.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
