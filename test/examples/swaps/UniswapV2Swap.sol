@@ -689,6 +689,7 @@ contract USDCMock {
 contract UniswapV2SwapTest {
 
     UniswapV2Swap private _uni;
+    UniswapV2Router02 private _router;
     WETHMock private _weth;
     DAIMock private _dai;
     USDCMock private _usdc;
@@ -805,17 +806,24 @@ contract UniswapV2SwapTest {
 
     function testRouterAddLiquidity() public {
         uint256 testAmount = 131072; // Hex: 0x20000
-        _dai.mint(address(this), testAmount);
-        _dai.approve(address(_uni.router()), testAmount);
-        _usdc.mint(address(this), testAmount);
-        _usdc.approve(address(_uni.router()), testAmount);
+        
+        _router = new UniswapV2Router02();
 
-        _uni.router().addLiquidity(address(_dai), address(_usdc), 10000, 10000, 0, 0, address(this));
+        _router.set_local_pair(address(_weth), address(_dai));
+        _router.set_local_pair(address(_weth), address(_usdc));
+        _router.set_local_pair(address(_usdc), address(_dai));
+
+        _dai.mint(address(this), testAmount);
+        _dai.approve(address(_router), testAmount);
+        _usdc.mint(address(this), testAmount);
+        _usdc.approve(address(_router), testAmount);
+
+        _router.addLiquidity(address(_dai), address(_usdc), 10000, 10000, 0, 0, address(this));
 
         assert(_dai.balanceOf(address(this)) == 121072);
         assert(_usdc.balanceOf(address(this)) == 121072);
-        assert(_dai.balanceOf(_uni.router().get_local_pair(address(_dai), address(_usdc))) == 10000);
-        assert(_usdc.balanceOf(_uni.router().get_local_pair(address(_dai), address(_usdc))) == 10000);
-        assert(UniswapV2Pair(_uni.router().get_local_pair(address(_dai), address(_usdc))).balanceOf(address(this)) == 9000);
+        assert(_dai.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
+        assert(_usdc.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
+        assert(UniswapV2Pair(_router.get_local_pair(address(_dai), address(_usdc))).balanceOf(address(this)) == 9000);
     }
 }

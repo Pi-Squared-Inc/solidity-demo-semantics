@@ -137,10 +137,10 @@ contract UniswapV2Router02 {
     function addLiquidity(
         address tokenA,
         address tokenB,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to
     ) external returns (uint[] memory amounts_liq) {
         amounts_liq = new uint[](3);
@@ -688,7 +688,7 @@ contract USDCMock {
 
 contract UniswapV2SwapTest {
 
-    UniswapV2Swap private _uni;    
+    UniswapV2Swap private _uni;
     UniswapV2Router02 private _router;
     WETHMock private _weth;
     DAIMock private _dai;
