@@ -75,8 +75,8 @@ test-aave:
 
 test-regression: ${REGRESSION_TESTS}
 
-$(REGRESSION_TESTS): %.out: %.sol %.txn %.ref %.smr $(SEMANTICS_FILE_NAME)-kompiled/timestamp
-	ulimit -s 65536 && bin/krun-sol $*.sol $*.txn $*.smr > $*.out 2>&1
+$(REGRESSION_TESTS): %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+	ulimit -s 65536 && bin/krun-sol $*.sol $*.txn > $*.out 2>&1
 	diff -U3 -w $*.ref $*.out
 
 test-examples: ${EXAMPLE_TESTS}

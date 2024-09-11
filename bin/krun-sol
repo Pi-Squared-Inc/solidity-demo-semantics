@@ -1,6 +1,17 @@
 #!/bin/bash
 contract="$1"
 txn="$2"
-isuniswap="$3"
-shift; shift; shift
-krun -d "$(dirname "$0")/../solidity-kompiled" "$contract" -cTXN="$txn" -pTXN="$(dirname "$0")/kparse-txn" -cISUNISWAP="$isuniswap" -pISUNISWAP="$(dirname "$0")/kparse-bool" --no-expand-macros "$@"
+
+if [ "$#" -lt 3 ]; then
+    isuniswap=""
+else
+    isuniswap="$3"
+    shift
+fi
+shift; shift
+
+if [ -z "${isuniswap}" ]; then
+    krun -d "$(dirname "$0")/../solidity-kompiled" "$contract" -cTXN="$txn" -pTXN="$(dirname "$0")/kparse-txn" -cISUNISWAP="false" --no-expand-macros "$@"
+else
+    krun -d "$(dirname "$0")/../solidity-kompiled" "$contract" -cTXN="$txn" -pTXN="$(dirname "$0")/kparse-txn" -cISUNISWAP="$isuniswap" -pISUNISWAP="$(dirname "$0")/kparse-bool" --no-expand-macros "$@"
+fi
