@@ -1,3 +1,4 @@
+Approval(1, 0, 2)
 <solidity>
   <k>
     .K
@@ -113,9 +114,6 @@
         </contract-storage>
       </live-contract>
     </live-contracts>
-    <events>
-      ListItem ( event (... name: Approval , args: v ( 1p160 , address ) , v ( 0p160 , address ) , v ( 2p160 , address ) , .TypedVals ) )
-    </events>
     <next-address>
       3p160
     </next-address>
