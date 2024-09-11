@@ -1,2 +1,3 @@
 create(1, 0, 1724300000, UniswapV2SwapTest, ),
-txn(1, 2, 0, 1724300000, testSwapLoop, )
+txn(1, 2, 0, 1724300000, testSwapLoop, ),
+txn(1, 2, 0, 1724300000, testRouterAddLiquidity, )

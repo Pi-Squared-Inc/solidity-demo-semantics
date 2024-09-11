@@ -720,4 +720,20 @@ contract UniswapV2SwapTest {
 
         assert(daiAmountOut >= daiAmountMin);
     }
+
+    function testRouterAddLiquidity() public {
+        uint256 testAmount = 131072; // Hex: 0x20000
+        _dai.mint(address(this), testAmount);
+        _dai.approve(address(_uni.router()), testAmount);
+        _usdc.mint(address(this), testAmount);
+        _usdc.approve(address(_uni.router()), testAmount);
+
+        _uni.router().addLiquidity(address(_dai), address(_usdc), 10000, 10000, 0, 0, address(this));
+
+        assert(_dai.balanceOf(address(this)) == 121072);
+        assert(_usdc.balanceOf(address(this)) == 121072);
+        assert(_dai.balanceOf(_uni.router().get_local_pair(address(_dai), address(_usdc))) == 10000);
+        assert(_usdc.balanceOf(_uni.router().get_local_pair(address(_dai), address(_usdc))) == 10000);
+        assert(UniswapV2Pair(_uni.router().get_local_pair(address(_dai), address(_usdc))).balanceOf(address(this)) == 9000);
+    }
 }
