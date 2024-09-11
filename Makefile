@@ -3,6 +3,7 @@
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
+TRANSACTIONS_DIR = $(TEST_DIR)/transactions
 SEMANTICS_FILE_NAME = solidity
 SEMANTICS_FILE = $(SEMANTICS_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
@@ -26,7 +27,7 @@ clean:
 	rm -Rf $(OUTPUT_DIR)
 	rm -Rf $(TEST_DIR)/regression/*.out
 
-test: test-swaps test-tokens test-staking test-lending test-regression
+test: test-swaps test-tokens test-staking test-lending test-regression test-examples
 
 test-swaps: test-swap test-swaprn
 
@@ -70,6 +71,16 @@ test-aave:
 
 test-regression: ${REGRESSION_TESTS}
 
-%.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+$(REGRESSION_TESTS): %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
 	ulimit -s 65536 && bin/krun-sol $*.sol $*.txn > $*.out
+	diff -U3 -w $*.ref $*.out
+
+TRANSACTIONS = $(shell find $(TRANSACTIONS_DIR) -name "*.txn")
+EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
+
+test-examples: ${EXAMPLE_TESTS}
+
+.SECONDEXPANSION:
+$(EXAMPLE_TESTS): %.out: $$(subst $(TRANSACTIONS_DIR), $(EXAMPLES_DIR), $$(@D)).sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+	ulimit -s 65536 && bin/krun-sol $< $*.txn > $*.out
 	diff -U3 -w $*.ref $*.out
