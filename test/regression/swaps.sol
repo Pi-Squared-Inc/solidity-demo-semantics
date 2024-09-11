@@ -722,6 +722,10 @@ contract UniswapV2SwapTest {
     }
 
     function testRouterAddLiquidity() public {
+        _weth = new WETHMock();
+        _dai = new DAIMock();
+        _usdc = new USDCMock();
+        _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
         uint256 testAmount = 131072; // Hex: 0x20000
         _dai.mint(address(this), testAmount);
         _dai.approve(address(_uni.router()), testAmount);
