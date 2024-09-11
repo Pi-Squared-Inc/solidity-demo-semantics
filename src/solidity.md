@@ -85,8 +85,7 @@ endmodule
 ```
 
 ```k
-module SOLIDITY-UNISWAP-INIT-SUMMARY
-  imports SOLIDITY-CONFIGURATION
+module SOLIDITY-UNISWAP-TOKENS
 
   syntax Id ::= "account"                         [token]
               | "act"                             [token]
@@ -248,6 +247,14 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
 
   syntax Decimal ::= "1e18" [token]
                    | "1e6"  [token]
+
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-INIT-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
 
   rule <k> _:Program => .K ...</k>
       <summarize> true </summarize>
