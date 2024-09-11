@@ -3,12 +3,14 @@
 SEMANTICS_DIR = src
 TEST_DIR = test
 EXAMPLES_DIR = $(TEST_DIR)/examples
+TRANSACTIONS_DIR = $(TEST_DIR)/transactions
 SEMANTICS_FILE_NAME = solidity
 SEMANTICS_FILE = $(SEMANTICS_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
 OUTPUT_DIR = out
 
 UNISWAP_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2Swap.sol 2>&1 1>$(OUTPUT_DIR)/uniswap.ast
+UNISWAPRN_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2SwapRenamed.sol 2>&1 1>$(OUTPUT_DIR)/uniswaprn.ast
 SOMETOKEN_PARAMS = $(EXAMPLES_DIR)/tokens/SomeToken.sol 2>&1 1>$(OUTPUT_DIR)/sometoken.ast
 SOMEMULTITOKEN_PARAMS = $(EXAMPLES_DIR)/tokens/SomeMultiToken.sol 2>&1 1>$(OUTPUT_DIR)/somemultitoken.ast
 LIQUIDSTAKING_PARAMS = $(EXAMPLES_DIR)/staking/LiquidStaking.sol 2>&1 1>$(OUTPUT_DIR)/liquidstaking.ast
@@ -17,6 +19,9 @@ LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
 REGRESSION_TESTS = $(patsubst %.sol, %.out, $(wildcard $(TEST_DIR)/regression/*.sol))
 
+TRANSACTIONS = $(shell find $(TRANSACTIONS_DIR) -name "*.txn")
+EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
+
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
 	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2
 
@@ -24,8 +29,11 @@ clean:
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
 	rm -Rf $(TEST_DIR)/regression/*.out
+	rm -Rf $(EXAMPLE_TESTS)
 
-test: test-swap test-tokens test-staking test-lending test-regression
+test: test-swaps test-tokens test-staking test-lending test-regression test-examples
+
+test-swaps: test-swap test-swaprn
 
 test-tokens: test-erc20 test-erc1155
 
@@ -36,6 +44,10 @@ test-lending: test-lendingpool test-aave
 test-swap:
 	mkdir -p $(OUTPUT_DIR)
 	kparse $(UNISWAP_PARAMS)
+
+test-swaprn:
+	mkdir -p $(OUTPUT_DIR)
+	kparse $(UNISWAPRN_PARAMS)
 
 test-erc20:
 	mkdir -p $(OUTPUT_DIR)
@@ -63,6 +75,13 @@ test-aave:
 
 test-regression: ${REGRESSION_TESTS}
 
-%.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+$(REGRESSION_TESTS): %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
 	ulimit -s 65536 && bin/krun-sol $*.sol $*.txn > $*.out 2>&1
+	diff -U3 -w $*.ref $*.out
+
+test-examples: ${EXAMPLE_TESTS}
+
+.SECONDEXPANSION:
+$(EXAMPLE_TESTS): %.out: $$(subst $(TRANSACTIONS_DIR), $(EXAMPLES_DIR), $$(@D)).sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+	ulimit -s 65536 && bin/krun-sol $< $*.txn > $*.out 2>&1
 	diff -U3 -w $*.ref $*.out
