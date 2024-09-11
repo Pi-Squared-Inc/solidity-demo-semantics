@@ -19,6 +19,9 @@ LENDINGPOOL_PARAMS = $(EXAMPLES_DIR)/lending/LendingPool.sol 2>&1 1>$(OUTPUT_DIR
 AAVE_PARAMS = $(EXAMPLES_DIR)/lending/AaveLendingPool.sol 2>&1 1>$(OUTPUT_DIR)/aave.ast
 REGRESSION_TESTS = $(patsubst %.sol, %.out, $(wildcard $(TEST_DIR)/regression/*.sol))
 
+TRANSACTIONS = $(shell find $(TRANSACTIONS_DIR) -name "*.txn")
+EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
+
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
 	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2
 
@@ -26,6 +29,7 @@ clean:
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
 	rm -Rf $(OUTPUT_DIR)
 	rm -Rf $(TEST_DIR)/regression/*.out
+	rm -Rf $(EXAMPLE_TESTS)
 
 test: test-swaps test-tokens test-staking test-lending test-regression test-examples
 
@@ -74,9 +78,6 @@ test-regression: ${REGRESSION_TESTS}
 $(REGRESSION_TESTS): %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
 	ulimit -s 65536 && bin/krun-sol $*.sol $*.txn > $*.out
 	diff -U3 -w $*.ref $*.out
-
-TRANSACTIONS = $(shell find $(TRANSACTIONS_DIR) -name "*.txn")
-EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
 
 test-examples: ${EXAMPLE_TESTS}
 
