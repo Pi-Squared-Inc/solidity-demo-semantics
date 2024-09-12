@@ -1,0 +1,2495 @@
+Transfer(0, 2, 2000000000000000000)
+Approval(2, 6, 2000000000000000000)
+Transfer(0, 2, 1000000000000000000)
+Approval(2, 6, 1000000000000000000)
+Transfer(2, 8, 1000000000000000000)
+Transfer(2, 8, 1000000000000000000)
+Sync(1000000000000000000, 1000000000000000000)
+Approval(2, 6, 1000000000000000000)
+Transfer(2, 6, 1000000000000000000)
+Approval(6, 7, 1000000000000000000)
+Approval(6, 7, 0)
+Transfer(6, 8, 1000000000000000000)
+Transfer(8, 2, 499248873309964947)
+Sync(2000000000000000000, 500751126690035053)
+Swap(7, 1000000000000000000, 0, 0, 499248873309964947, 2)
+Transfer(0, 2, 4000000000000000000)
+Approval(2, 6, 8000000000000000000)
+Transfer(0, 2, 3000000000000000000)
+Approval(2, 6, 3000000000000000000)
+Transfer(0, 2, 2000000000000000000)
+Approval(2, 6, 2000000000000000000)
+Transfer(2, 8, 1000000000000000000)
+Transfer(2, 8, 1000000000000000000)
+Sync(3000000000000000000, 1500751126690035053)
+Approval(2, 6, 7000000000000000000)
+Transfer(2, 6, 1000000000000000000)
+Approval(6, 7, 1000000000000000000)
+Approval(6, 7, 0)
+Transfer(6, 8, 1000000000000000000)
+Transfer(8, 2, 374342975559160607)
+Sync(4000000000000000000, 1126408151130874446)
+Swap(7, 1000000000000000000, 0, 0, 374342975559160607, 2)
+Transfer(2, 8, 1000000000000000000)
+Transfer(2, 8, 1000000000000000000)
+Transfer(2, 9, 1000000000000000000)
+Transfer(2, 9, 1000000000000000000)
+Sync(5000000000000000000, 2126408151130874446)
+Sync(1000000000000000000, 1000000000000000000)
+Transfer(2, 6, 1000000000000000000)
+Approval(6, 7, 1000000000000000000)
+Transfer(6, 8, 1000000000000000000)
+Transfer(8, 9, 1596012995674327637)
+Sync(3403987004325672363, 3126408151130874446)
+Swap(7, 0, 1000000000000000000, 1596012995674327637, 0, 9)
+Transfer(9, 2, 614082136165272076)
+Sync(2596012995674327637, 385917863834727924)
+Swap(7, 1596012995674327637, 0, 0, 614082136165272076, 2)
+Transfer(0, 2, 10000000000000000000)
+Approval(2, 6, 6000000000000000000)
+Transfer(0, 2, 10000000000000000000)
+Approval(2, 6, 4000000000000000000)
+Transfer(2, 8, 4000000000000000000)
+Transfer(2, 8, 4000000000000000000)
+Sync(7403987004325672363, 7126408151130874446)
+Approval(2, 6, 4000000000000000000)
+Transfer(2, 6, 2000000000000000000)
+Approval(6, 7, 2000000000000000000)
+Approval(6, 7, 787827121776068800)
+Transfer(6, 8, 1212172878223931200)
+Transfer(8, 2, 1000000000000000000)
+Sync(8616159882549603563, 6126408151130874446)
+Swap(7, 1212172878223931200, 0, 0, 1000000000000000000, 2)
+Transfer(6, 2, 787827121776068800)
+Transfer(0, 2, 20000000000000000000)
+Approval(2, 6, 20000000000000000000)
+Transfer(0, 2, 20000000000000000000)
+Approval(2, 6, 20000000000000000000)
+Transfer(0, 2, 10000000000000000000)
+Approval(2, 6, 10000000000000000000)
+Transfer(2, 8, 8000000000000000000)
+Transfer(2, 8, 8000000000000000000)
+Sync(16616159882549603563, 14126408151130874446)
+Approval(2, 6, 16000000000000000000)
+Transfer(2, 6, 4000000000000000000)
+Approval(6, 7, 4000000000000000000)
+Approval(6, 7, 1251262179218628346)
+Transfer(6, 8, 2748737820781371654)
+Transfer(8, 2, 2000000000000000000)
+Sync(19364897703330975217, 12126408151130874446)
+Swap(7, 2748737820781371654, 0, 0, 2000000000000000000, 2)
+Transfer(6, 2, 1251262179218628346)
+Transfer(2, 8, 4000000000000000000)
+Transfer(2, 8, 4000000000000000000)
+Transfer(2, 9, 4000000000000000000)
+Transfer(2, 9, 4000000000000000000)
+Sync(23364897703330975217, 16126408151130874446)
+Sync(6596012995674327637, 4385917863834727924)
+Transfer(2, 6, 2000000000000000000)
+Approval(6, 7, 2000000000000000000)
+Transfer(6, 8, 1044251)
+Transfer(8, 9, 1508433)
+Sync(23364897703329466784, 16126408151131918697)
+Swap(7, 0, 1044251, 1508433, 0, 9)
+Transfer(9, 2, 1000000)
+Sync(6596012995675836070, 4385917863833727924)
+Swap(7, 1508433, 0, 0, 1000000, 2)
+Transfer(6, 2, 1999999999998955749)
+<solidity>
+  <k>
+    .K
+  </k>
+  <compile>
+    <current-body>
+      UniswapV2SwapTest
+    </current-body>
+    <ifaces>
+      <iface>
+        <iface-id>
+          IERC20
+        </iface-id>
+        <iface-fns>
+          <iface-fn>
+            <iface-fn-id>
+              approve
+            </iface-fn-id>
+            <iface-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </iface-fn-arg-types>
+            <iface-fn-return-types>
+              ListItem ( bool )
+            </iface-fn-return-types>
+          </iface-fn> <iface-fn>
+            <iface-fn-id>
+              balanceOf
+            </iface-fn-id>
+            <iface-fn-arg-types>
+              ListItem ( address )
+            </iface-fn-arg-types>
+            <iface-fn-return-types>
+              ListItem ( uint256 )
+            </iface-fn-return-types>
+          </iface-fn> <iface-fn>
+            <iface-fn-id>
+              transfer
+            </iface-fn-id>
+            <iface-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </iface-fn-arg-types>
+            <iface-fn-return-types>
+              ListItem ( bool )
+            </iface-fn-return-types>
+          </iface-fn> <iface-fn>
+            <iface-fn-id>
+              transferFrom
+            </iface-fn-id>
+            <iface-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </iface-fn-arg-types>
+            <iface-fn-return-types>
+              ListItem ( bool )
+            </iface-fn-return-types>
+          </iface-fn>
+        </iface-fns>
+      </iface>
+    </ifaces>
+    <contracts>
+      <contract>
+        <contract-id>
+          DAIMock
+        </contract-id>
+        <contract-state>
+          UINT_MAX |-> uint256
+          allowance |-> mapping ( address  => mapping ( address  => uint256  )  )
+          balanceOf |-> mapping ( address  => uint256  )
+          totalSupply |-> uint256
+        </contract-state>
+        <contract-init>
+          ListItem ( UINT_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff ; )
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              allowance
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+              ListItem ( $1 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => mapping ( address  => uint256  )  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return allowance [ $0 ] [ $1 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              approve
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( usr )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              allowance [ msg . sender ] [ usr ] = wad ;  emit Approval ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              balanceOf
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => uint256  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return balanceOf [ $0 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              burn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( usr )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( balanceOf [ usr ] >= wad ) { balanceOf [ usr ] = balanceOf [ usr ] - wad ;  totalSupply = totalSupply - wad ;  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              decimals
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint8 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return 18 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mint
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( usr )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              balanceOf [ usr ] = balanceOf [ usr ] + wad ;  totalSupply = totalSupply + wad ;  emit Transfer ( address ( 0 , .TypedVals ) , usr , wad , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mintOnDeposit
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( usr )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              mint ( usr , wad , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              safeTransferFrom
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              transferFrom ( from , to , value , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              totalSupply
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return totalSupply ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transfer
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( dst )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return transferFrom ( msg . sender , dst , wad , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transferFrom
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( src )
+              ListItem ( dst )
+              ListItem ( wad )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( balanceOf [ src ] >= wad , "Dai/insufficient-balance" , .TypedVals ) ;  if ( src != msg . sender && allowance [ src ] [ msg . sender ] != UINT_MAX ) { require ( allowance [ src ] [ msg . sender ] >= wad , "Dai/insufficient-allowance" , .TypedVals ) ;  allowance [ src ] [ msg . sender ] = allowance [ src ] [ msg . sender ] - wad ;  .Statements }  balanceOf [ src ] = balanceOf [ src ] - wad ;  balanceOf [ dst ] = balanceOf [ dst ] + wad ;  emit Transfer ( src , dst , wad , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          <contract-event>
+            <contract-event-id>
+              Approval
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( src )
+              ListItem ( guy )
+              ListItem ( wad )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Transfer
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( src )
+              ListItem ( dst )
+              ListItem ( wad )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event>
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          USDCMock
+        </contract-id>
+        <contract-state>
+          UINT256_MAX |-> uint256
+          _allowances |-> mapping ( address account => mapping ( address spender => uint256  )  )
+          _balances |-> mapping ( address account => uint256  )
+          _totalSupply |-> uint256
+        </contract-state>
+        <contract-init>
+          ListItem ( UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff ; )
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              _approve
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( bool )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( owner )
+              ListItem ( spender )
+              ListItem ( value )
+              ListItem ( emitEvent )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( owner != address ( 0 , .TypedVals ) , "USDC: invalid approver" , .TypedVals ) ;  require ( spender != address ( 0 , .TypedVals ) , "USDC: invalid spender" , .TypedVals ) ;  _allowances [ owner ] [ spender ] = value ;  if ( emitEvent ) { emit Approval ( owner , spender , value , .TypedVals ) ;  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              _spendAllowance
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( owner )
+              ListItem ( spender )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 currentAllowance = allowance ( owner , spender , .TypedVals ) ;  if ( currentAllowance != UINT256_MAX ) { require ( currentAllowance >= value , "USDC: insufficient allowance" , .TypedVals ) ;  _approve ( owner , spender , currentAllowance - value , false , .TypedVals ) ;  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              _transfer
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( from != address ( 0 , .TypedVals ) , "USDC: invalid sender" , .TypedVals ) ;  require ( to != address ( 0 , .TypedVals ) , "USDC: invalid receiver" , .TypedVals ) ;  _update ( from , to , value , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              _update
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( from == address ( 0 , .TypedVals ) ) { _totalSupply = _totalSupply + value ;  .Statements } else { uint256 fromBalance = _balances [ from ] ;  require ( fromBalance >= value , "USDC: insufficient balance" , .TypedVals ) ;  _balances [ from ] = fromBalance - value ;  .Statements }  if ( to == address ( 0 , .TypedVals ) ) { _totalSupply = _totalSupply - value ;  .Statements } else { _balances [ to ] = _balances [ to ] + value ;  .Statements }  emit Transfer ( from , to , value , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              allowance
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( owner )
+              ListItem ( spender )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return _allowances [ owner ] [ spender ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              approve
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( spender )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address owner = msg . sender ;  _approve ( owner , spender , value , true , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              balanceOf
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( account )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return _balances [ account ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              decimals
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint8 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return 18 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mint
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( account )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( account != address ( 0 , .TypedVals ) , "USDC: invalid receiver" , .TypedVals ) ;  _update ( address ( 0 , .TypedVals ) , account , value , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transfer
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address owner = msg . sender ;  _transfer ( owner , to , value , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transferFrom
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address spender = msg . sender ;  _spendAllowance ( from , spender , value , .TypedVals ) ;  _transfer ( from , to , value , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          <contract-event>
+            <contract-event-id>
+              Approval
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( owner )
+              ListItem ( spender )
+              ListItem ( value )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Transfer
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event>
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          UniswapV2Pair
+        </contract-id>
+        <contract-state>
+          MINIMUM_LIQUIDITY |-> uint256
+          UINT112_MAX |-> uint256
+          balanceOf |-> mapping ( address  => uint256  )
+          blockTimestampLast |-> uint32
+          kLast |-> uint256
+          price0CumulativeLast |-> uint256
+          price1CumulativeLast |-> uint256
+          reserve0 |-> uint112
+          reserve1 |-> uint112
+          token0 |-> address
+          token1 |-> address
+          totalSupply |-> uint256
+        </contract-state>
+        <contract-init>
+          ListItem ( UINT112_MAX = 0xffffffffffffffffffffffffffff ; )
+          ListItem ( MINIMUM_LIQUIDITY = 10 ** 3 ; )
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              MINIMUM_LIQUIDITY
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return MINIMUM_LIQUIDITY ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              _update
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint112 )
+              ListItem ( uint112 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( balance0 )
+              ListItem ( balance1 )
+              ListItem ( _reserve0 )
+              ListItem ( _reserve1 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( balance0 <= UINT112_MAX && balance1 <= UINT112_MAX , "UniswapV2: OVERFLOW" , .TypedVals ) ;  uint32 blockTimestamp = uint32 ( block . timestamp % 2 ** 32 , .TypedVals ) ;  uint32 timeElapsed = blockTimestamp - blockTimestampLast ;  if ( timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0 ) { price0CumulativeLast = price0CumulativeLast + _reserve1 / _reserve0 * timeElapsed ;  price1CumulativeLast = price1CumulativeLast + _reserve0 / _reserve1 * timeElapsed ;  .Statements }  reserve0 = uint112 ( balance0 , .TypedVals ) ;  reserve1 = uint112 ( balance1 , .TypedVals ) ;  blockTimestampLast = blockTimestamp ;  emit Sync ( reserve0 , reserve1 , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              balanceOf
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => uint256  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return balanceOf [ $0 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              constructor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( _token0 )
+              ListItem ( _token1 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              token0 = _token0 ;  token1 = _token1 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              getReserves
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint112 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( reserves )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              reserves = new uint112 [ ] ( 3 , .TypedVals ) ;  reserves [ 0 ] = reserve0 ;  reserves [ 1 ] = reserve1 ;  reserves [ 2 ] = blockTimestampLast ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              kLast
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return kLast ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              price0CumulativeLast
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return price0CumulativeLast ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              price1CumulativeLast
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return price1CumulativeLast ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swap
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amount0Out )
+              ListItem ( amount1Out )
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( amount0Out > 0 || amount1Out > 0 , "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ;  uint112 [ ] memory reserves = getReserves ( .TypedVals ) ;  require ( amount0Out < reserves [ 0 ] && amount1Out < reserves [ 1 ] , "UniswapV2: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  uint256 balance0 ;  uint256 balance1 ;  { address _token0 = token0 ;  address _token1 = token1 ;  require ( to != _token0 && to != _token1 , "UniswapV2: INVALID_TO" , .TypedVals ) ;  if ( amount0Out > 0 ) IERC20 ( _token0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ;  if ( amount1Out > 0 ) IERC20 ( _token1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ;  balance0 = IERC20 ( _token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  balance1 = IERC20 ( _token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  .Statements }  uint256 amount0In = balance0 > reserves [ 0 ] - amount0Out ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ;  uint256 amount1In = balance1 > reserves [ 1 ] - amount1Out ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ;  require ( amount0In > 0 || amount1In > 0 , "UniswapV2: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  { uint256 balance0Adjusted = balance0 * 1000 - amount0In * 3 ;  uint256 balance1Adjusted = balance1 * 1000 - amount1In * 3 ;  require ( balance0Adjusted * balance1Adjusted >= uint256 ( reserves [ 0 ] , .TypedVals ) * reserves [ 1 ] * 1000 ** 2 , "UniswapV2: K" , .TypedVals ) ;  .Statements }  _update ( balance0 , balance1 , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  emit Swap ( msg . sender , amount0In , amount1In , amount0Out , amount1Out , to , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              sync
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              _update ( IERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , IERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , reserve0 , reserve1 , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              token0
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( address )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return token0 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              token1
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( address )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return token1 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              totalSupply
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return totalSupply ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          <contract-event>
+            <contract-event-id>
+              Swap
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( sender )
+              ListItem ( amount0In )
+              ListItem ( amount1In )
+              ListItem ( amount0Out )
+              ListItem ( amount1Out )
+              ListItem ( to )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 5 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Sync
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( uint112 )
+              ListItem ( uint112 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( reserve0 )
+              ListItem ( reserve1 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              .Set
+            </contract-event-indexed-pos>
+          </contract-event>
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          UniswapV2Router02
+        </contract-id>
+        <contract-state>
+          local_pairs |-> mapping ( address  => mapping ( address  => address  )  )
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              _swap
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 [ ] )
+              ListItem ( address [ ] )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amounts )
+              ListItem ( path )
+              ListItem ( _to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              { uint256 i ;  while ( i < path . length - 1 ) { { address input = path [ i ] ;  address output = path [ i + 1 ] ;  address [ ] memory tokens = uniswapV2Library_sortTokens ( input , output , .TypedVals ) ;  uint256 amountOut = amounts [ i + 1 ] ;  uint256 amount0Out = input == tokens [ 0 ] ? uint256 ( 0 , .TypedVals ) : amountOut ;  uint256 amount1Out = input == tokens [ 0 ] ? amountOut : uint256 ( 0 , .TypedVals ) ;  address to = i < path . length - 2 ? uniswapV2Library_pairFor ( output , path [ i + 2 ] , .TypedVals ) : _to ;  UniswapV2Pair ( uniswapV2Library_pairFor ( input , output , .TypedVals ) , .TypedVals ) . swap ( amount0Out , amount1Out , to , .TypedVals ) ;  .Statements }  i ++ ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              get_local_pair
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( address )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( pair )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  pair = local_pairs [ tokens [ 0 ] ] [ tokens [ 1 ] ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              local_pairs
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+              ListItem ( $1 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => mapping ( address  => address  )  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return local_pairs [ $0 ] [ $1 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              set_local_pair
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  local_pairs [ tokens [ 0 ] ] [ tokens [ 1 ] ] = address ( new UniswapV2Pair ( address ( tokens [ 0 ] , .TypedVals ) , address ( tokens [ 1 ] , .TypedVals ) , .TypedVals ) , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapExactTokensForTokens
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address [ ] )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountIn )
+              ListItem ( amountOutMin )
+              ListItem ( path )
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amounts = uniswapV2Library_getAmountsOut ( amountIn , path , .TypedVals ) ;  require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ;  IERC20 ( path [ 0 ] , .TypedVals ) . transferFrom ( msg . sender , uniswapV2Library_pairFor ( path [ 0 ] , path [ 1 ] , .TypedVals ) , amounts [ 0 ] , .TypedVals ) ;  _swap ( amounts , path , to , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapTokensForExactTokens
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address [ ] )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountOut )
+              ListItem ( amountInMax )
+              ListItem ( path )
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amounts = uniswapV2Library_getAmountsIn ( amountOut , path , .TypedVals ) ;  require ( amounts [ 0 ] <= amountInMax , "UniswapV2Router: EXCESSIVE_INPUT_AMOUNT" , .TypedVals ) ;  IERC20 ( path [ 0 ] , .TypedVals ) . transferFrom ( msg . sender , uniswapV2Library_pairFor ( path [ 0 ] , path [ 1 ] , .TypedVals ) , amounts [ 0 ] , .TypedVals ) ;  _swap ( amounts , path , to , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              sync_local_pair
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  UniswapV2Pair ( local_pairs [ tokens [ 0 ] ] [ tokens [ 1 ] ] , .TypedVals ) . sync ( .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_getAmountIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountOut )
+              ListItem ( reserveIn )
+              ListItem ( reserveOut )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountIn )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( amountOut > 0 , "UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ;  require ( reserveIn > 0 && reserveOut > 0 , "UniswapV2Library: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  uint256 numerator = reserveIn * amountOut * 1000 ;  uint256 denominator = ( reserveOut - amountOut ) * 997 ;  amountIn = denominator != 0 ? numerator / denominator + 1 : 1 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_getAmountOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountIn )
+              ListItem ( reserveIn )
+              ListItem ( reserveOut )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountOut )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( amountIn > 0 , "UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  require ( reserveIn > 0 && reserveOut > 0 , "UniswapV2Library: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  uint256 amountInWithFee = amountIn * 997 ;  uint256 numerator = amountInWithFee * reserveOut ;  uint256 denominator = reserveIn * 1000 + amountInWithFee ;  amountOut = numerator / denominator ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_getAmountsIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( address [ ] )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountOut )
+              ListItem ( path )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( path . length >= 2 , "UniswapV2Library: INVALID_PATH" , .TypedVals ) ;  amounts = new uint256 [ ] ( path . length , .TypedVals ) ;  amounts [ amounts . length - 1 ] = amountOut ;  { uint256 i = path . length - 1 ;  while ( i > 0 ) { { uint256 [ ] memory reserves = uniswapV2Library_getReserves ( path [ i - 1 ] , path [ i ] , .TypedVals ) ;  amounts [ i - 1 ] = uniswapV2Library_getAmountIn ( amounts [ i ] , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  .Statements }  i -- ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_getAmountsOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( address [ ] )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountIn )
+              ListItem ( path )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( path . length >= 2 , "UniswapV2Library: INVALID_PATH" , .TypedVals ) ;  amounts = new uint256 [ ] ( path . length , .TypedVals ) ;  amounts [ 0 ] = amountIn ;  { uint256 i ;  while ( i < path . length - 1 ) { { uint256 [ ] memory reserves = uniswapV2Library_getReserves ( path [ i ] , path [ i + 1 ] , .TypedVals ) ;  amounts [ i + 1 ] = uniswapV2Library_getAmountOut ( amounts [ i ] , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  .Statements }  i ++ ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_getReserves
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( reserves )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              reserves = new uint256 [ ] ( 2 , .TypedVals ) ;  address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  uint112 [ ] memory pair_reserves = UniswapV2Pair ( uniswapV2Library_pairFor ( tokenA , tokenB , .TypedVals ) , .TypedVals ) . getReserves ( .TypedVals ) ;  reserves [ 0 ] = tokenA == tokens [ 0 ] ? pair_reserves [ 0 ] : pair_reserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pair_reserves [ 1 ] : pair_reserves [ 0 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_pairFor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( address )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( pair )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              address [ ] memory tokens = uniswapV2Library_sortTokens ( tokenA , tokenB , .TypedVals ) ;  pair = local_pairs [ tokens [ 0 ] ] [ tokens [ 1 ] ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              uniswapV2Library_sortTokens
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( address [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( tokens )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              tokens = new address [ ] ( 2 , .TypedVals ) ;  require ( tokenA != tokenB , "UniswapV2Library: IDENTICAL_ADDRESSES" , .TypedVals ) ;  tokens [ 0 ] = tokenA < tokenB ? tokenA : tokenB ;  tokens [ 1 ] = tokenA < tokenB ? tokenB : tokenA ;  require ( tokens [ 0 ] != address ( 0 , .TypedVals ) , "UniswapV2Library: ZERO_ADDRESS" , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          .ContractEventCellMap
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          UniswapV2Swap
+        </contract-id>
+        <contract-state>
+          dai |-> IERC20
+          router |-> UniswapV2Router02
+          usdc |-> IERC20
+          weth |-> IERC20
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              constructor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( _weth )
+              ListItem ( _dai )
+              ListItem ( _usdc )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              weth = IERC20 ( _weth , .TypedVals ) ;  dai = IERC20 ( _dai , .TypedVals ) ;  usdc = IERC20 ( _usdc , .TypedVals ) ;  router = new UniswapV2Router02 ( .TypedVals ) ;  router . set_local_pair ( _weth , _dai , .TypedVals ) ;  router . set_local_pair ( _weth , _usdc , .TypedVals ) ;  router . set_local_pair ( _usdc , _dai , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              dai
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( IERC20 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return dai ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              router
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( UniswapV2Router02 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return router ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapMultiHopExactAmountIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountIn )
+              ListItem ( amountOutMin )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountOut )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              dai . transferFrom ( msg . sender , address ( this , .TypedVals ) , amountIn , .TypedVals ) ;  dai . approve ( address ( router , .TypedVals ) , amountIn , .TypedVals ) ;  address [ ] memory path = new address [ ] ( 3 , .TypedVals ) ;  path [ 0 ] = address ( dai , .TypedVals ) ;  path [ 1 ] = address ( weth , .TypedVals ) ;  path [ 2 ] = address ( usdc , .TypedVals ) ;  uint256 [ ] memory amounts = router . swapExactTokensForTokens ( amountIn , amountOutMin , path , msg . sender , .TypedVals ) ;  return amounts [ 2 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapMultiHopExactAmountOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountOutDesired )
+              ListItem ( amountInMax )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountOut )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              dai . transferFrom ( msg . sender , address ( this , .TypedVals ) , amountInMax , .TypedVals ) ;  dai . approve ( address ( router , .TypedVals ) , amountInMax , .TypedVals ) ;  address [ ] memory path = new address [ ] ( 3 , .TypedVals ) ;  path [ 0 ] = address ( dai , .TypedVals ) ;  path [ 1 ] = address ( weth , .TypedVals ) ;  path [ 2 ] = address ( usdc , .TypedVals ) ;  uint256 [ ] memory amounts = router . swapTokensForExactTokens ( amountOutDesired , amountInMax , path , msg . sender , .TypedVals ) ;  if ( amounts [ 0 ] < amountInMax ) { dai . transfer ( msg . sender , amountInMax - amounts [ 0 ] , .TypedVals ) ;  .Statements }  return amounts [ 2 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapSingleHopExactAmountIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountIn )
+              ListItem ( amountOutMin )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountOut )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              weth . transferFrom ( msg . sender , address ( this , .TypedVals ) , amountIn , .TypedVals ) ;  weth . approve ( address ( router , .TypedVals ) , amountIn , .TypedVals ) ;  address [ ] memory path = new address [ ] ( 2 , .TypedVals ) ;  path [ 0 ] = address ( weth , .TypedVals ) ;  path [ 1 ] = address ( dai , .TypedVals ) ;  uint256 [ ] memory amounts = router . swapExactTokensForTokens ( amountIn , amountOutMin , path , msg . sender , .TypedVals ) ;  return amounts [ 1 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              swapSingleHopExactAmountOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountOutDesired )
+              ListItem ( amountInMax )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountOut )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              weth . transferFrom ( msg . sender , address ( this , .TypedVals ) , amountInMax , .TypedVals ) ;  weth . approve ( address ( router , .TypedVals ) , amountInMax , .TypedVals ) ;  address [ ] memory path = new address [ ] ( 2 , .TypedVals ) ;  path [ 0 ] = address ( weth , .TypedVals ) ;  path [ 1 ] = address ( dai , .TypedVals ) ;  uint256 [ ] memory amounts = router . swapTokensForExactTokens ( amountOutDesired , amountInMax , path , msg . sender , .TypedVals ) ;  if ( amounts [ 0 ] < amountInMax ) { weth . transfer ( msg . sender , amountInMax - amounts [ 0 ] , .TypedVals ) ;  .Statements }  return amounts [ 1 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              usdc
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( IERC20 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return usdc ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              weth
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( IERC20 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return weth ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          .ContractEventCellMap
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          UniswapV2SwapTest
+        </contract-id>
+        <contract-state>
+          _dai |-> DAIMock
+          _uni |-> UniswapV2Swap
+          _usdc |-> USDCMock
+          _weth |-> WETHMock
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              setUp
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              _weth = new WETHMock ( .TypedVals ) ;  _dai = new DAIMock ( .TypedVals ) ;  _usdc = new USDCMock ( .TypedVals ) ;  _uni = new UniswapV2Swap ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testSwapMultiHopExactAmountIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 4 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 3 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 3 * wethAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _usdc . approve ( address ( _uni , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountMin = 1 ;  _uni . swapSingleHopExactAmountIn ( wethAmount , daiAmountMin , .TypedVals ) ;  uint256 daiAmountIn = 1e18 ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _usdc . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  uint256 usdcAmountOutMin = 1 ;  uint256 usdcAmountOut = _uni . swapMultiHopExactAmountIn ( daiAmountIn , usdcAmountOutMin , .TypedVals ) ;  assert ( usdcAmountOut >= usdcAmountOutMin , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testSwapMultiHopExactAmountOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 20 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _usdc . approve ( address ( _uni , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountOut = 2 * 1e18 ;  _uni . swapSingleHopExactAmountOut ( daiAmountOut , 4 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _usdc . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  uint256 amountOutDesired = 1e6 ;  uint256 amountOut = _uni . swapMultiHopExactAmountOut ( amountOutDesired , daiAmountOut , .TypedVals ) ;  assert ( amountOut == amountOutDesired , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testSwapSingleHopExactAmountIn
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 2 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountMin = 1 ;  uint256 daiAmountOut = _uni . swapSingleHopExactAmountIn ( wethAmount , daiAmountMin , .TypedVals ) ;  assert ( daiAmountOut >= daiAmountMin , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testSwapSingleHopExactAmountOut
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 10 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 6 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountDesired = 1e18 ;  uint256 daiAmountOut = _uni . swapSingleHopExactAmountOut ( daiAmountDesired , 2 * wethAmount , .TypedVals ) ;  assert ( daiAmountOut == daiAmountDesired , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          .ContractEventCellMap
+        </contract-events>
+      </contract> <contract>
+        <contract-id>
+          WETHMock
+        </contract-id>
+        <contract-state>
+          UINT256_MAX |-> uint256
+          allowance |-> mapping ( address  => mapping ( address  => uint256  )  )
+          balanceOf |-> mapping ( address  => uint256  )
+        </contract-state>
+        <contract-init>
+          ListItem ( UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff ; )
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              allowance
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+              ListItem ( $1 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => mapping ( address  => uint256  )  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return allowance [ $0 ] [ $1 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              approve
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( spender )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              allowance [ msg . sender ] [ spender ] = value ;  emit Approval ( msg . sender , spender , value , .TypedVals ) ;  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              balanceOf
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( $0 )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( mapping ( address  => uint256  ) )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return balanceOf [ $0 ] ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              decimals
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint8 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return 18 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              deposit
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              true
+            </contract-fn-payable>
+            <contract-fn-body>
+              balanceOf [ msg . sender ] = balanceOf [ msg . sender ] + msg . value ;  emit Transfer ( address ( 0 , .TypedVals ) , msg . sender , msg . value , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transfer
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  balanceOf [ to ] = balanceOf [ to ] + value ;  emit Transfer ( msg . sender , to , value , .TypedVals ) ;  .Statements } else { uint256 balance = balanceOf [ msg . sender ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ msg . sender ] = balance - value ;  emit Transfer ( msg . sender , address ( 0 , .TypedVals ) , value , .TypedVals ) ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              transferFrom
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( bool )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( from != msg . sender ) { uint256 allowed = allowance [ from ] [ msg . sender ] ;  if ( allowed != UINT256_MAX ) { require ( allowed >= value , "WETH: request exceeds allowance" , .TypedVals ) ;  uint256 reduced = allowed - value ;  allowance [ from ] [ msg . sender ] = reduced ;  emit Approval ( from , msg . sender , reduced , .TypedVals ) ;  .Statements }  .Statements }  if ( to != address ( 0 , .TypedVals ) && to != address ( this , .TypedVals ) ) { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: transfer amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  balanceOf [ to ] = balanceOf [ to ] + value ;  emit Transfer ( from , to , value , .TypedVals ) ;  .Statements } else { uint256 balance = balanceOf [ from ] ;  require ( balance >= value , "WETH: burn amount exceeds balance" , .TypedVals ) ;  balanceOf [ from ] = balance - value ;  emit Transfer ( from , address ( 0 , .TypedVals ) , value , .TypedVals ) ;  ( bool success , ) = msg . sender . call { value : value , .KeyValues } ( "" , .TypedVals ) ;  require ( success , "WETH: ETH transfer failed" , .TypedVals ) ;  .Statements }  return true ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          <contract-event>
+            <contract-event-id>
+              Approval
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( owner )
+              ListItem ( spender )
+              ListItem ( value )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
+              Transfer
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( from )
+              ListItem ( to )
+              ListItem ( value )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+              SetItem ( 1 )
+            </contract-event-indexed-pos>
+          </contract-event>
+        </contract-events>
+      </contract>
+    </contracts>
+  </compile>
+  <exec>
+    <msg-sender>
+      1p160
+    </msg-sender>
+    <msg-value>
+      0p256
+    </msg-value>
+    <tx-origin>
+      1p160
+    </tx-origin>
+    <block-timestamp>
+      1724300000p256
+    </block-timestamp>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      UniswapV2SwapTest
+    </this-type>
+    <env>
+      amountOut |-> var ( 1186 , uint256 )
+      amountOutDesired |-> var ( 1002 , uint256 )
+      daiAmountOut |-> var ( 814 , uint256 )
+      wethAmount |-> var ( 759 , uint256 )
+    </env>
+    <store>
+      759 |-> 1000000000000000000p256
+      814 |-> 2000000000000000000p256
+      1002 |-> 1000000p256
+      1186 |-> 1000000p256
+    </store>
+    <call-stack>
+      .List
+    </call-stack>
+    <live-contracts>
+      <live-contract>
+        <contract-address>
+          2p160
+        </contract-address>
+        <contract-type>
+          UniswapV2SwapTest
+        </contract-type>
+        <contract-storage>
+          _dai |-> 4p160
+          _uni |-> 6p160
+          _usdc |-> 5p160
+          _weth |-> 3p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          3p160
+        </contract-address>
+        <contract-type>
+          WETHMock
+        </contract-type>
+        <contract-storage>
+          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          allowance |-> ( 2p160 |-> ( 6p160 |-> 16000000000000000000p256 )
+          6p160 |-> ( 7p160 |-> 1251262179218628346p256 ) )
+          balanceOf |-> ( 2p160 |-> 6039089300994697146p256
+          6p160 |-> 0p256
+          8p160 |-> 23364897703329466784p256
+          9p160 |-> 6596012995675836070p256 )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          4p160
+        </contract-address>
+        <contract-type>
+          DAIMock
+        </contract-type>
+        <contract-storage>
+          UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          allowance |-> ( 2p160 |-> ( 6p160 |-> 18000000000000000000p256 )
+          6p160 |-> ( 7p160 |-> 1999999999998955749p256 ) )
+          balanceOf |-> ( 2p160 |-> 17873591848868081303p256
+          6p160 |-> 0p256
+          8p160 |-> 16126408151131918697p256 )
+          totalSupply |-> 34000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          5p160
+        </contract-address>
+        <contract-type>
+          USDCMock
+        </contract-type>
+        <contract-storage>
+          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          _allowances |-> ( 2p160 |-> ( 6p160 |-> 10000000000000000000p256 ) )
+          _balances |-> ( 2p160 |-> 7614082136166272076p256
+          9p160 |-> 4385917863833727924p256 )
+          _totalSupply |-> 12000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          6p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          dai |-> 4p160
+          router |-> 7p160
+          usdc |-> 5p160
+          weth |-> 3p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          7p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          local_pairs |-> ( 3p160 |-> ( 4p160 |-> 8p160
+          5p160 |-> 9p160 )
+          4p160 |-> ( 5p160 |-> 10p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          8p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          MINIMUM_LIQUIDITY |-> 1000p256
+          UINT112_MAX |-> 5192296858534827628530496329220095p256
+          blockTimestampLast |-> 1724300000p32
+          reserve0 |-> 23364897703329466784p112
+          reserve1 |-> 16126408151131918697p112
+          token0 |-> 3p160
+          token1 |-> 4p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          9p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          MINIMUM_LIQUIDITY |-> 1000p256
+          UINT112_MAX |-> 5192296858534827628530496329220095p256
+          blockTimestampLast |-> 1724300000p32
+          reserve0 |-> 6596012995675836070p112
+          reserve1 |-> 4385917863833727924p112
+          token0 |-> 3p160
+          token1 |-> 5p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          10p160
+        </contract-address>
+        <contract-type>
+          UniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          MINIMUM_LIQUIDITY |-> 1000p256
+          UINT112_MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 4p160
+          token1 |-> 5p160
+        </contract-storage>
+      </live-contract>
+    </live-contracts>
+    <next-address>
+      11p160
+    </next-address>
+  </exec>
+</solidity>

@@ -76,7 +76,6 @@ module SOLIDITY-CONFIGURATION
             <contract-storage> .Map </contract-storage>
           </live-contract>
         </live-contracts>
-        <events> .List </events>
         <next-address> 2p160 </next-address>
       </exec>
     </solidity>

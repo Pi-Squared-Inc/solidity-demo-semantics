@@ -5,6 +5,8 @@
 module SOLIDITY-STATEMENT
   imports SOLIDITY-CONFIGURATION
   imports private SOLIDITY-EXPRESSION
+  imports private STRING-BUFFER
+  imports private K-IO
 
   // expression statement
   rule _:TypedVal ; => .K
@@ -52,9 +54,17 @@ module SOLIDITY-STATEMENT
        <store> S => S [ !I <- default(T) ] </store>
 
   // emit statement
-  rule <k> emit X:Id ( ARGS ) ; => .K ...</k>
-       <events>... .List => ListItem(event(X, ARGS)) </events>
+  rule <k> emit X:Id ( ARGS ) ; => #log(Event2String(ARGS, ((.StringBuffer +String Id2String(X)) +String "("))) ...</k>
     requires isKResult(ARGS)
+
+  syntax String ::= Event2String(CallArgumentList, StringBuffer) [function]
+  rule Event2String(.CallArgumentList, SB) => StringBuffer2String(SB +String ")")
+  rule Event2String(v(V:MInt{112}, _), SB) => Event2String(.CallArgumentList, SB +String Int2String(MInt2Unsigned(V)))
+  rule Event2String(v(V:MInt{160}, _), SB) => Event2String(.CallArgumentList, SB +String Int2String(MInt2Unsigned(V)))
+  rule Event2String(v(V:MInt{256}, _), SB) => Event2String(.CallArgumentList, SB +String Int2String(MInt2Unsigned(V)))
+  rule Event2String(v(V:MInt{112}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
+  rule Event2String(v(V:MInt{160}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
+  rule Event2String(v(V:MInt{256}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
 
   // if statement
   rule if ( v(true, bool ) ) S => S
