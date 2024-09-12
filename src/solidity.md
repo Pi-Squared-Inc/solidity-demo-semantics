@@ -18,7 +18,7 @@ module SOLIDITY-CONFIGURATION
   configuration
     <solidity>
       <k parser="TXN, SOLIDITY-DATA-SYNTAX"> $PGM:Program ~> $TXN:Transactions </k>
-      <summarize> $ISUNISWAP:Bool </summarize>
+      <summarize parser="ISUNISWAP, BOOL-SYNTAX"> $ISUNISWAP:Bool </summarize>
       <compile>
         <current-body> Id </current-body>
         <ifaces>
