@@ -54,7 +54,7 @@ module SOLIDITY-STATEMENT
        <store> S => S [ !I <- default(T) ] </store>
 
   // emit statement
-  rule <k> emit X:Id ( ARGS ) ; => #log(Event2String(ARGS, ((.StringBuffer +String Id2String(X)) +String "("))) ...</k>
+  rule <k> emit X:Id ( ARGS ) ; => discard(Event2String(ARGS, ((.StringBuffer +String Id2String(X)) +String "("))) ...</k>
     requires isKResult(ARGS)
 
   syntax String ::= Event2String(CallArgumentList, StringBuffer) [function]
@@ -65,6 +65,8 @@ module SOLIDITY-STATEMENT
   rule Event2String(v(V:MInt{112}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
   rule Event2String(v(V:MInt{160}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
   rule Event2String(v(V:MInt{256}, _), ARGS, SB) => Event2String(ARGS, (SB +String Int2String(MInt2Unsigned(V))) +String ", ") [owise]
+  syntax K ::= discard(String) [function]
+  rule discard(_) => .K
 
   // if statement
   rule if ( v(true, bool ) ) S => S
