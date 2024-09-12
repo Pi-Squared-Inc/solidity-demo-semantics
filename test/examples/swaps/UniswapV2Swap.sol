@@ -806,7 +806,11 @@ contract UniswapV2SwapTest {
 
     function testRouterAddLiquidity() public {
         uint256 testAmount = 131072; // Hex: 0x20000
-        
+        uint desiredA = 10000; 
+        uint desiredB = 10000; 
+        uint minA = 0; 
+        uint minB = 0; 
+
         _router = new UniswapV2Router02();
 
         _router.set_local_pair(address(_weth), address(_dai));
@@ -818,8 +822,8 @@ contract UniswapV2SwapTest {
         _usdc.mint(address(this), testAmount);
         _usdc.approve(address(_router), testAmount);
 
-        _router.addLiquidity(address(_dai), address(_usdc), 10000, 10000, 0, 0, address(this));
-
+        _router.addLiquidity(address(_dai), address(_usdc), desiredA, desiredB, minA, minB, address(this));
+   
         assert(_dai.balanceOf(address(this)) == 121072);
         assert(_usdc.balanceOf(address(this)) == 121072);
         assert(_dai.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
