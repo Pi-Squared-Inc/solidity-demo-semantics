@@ -689,7 +689,6 @@ contract USDCMock {
 contract UniswapV2SwapTest {
 
     UniswapV2Swap private _uni;
-    UniswapV2Router02 private _router;
     WETHMock private _weth;
     DAIMock private _dai;
     USDCMock private _usdc;
@@ -738,7 +737,8 @@ contract UniswapV2SwapTest {
         _weth = new WETHMock();
         _dai = new DAIMock();
         _usdc = new USDCMock();
-        _router = new UniswapV2Router02();
+        
+        UniswapV2Router02 _router = new UniswapV2Router02();
 
         _router.set_local_pair(address(_weth), address(_dai));
         _router.set_local_pair(address(_weth), address(_usdc));
