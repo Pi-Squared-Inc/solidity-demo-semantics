@@ -15002,6 +15002,9 @@ Swap(7, 1000000000000000000, 0, 0, 332669001559828603, 2)
   <k>
     .K
   </k>
+  <summarize>
+    false
+  </summarize>
   <compile>
     <current-body>
       UniswapV2SwapTest

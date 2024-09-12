@@ -3,6 +3,9 @@ Approval(1, 0, 2)
   <k>
     .K
   </k>
+  <summarize>
+    false
+  </summarize>
   <compile>
     <current-body>
       EmitTest

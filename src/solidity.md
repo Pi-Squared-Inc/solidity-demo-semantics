@@ -7,6 +7,7 @@ requires "contract.md"
 requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
+requires "uniswap-summaries.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -17,6 +18,7 @@ module SOLIDITY-CONFIGURATION
   configuration
     <solidity>
       <k parser="TXN, SOLIDITY-DATA-SYNTAX"> $PGM:Program ~> $TXN:Transactions </k>
+      <summarize> $ISUNISWAP:Bool </summarize>
       <compile>
         <current-body> Id </current-body>
         <ifaces>
@@ -178,8 +180,10 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
+  imports SOLIDITY-UNISWAP-INIT-SUMMARY
 
-  rule _:PragmaDefinition Ss:SourceUnits => Ss
+  rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
+       <summarize> false </summarize>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
   rule .SourceUnits => .K
   rule C:ContractBodyElement Cc:ContractBodyElements => C ~> Cc
