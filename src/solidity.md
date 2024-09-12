@@ -117,10 +117,10 @@ module SOLIDITY-DATA
   syntax Id ::= "constructor" [token]
 
   syntax TypedVal ::= v(Value, TypeName) | lv(BaseRef, List, TypeName) | Int | String | "void"
-  syntax TypedVals ::= List{TypedVal, ","} [overload(exps), hybrid, strict]
+  syntax TypedVals ::= List{TypedVal, ","} [overload(exps), strict]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
-  syntax KResult ::= TypedVal
+  syntax KResult ::= TypedVal | TypedVals
   syntax Value ::= MInt{8} | MInt{32} | MInt{112} | MInt{160} | MInt{256} | Bool | String | List | Map
   syntax BaseRef ::= Id | Int
 
