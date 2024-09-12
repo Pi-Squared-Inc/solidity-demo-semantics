@@ -83,6 +83,9 @@
       0 |-> false
       1 |-> true
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

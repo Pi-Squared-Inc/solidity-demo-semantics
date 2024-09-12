@@ -2259,6 +2259,9 @@
       1071 |-> 1000000p256
       1269 |-> 1000000p256
     </store>
+    <current-function>
+      testSwapMultiHopExactAmountOut
+    </current-function>
     <call-stack>
       .List
     </call-stack>

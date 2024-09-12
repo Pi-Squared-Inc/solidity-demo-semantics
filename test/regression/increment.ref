@@ -82,6 +82,9 @@
     <store>
       0 |-> 0p256
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>
