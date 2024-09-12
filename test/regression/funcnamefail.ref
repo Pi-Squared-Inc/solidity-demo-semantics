@@ -1,0 +1,156 @@
+<solidity>
+  <k>
+    require ( v ( false , bool ) , "" , .TypedVals ) ~> #freezer_;_SOLIDITY-SYNTAX_ExpressionStatement_Expression0_ ( ) ~> return 2 ;  .Statements ~> return void ; ~> .K
+  </k>
+  <compile>
+    <current-body>
+      FuncNameFailTest
+    </current-body>
+    <ifaces>
+      .IfaceCellMap
+    </ifaces>
+    <contracts>
+      <contract>
+        <contract-id>
+          FuncNameFailTest
+        </contract-id>
+        <contract-state>
+          .Map
+        </contract-state>
+        <contract-init>
+          .List
+        </contract-init>
+        <contract-fns>
+          <contract-fn>
+            <contract-fn-id>
+              chaincall1
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return chaincall2 ( .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              chaincall2
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( false , "" , .TypedVals ) ;  return 2 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              constructor
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 x = chaincall1 ( .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn>
+        </contract-fns>
+        <contract-events>
+          .ContractEventCellMap
+        </contract-events>
+      </contract>
+    </contracts>
+  </compile>
+  <exec>
+    <msg-sender>
+      1p160
+    </msg-sender>
+    <msg-value>
+      0p256
+    </msg-value>
+    <tx-origin>
+      1p160
+    </tx-origin>
+    <block-timestamp>
+      0p256
+    </block-timestamp>
+    <this>
+      2p160
+    </this>
+    <this-type>
+      FuncNameFailTest
+    </this-type>
+    <env>
+      .Map
+    </env>
+    <store>
+      .Map
+    </store>
+    <current-function>
+      chaincall2
+    </current-function>
+    <call-stack>
+      ListItem ( frame (... continuation: #freezer_=_;_SOLIDITY-SYNTAX_VariableDeclarationStatement_VariableDeclaration_Expression1_ ( uint256 x ~> .K ) ~> .Statements ~> .Transactions ~> .K , env: .Map , func: constructor ) )
+      ListItem ( frame (... continuation: #freezerreturn_;_SOLIDITY-SYNTAX_ReturnStatement_Expression0_ ( ) ~> .Statements ~> return void ; ~> .K , env: .Map , func: chaincall1 ) )
+    </call-stack>
+    <live-contracts>
+      <live-contract>
+        <contract-address>
+          2p160
+        </contract-address>
+        <contract-type>
+          FuncNameFailTest
+        </contract-type>
+        <contract-storage>
+          .Map
+        </contract-storage>
+      </live-contract>
+    </live-contracts>
+    <next-address>
+      3p160
+    </next-address>
+  </exec>
+</solidity>
