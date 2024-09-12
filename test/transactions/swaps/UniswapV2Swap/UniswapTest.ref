@@ -107,6 +107,9 @@ Mint(43, 10000, 10000)
   <k>
     .K
   </k>
+  <summarize>
+    false
+  </summarize>
   <compile>
     <current-body>
       UniswapV2SwapTest

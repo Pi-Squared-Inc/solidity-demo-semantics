@@ -82,6 +82,6 @@ $(REGRESSION_TESTS): %.out: %.sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/ti
 test-examples: ${EXAMPLE_TESTS}
 
 .SECONDEXPANSION:
-$(EXAMPLE_TESTS): %.out: $$(subst $(TRANSACTIONS_DIR), $(EXAMPLES_DIR), $$(@D)).sol %.txn %.ref $(SEMANTICS_FILE_NAME)-kompiled/timestamp
-	ulimit -s 65536 && bin/krun-sol $< $*.txn > $*.out 2>&1
+$(EXAMPLE_TESTS): %.out: $$(subst $(TRANSACTIONS_DIR), $(EXAMPLES_DIR), $$(@D)).sol %.txn %.ref %.smr $(SEMANTICS_FILE_NAME)-kompiled/timestamp
+	ulimit -s 65536 && bin/krun-sol $< $*.txn $*.smr > $*.out 2>&1
 	diff -U3 -w $*.ref $*.out

@@ -1,0 +1,2 @@
+#!/bin/bash
+kparse -d "$(dirname "$0")/../solidity-kompiled" -s Bool -m SOLIDITY-DATA-SYNTAX "$(cat "$1")"
