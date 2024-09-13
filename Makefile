@@ -1,4 +1,4 @@
-.PHONY: build clean test test-tokens test-staking test-lending test-swap test-erc20 test-erc1155 test-liquid test-lido test-lendingpool test-aave test-regression
+.PHONY: build clean test test-clean test-tokens test-staking test-lending test-swap test-erc20 test-erc1155 test-liquid test-lido test-lendingpool test-aave test-regression
 
 SEMANTICS_DIR = src
 TEST_DIR = test
@@ -25,8 +25,10 @@ EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
 	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2 --heuristic pbaL
 
-clean:
+clean: test-clean
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled
+
+test-clean:
 	rm -Rf $(OUTPUT_DIR)
 	rm -Rf $(TEST_DIR)/regression/*.out
 	rm -Rf $(EXAMPLE_TESTS)
