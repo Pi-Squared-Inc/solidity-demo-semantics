@@ -6,15 +6,22 @@ module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
   imports INT
 
+  syntax Id ::= "contractInit" [token]
+
+  syntax KItem ::= updateCurrentFunction(Id)
+  rule <k> updateCurrentFunction(X) => .K ...</k>
+       <current-function> _ => X </current-function>
+
   // new contract
-  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
+  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> updateCurrentFunction(contractInit) ~> List2Statements(INIT) ~> updateCurrentFunction(constructor) ~> BODY ~> return v(ADDR, X) ; </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <contract-fn-id> constructor </contract-fn-id>
@@ -39,7 +46,8 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC => contractInit </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <live-contracts>
@@ -185,14 +193,15 @@ module SOLIDITY-EXPRESSION
   // external call
   context HOLE . _ ( _:CallArgumentList )
   context (_ . _) ( HOLE:CallArgumentList )
-  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> updateCurrentFunction(F) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => TYPE' </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> TYPE' </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
@@ -210,14 +219,15 @@ module SOLIDITY-EXPRESSION
   context _ . _ { value: HOLE } ( _ )
   context _ . _ { _ } ( HOLE:CallArgumentList )
 
-  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> updateCurrentFunction(F) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => VALUE' </msg-value>
        <this> THIS => ADDR </this>
        <this-type> TYPE => TYPE' </this-type>
        <env> E => .Map </env>
        <store> S => .Map </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> TYPE' </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-payable> PAYABLE </contract-fn-payable>
@@ -231,10 +241,11 @@ module SOLIDITY-EXPRESSION
     requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
 
   // internal call
-  rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+  rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> updateCurrentFunction(F) ~> BODY ~> return retval(RETNAMES); </k>
        <env> E => .Map </env>
        <store> S </store>
-       <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
+       <current-function> FUNC </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-fn-id> F </contract-fn-id>

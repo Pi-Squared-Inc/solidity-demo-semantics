@@ -7,7 +7,7 @@ module SOLIDITY-TRANSACTION
   imports INT
   imports private SOLIDITY-EXPRESSION
 
-  rule <k> create(FROM, VALUE, NOW, CTOR, ARGS) => bind(.Map, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ...</k>
+  rule <k> create(FROM, VALUE, NOW, CTOR, ARGS) => bind(.Map, PARAMS, TYPES, ARGS, .List, .List) ~> updateCurrentFunction(contractInit) ~> List2Statements(INIT) ~> updateCurrentFunction(constructor) ~> BODY ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
@@ -33,7 +33,7 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     requires isKResult(ARGS)
 
-  rule <k> create(FROM, VALUE, NOW, CTOR, .TypedVals) => List2Statements(INIT) ...</k>
+  rule <k> create(FROM, VALUE, NOW, CTOR, .TypedVals) => updateCurrentFunction(contractInit) ~> List2Statements(INIT) ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
@@ -58,7 +58,7 @@ module SOLIDITY-TRANSACTION
   syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [strict(6)]
   rule txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, NOW, FUNC, ARGS)
 
-  rule <k> txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => bind(.Map, PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
+  rule <k> txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => bind(.Map, PARAMS, TYPES, ARGS, .List, .List) ~> updateCurrentFunction(FUNC) ~> BODY ...</k>
        <msg-sender> _ => Int2MInt(Number2Int(FROM)) </msg-sender>
        <msg-value> _ => Int2MInt(Number2Int(VALUE)) </msg-value>
        <tx-origin> _ => Int2MInt(Number2Int(FROM)) </tx-origin>
