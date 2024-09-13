@@ -2043,6 +2043,7 @@
         </contract-id>
         <contract-state>
           _dai |-> DAIMock
+          _router |-> UniswapV2Router02
           _uni |-> UniswapV2Swap
           _usdc |-> USDCMock
           _weth |-> WETHMock
@@ -2074,7 +2075,7 @@
               false
             </contract-fn-payable>
             <contract-fn-body>
-              uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  _weth = new WETHMock ( .TypedVals ) ;  _dai = new DAIMock ( .TypedVals ) ;  _usdc = new USDCMock ( .TypedVals ) ;  UniswapV2Router02 _router = new UniswapV2Router02 ( .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _usdc , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _dai . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _router . addLiquidity ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( _dai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _usdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _dai . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( _usdc . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( UniswapV2Pair ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
+              uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  _weth = new WETHMock ( .TypedVals ) ;  _dai = new DAIMock ( .TypedVals ) ;  _usdc = new USDCMock ( .TypedVals ) ;  _router = new UniswapV2Router02 ( .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _usdc , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _dai . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _router . addLiquidity ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( _dai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _usdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _dai . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( _usdc . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( UniswapV2Pair ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
@@ -2393,7 +2394,6 @@
       UniswapV2SwapTest
     </this-type>
     <env>
-      _router |-> var ( 180033 , UniswapV2Router02 )
       desiredA |-> var ( 180029 , uint256 )
       desiredB |-> var ( 180030 , uint256 )
       minA |-> var ( 180031 , uint256 )
@@ -2406,7 +2406,6 @@
       180030 |-> 10000p256
       180031 |-> 0p256
       180032 |-> 0p256
-      180033 |-> 8014p160
     </store>
     <call-stack>
       .List
@@ -2421,6 +2420,7 @@
         </contract-type>
         <contract-storage>
           _dai |-> 8012p160
+          _router |-> 8014p160
           _uni |-> 8006p160
           _usdc |-> 8013p160
           _weth |-> 8011p160
