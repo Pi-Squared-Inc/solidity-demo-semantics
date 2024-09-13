@@ -35,7 +35,7 @@ module SOLIDITY-STATEMENT
 
   rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
        <env> _ => E </env>
-       <call-stack>... ListItem(frame(K, E)) => .List </call-stack>
+       <call-stack>... ListItem(frame(K, E)) => .List </call-stack> [owise]
 
   // variable declaration
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>
