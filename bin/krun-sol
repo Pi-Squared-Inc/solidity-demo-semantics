@@ -2,7 +2,7 @@
 contract="$1"
 txn="$2"
 
-if [ "$#" -lt 3 ]; then
+if [[ "$3" == -* ]]; then
     isuniswap=""
 else
     isuniswap="$3"
