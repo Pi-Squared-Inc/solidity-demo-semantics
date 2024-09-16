@@ -2044,7 +2044,6 @@
         <contract-state>
           _dai |-> DAIMock
           _router |-> UniswapV2Router02
-          _uni |-> UniswapV2Swap
           _usdc |-> USDCMock
           _weth |-> WETHMock
         </contract-state>
@@ -2053,31 +2052,6 @@
         </contract-init>
         <contract-fns>
           <contract-fn>
-            <contract-fn-id>
-              setUp
-            </contract-fn-id>
-            <contract-fn-visibility>
-              public
-            </contract-fn-visibility>
-            <contract-fn-arg-types>
-              .List
-            </contract-fn-arg-types>
-            <contract-fn-param-names>
-              .List
-            </contract-fn-param-names>
-            <contract-fn-return-types>
-              .List
-            </contract-fn-return-types>
-            <contract-fn-return-names>
-              .List
-            </contract-fn-return-names>
-            <contract-fn-payable>
-              false
-            </contract-fn-payable>
-            <contract-fn-body>
-              _weth = new WETHMock ( .TypedVals ) ;  _dai = new DAIMock ( .TypedVals ) ;  _usdc = new USDCMock ( .TypedVals ) ;  _uni = new UniswapV2Swap ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  .Statements
-            </contract-fn-body>
-          </contract-fn> <contract-fn>
             <contract-fn-id>
               testRouterAddLiquidity
             </contract-fn-id>
@@ -2100,107 +2074,7 @@
               false
             </contract-fn-payable>
             <contract-fn-body>
-              uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  _router = new UniswapV2Router02 ( .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _usdc , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _dai . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _router . addLiquidity ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( _dai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _usdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _dai . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( _usdc . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( UniswapV2Pair ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
-            </contract-fn-body>
-          </contract-fn> <contract-fn>
-            <contract-fn-id>
-              testSwapMultiHopExactAmountIn
-            </contract-fn-id>
-            <contract-fn-visibility>
-              public
-            </contract-fn-visibility>
-            <contract-fn-arg-types>
-              .List
-            </contract-fn-arg-types>
-            <contract-fn-param-names>
-              .List
-            </contract-fn-param-names>
-            <contract-fn-return-types>
-              .List
-            </contract-fn-return-types>
-            <contract-fn-return-names>
-              .List
-            </contract-fn-return-names>
-            <contract-fn-payable>
-              false
-            </contract-fn-payable>
-            <contract-fn-body>
-              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 4 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 3 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 3 * wethAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _usdc . approve ( address ( _uni , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountMin = 1 ;  _uni . swapSingleHopExactAmountIn ( wethAmount , daiAmountMin , .TypedVals ) ;  uint256 daiAmountIn = 1e18 ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _usdc . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , daiAmountIn , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  uint256 usdcAmountOutMin = 1 ;  uint256 usdcAmountOut = _uni . swapMultiHopExactAmountIn ( daiAmountIn , usdcAmountOutMin , .TypedVals ) ;  assert ( usdcAmountOut >= usdcAmountOutMin , .TypedVals ) ;  .Statements
-            </contract-fn-body>
-          </contract-fn> <contract-fn>
-            <contract-fn-id>
-              testSwapMultiHopExactAmountOut
-            </contract-fn-id>
-            <contract-fn-visibility>
-              public
-            </contract-fn-visibility>
-            <contract-fn-arg-types>
-              .List
-            </contract-fn-arg-types>
-            <contract-fn-param-names>
-              .List
-            </contract-fn-param-names>
-            <contract-fn-return-types>
-              .List
-            </contract-fn-return-types>
-            <contract-fn-return-names>
-              .List
-            </contract-fn-return-names>
-            <contract-fn-payable>
-              false
-            </contract-fn-payable>
-            <contract-fn-body>
-              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 20 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 20 * wethAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _usdc . approve ( address ( _uni , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 8 * wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountOut = 2 * 1e18 ;  _uni . swapSingleHopExactAmountOut ( daiAmountOut , 4 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _usdc . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , 2 * daiAmountOut , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _dai , .TypedVals ) , address ( _weth , .TypedVals ) , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  uint256 amountOutDesired = 1e6 ;  uint256 amountOut = _uni . swapMultiHopExactAmountOut ( amountOutDesired , daiAmountOut , .TypedVals ) ;  assert ( amountOut == amountOutDesired , .TypedVals ) ;  .Statements
-            </contract-fn-body>
-          </contract-fn> <contract-fn>
-            <contract-fn-id>
-              testSwapSingleHopExactAmountIn
-            </contract-fn-id>
-            <contract-fn-visibility>
-              public
-            </contract-fn-visibility>
-            <contract-fn-arg-types>
-              .List
-            </contract-fn-arg-types>
-            <contract-fn-param-names>
-              .List
-            </contract-fn-param-names>
-            <contract-fn-return-types>
-              .List
-            </contract-fn-return-types>
-            <contract-fn-return-names>
-              .List
-            </contract-fn-return-names>
-            <contract-fn-payable>
-              false
-            </contract-fn-payable>
-            <contract-fn-body>
-              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 2 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 2 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountMin = 1 ;  uint256 daiAmountOut = _uni . swapSingleHopExactAmountIn ( wethAmount , daiAmountMin , .TypedVals ) ;  assert ( daiAmountOut >= daiAmountMin , .TypedVals ) ;  .Statements
-            </contract-fn-body>
-          </contract-fn> <contract-fn>
-            <contract-fn-id>
-              testSwapSingleHopExactAmountOut
-            </contract-fn-id>
-            <contract-fn-visibility>
-              public
-            </contract-fn-visibility>
-            <contract-fn-arg-types>
-              .List
-            </contract-fn-arg-types>
-            <contract-fn-param-names>
-              .List
-            </contract-fn-param-names>
-            <contract-fn-return-types>
-              .List
-            </contract-fn-return-types>
-            <contract-fn-return-names>
-              .List
-            </contract-fn-return-names>
-            <contract-fn-payable>
-              false
-            </contract-fn-payable>
-            <contract-fn-body>
-              uint256 wethAmount = 1e18 ;  _weth . deposit { value : 10 * wethAmount , .KeyValues } ( .TypedVals ) ;  _weth . approve ( address ( _uni , .TypedVals ) , 6 * wethAmount , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , 10 * wethAmount , .TypedVals ) ;  _dai . approve ( address ( _uni , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _weth . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _dai . transfer ( _uni . router ( .TypedVals ) . get_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) , 4 * wethAmount , .TypedVals ) ;  _uni . router ( .TypedVals ) . sync_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  uint256 daiAmountDesired = 1e18 ;  uint256 daiAmountOut = _uni . swapSingleHopExactAmountOut ( daiAmountDesired , 2 * wethAmount , .TypedVals ) ;  assert ( daiAmountOut == daiAmountDesired , .TypedVals ) ;  .Statements
+              uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  _weth = new WETHMock ( .TypedVals ) ;  _dai = new DAIMock ( .TypedVals ) ;  _usdc = new USDCMock ( .TypedVals ) ;  _router = new UniswapV2Router02 ( .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _weth , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) ;  _router . set_local_pair ( address ( _usdc , .TypedVals ) , address ( _dai , .TypedVals ) , .TypedVals ) ;  _dai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _dai . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  _usdc . approve ( address ( _router , .TypedVals ) , testAmount , .TypedVals ) ;  _router . addLiquidity ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( _dai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _usdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( _dai . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( _usdc . balanceOf ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( UniswapV2Pair ( _router . get_local_pair ( address ( _dai , .TypedVals ) , address ( _usdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn>
         </contract-fns>
@@ -2469,18 +2343,18 @@
       UniswapV2SwapTest
     </this-type>
     <env>
-      desiredA |-> var ( 1391 , uint256 )
-      desiredB |-> var ( 1392 , uint256 )
-      minA |-> var ( 1393 , uint256 )
-      minB |-> var ( 1394 , uint256 )
-      testAmount |-> var ( 1390 , uint256 )
+      desiredA |-> var ( 1 , uint256 )
+      desiredB |-> var ( 2 , uint256 )
+      minA |-> var ( 3 , uint256 )
+      minB |-> var ( 4 , uint256 )
+      testAmount |-> var ( 0 , uint256 )
     </env>
     <store>
-      1390 |-> 131072p256
-      1391 |-> 10000p256
-      1392 |-> 10000p256
-      1393 |-> 0p256
-      1394 |-> 0p256
+      0 |-> 131072p256
+      1 |-> 10000p256
+      2 |-> 10000p256
+      3 |-> 0p256
+      4 |-> 0p256
     </store>
     <call-stack>
       .List
@@ -2494,11 +2368,10 @@
           UniswapV2SwapTest
         </contract-type>
         <contract-storage>
-          _dai |-> 36p160
-          _router |-> 43p160
-          _uni |-> 38p160
-          _usdc |-> 37p160
-          _weth |-> 35p160
+          _dai |-> 4p160
+          _router |-> 6p160
+          _usdc |-> 5p160
+          _weth |-> 3p160
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2509,11 +2382,6 @@
         </contract-type>
         <contract-storage>
           UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 6p160 |-> 1000000000000000000p256 )
-          6p160 |-> ( 7p160 |-> 0p256 ) )
-          balanceOf |-> ( 2p160 |-> 0p256
-          6p160 |-> 0p256
-          8p160 |-> 2000000000000000000p256 )
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2524,10 +2392,10 @@
         </contract-type>
         <contract-storage>
           UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 6p160 |-> 1000000000000000000p256 ) )
-          balanceOf |-> ( 2p160 |-> 499248873309964947p256
-          8p160 |-> 500751126690035053p256 )
-          totalSupply |-> 1000000000000000000p256
+          allowance |-> ( 2p160 |-> ( 6p160 |-> 121072p256 ) )
+          balanceOf |-> ( 2p160 |-> 121072p256
+          9p160 |-> 10000p256 )
+          totalSupply |-> 131072p256
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2538,31 +2406,35 @@
         </contract-type>
         <contract-storage>
           UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          _allowances |-> ( 2p160 |-> ( 6p160 |-> 121072p256 ) )
+          _balances |-> ( 2p160 |-> 121072p256
+          9p160 |-> 10000p256 )
+          _totalSupply |-> 131072p256
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
           6p160
         </contract-address>
         <contract-type>
-          UniswapV2Swap
+          UniswapV2Router02
         </contract-type>
         <contract-storage>
-          dai |-> 4p160
-          router |-> 7p160
-          usdc |-> 5p160
-          weth |-> 3p160
+          local_pairs |-> ( 3p160 |-> ( 4p160 |-> 7p160
+          5p160 |-> 8p160 )
+          4p160 |-> ( 5p160 |-> 9p160 ) )
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
           7p160
         </contract-address>
         <contract-type>
-          UniswapV2Router02
+          UniswapV2Pair
         </contract-type>
         <contract-storage>
-          local_pairs |-> ( 3p160 |-> ( 4p160 |-> 8p160
-          5p160 |-> 9p160 )
-          4p160 |-> ( 5p160 |-> 10p160 ) )
+          MINIMUM_LIQUIDITY |-> 1000p256
+          UINT112_MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 3p160
+          token1 |-> 4p160
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2574,519 +2446,12 @@
         <contract-storage>
           MINIMUM_LIQUIDITY |-> 1000p256
           UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 2000000000000000000p112
-          reserve1 |-> 500751126690035053p112
           token0 |-> 3p160
-          token1 |-> 4p160
+          token1 |-> 5p160
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
           9p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 3p160
-          token1 |-> 5p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          10p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 4p160
-          token1 |-> 5p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          11p160
-        </contract-address>
-        <contract-type>
-          WETHMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 14p160 |-> 7000000000000000000p256 )
-          14p160 |-> ( 15p160 |-> 0p256 ) )
-          balanceOf |-> ( 2p160 |-> 0p256
-          14p160 |-> 0p256
-          16p160 |-> 1802522810203429866p256
-          17p160 |-> 2197477189796570134p256 )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          12p160
-        </contract-address>
-        <contract-type>
-          DAIMock
-        </contract-type>
-        <contract-storage>
-          UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 14p160 |-> 2000000000000000000p256 )
-          14p160 |-> ( 15p160 |-> 0p256 ) )
-          balanceOf |-> ( 2p160 |-> 499248873309964947p256
-          14p160 |-> 0p256
-          16p160 |-> 2500751126690035053p256 )
-          totalSupply |-> 3000000000000000000p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          13p160
-        </contract-address>
-        <contract-type>
-          USDCMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          _allowances |-> ( 2p160 |-> ( 14p160 |-> 2000000000000000000p256 ) )
-          _balances |-> ( 2p160 |-> 1544187543921826939p256
-          17p160 |-> 455812456078173061p256 )
-          _totalSupply |-> 2000000000000000000p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          14p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Swap
-        </contract-type>
-        <contract-storage>
-          dai |-> 12p160
-          router |-> 15p160
-          usdc |-> 13p160
-          weth |-> 11p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          15p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Router02
-        </contract-type>
-        <contract-storage>
-          local_pairs |-> ( 11p160 |-> ( 12p160 |-> 16p160
-          13p160 |-> 17p160 )
-          12p160 |-> ( 13p160 |-> 18p160 ) )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          16p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 1802522810203429866p112
-          reserve1 |-> 2500751126690035053p112
-          token0 |-> 11p160
-          token1 |-> 12p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          17p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 2197477189796570134p112
-          reserve1 |-> 455812456078173061p112
-          token0 |-> 11p160
-          token1 |-> 13p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          18p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 12p160
-          token1 |-> 13p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          19p160
-        </contract-address>
-        <contract-type>
-          WETHMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 22p160 |-> 4000000000000000000p256 )
-          22p160 |-> ( 23p160 |-> 662654630558341691p256 ) )
-          balanceOf |-> ( 2p160 |-> 4662654630558341691p256
-          22p160 |-> 0p256
-          24p160 |-> 5337345369441658309p256 )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          20p160
-        </contract-address>
-        <contract-type>
-          DAIMock
-        </contract-type>
-        <contract-storage>
-          UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 22p160 |-> 4000000000000000000p256 ) )
-          balanceOf |-> ( 2p160 |-> 7000000000000000000p256
-          24p160 |-> 3000000000000000000p256 )
-          totalSupply |-> 10000000000000000000p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          21p160
-        </contract-address>
-        <contract-type>
-          USDCMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          22p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Swap
-        </contract-type>
-        <contract-storage>
-          dai |-> 20p160
-          router |-> 23p160
-          usdc |-> 21p160
-          weth |-> 19p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          23p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Router02
-        </contract-type>
-        <contract-storage>
-          local_pairs |-> ( 19p160 |-> ( 20p160 |-> 24p160
-          21p160 |-> 25p160 )
-          20p160 |-> ( 21p160 |-> 26p160 ) )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          24p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 5337345369441658309p112
-          reserve1 |-> 3000000000000000000p112
-          token0 |-> 19p160
-          token1 |-> 20p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          25p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 19p160
-          token1 |-> 21p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          26p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 20p160
-          token1 |-> 21p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          27p160
-        </contract-address>
-        <contract-type>
-          WETHMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 30p160 |-> 16000000000000000000p256 )
-          30p160 |-> ( 31p160 |-> 1325309261116683383p256 ) )
-          balanceOf |-> ( 2p160 |-> 1325309261116683383p256
-          30p160 |-> 0p256
-          32p160 |-> 14674690738882313607p256
-          33p160 |-> 4000000000001003010p256 )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          28p160
-        </contract-address>
-        <contract-type>
-          DAIMock
-        </contract-type>
-        <contract-storage>
-          UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 30p160 |-> 18000000000000000000p256 )
-          30p160 |-> ( 31p160 |-> 1999999999999314446p256 ) )
-          balanceOf |-> ( 2p160 |-> 9999999999999314446p256
-          30p160 |-> 0p256
-          32p160 |-> 10000000000000685554p256 )
-          totalSupply |-> 20000000000000000000p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          29p160
-        </contract-address>
-        <contract-type>
-          USDCMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          _allowances |-> ( 2p160 |-> ( 30p160 |-> 10000000000000000000p256 ) )
-          _balances |-> ( 2p160 |-> 6000000000001000000p256
-          33p160 |-> 3999999999999000000p256 )
-          _totalSupply |-> 10000000000000000000p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          30p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Swap
-        </contract-type>
-        <contract-storage>
-          dai |-> 28p160
-          router |-> 31p160
-          usdc |-> 29p160
-          weth |-> 27p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          31p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Router02
-        </contract-type>
-        <contract-storage>
-          local_pairs |-> ( 27p160 |-> ( 28p160 |-> 32p160
-          29p160 |-> 33p160 )
-          28p160 |-> ( 29p160 |-> 34p160 ) )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          32p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 14674690738882313607p112
-          reserve1 |-> 10000000000000685554p112
-          token0 |-> 27p160
-          token1 |-> 28p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          33p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          blockTimestampLast |-> 1724300000p32
-          reserve0 |-> 4000000000001003010p112
-          reserve1 |-> 3999999999999000000p112
-          token0 |-> 27p160
-          token1 |-> 29p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          34p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 28p160
-          token1 |-> 29p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          35p160
-        </contract-address>
-        <contract-type>
-          WETHMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          36p160
-        </contract-address>
-        <contract-type>
-          DAIMock
-        </contract-type>
-        <contract-storage>
-          UINT_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          allowance |-> ( 2p160 |-> ( 43p160 |-> 121072p256 ) )
-          balanceOf |-> ( 2p160 |-> 121072p256
-          46p160 |-> 10000p256 )
-          totalSupply |-> 131072p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          37p160
-        </contract-address>
-        <contract-type>
-          USDCMock
-        </contract-type>
-        <contract-storage>
-          UINT256_MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          _allowances |-> ( 2p160 |-> ( 43p160 |-> 121072p256 ) )
-          _balances |-> ( 2p160 |-> 121072p256
-          46p160 |-> 10000p256 )
-          _totalSupply |-> 131072p256
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          38p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Swap
-        </contract-type>
-        <contract-storage>
-          dai |-> 36p160
-          router |-> 39p160
-          usdc |-> 37p160
-          weth |-> 35p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          39p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Router02
-        </contract-type>
-        <contract-storage>
-          local_pairs |-> ( 35p160 |-> ( 36p160 |-> 40p160
-          37p160 |-> 41p160 )
-          36p160 |-> ( 37p160 |-> 42p160 ) )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          40p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 35p160
-          token1 |-> 36p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          41p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 35p160
-          token1 |-> 37p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          42p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 36p160
-          token1 |-> 37p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          43p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Router02
-        </contract-type>
-        <contract-storage>
-          local_pairs |-> ( 35p160 |-> ( 36p160 |-> 44p160
-          37p160 |-> 45p160 )
-          36p160 |-> ( 37p160 |-> 46p160 ) )
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          44p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 35p160
-          token1 |-> 36p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          45p160
-        </contract-address>
-        <contract-type>
-          UniswapV2Pair
-        </contract-type>
-        <contract-storage>
-          MINIMUM_LIQUIDITY |-> 1000p256
-          UINT112_MAX |-> 5192296858534827628530496329220095p256
-          token0 |-> 35p160
-          token1 |-> 37p160
-        </contract-storage>
-      </live-contract> <live-contract>
-        <contract-address>
-          46p160
         </contract-address>
         <contract-type>
           UniswapV2Pair
@@ -3099,14 +2464,14 @@
           blockTimestampLast |-> 1724300000p32
           reserve0 |-> 10000p112
           reserve1 |-> 10000p112
-          token0 |-> 36p160
-          token1 |-> 37p160
+          token0 |-> 4p160
+          token1 |-> 5p160
           totalSupply |-> 10000p256
         </contract-storage>
       </live-contract>
     </live-contracts>
     <next-address>
-      47p160
+      10p160
     </next-address>
   </exec>
 </solidity>
