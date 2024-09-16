@@ -2469,18 +2469,16 @@
       UniswapV2SwapTest
     </this-type>
     <env>
-      desiredA |-> var ( 1296 , uint256 )
-      desiredB |-> var ( 1297 , uint256 )
-      minA |-> var ( 1298 , uint256 )
-      minB |-> var ( 1299 , uint256 )
-      testAmount |-> var ( 1295 , uint256 )
+      amountOut |-> var ( 1269 , uint256 )
+      amountOutDesired |-> var ( 1071 , uint256 )
+      daiAmountOut |-> var ( 870 , uint256 )
+      wethAmount |-> var ( 812 , uint256 )
     </env>
     <store>
-      1295 |-> 131072p256
-      1296 |-> 10000p256
-      1297 |-> 10000p256
-      1298 |-> 0p256
-      1299 |-> 0p256
+      812 |-> 1000000000000000000p256
+      870 |-> 2000000000000000000p256
+      1071 |-> 1000000p256
+      1269 |-> 1000000p256
     </store>
     <call-stack>
       .List
