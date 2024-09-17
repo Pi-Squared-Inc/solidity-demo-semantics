@@ -348,9 +348,9 @@
       _weth |-> var ( 0 , address )
     </env>
     <store>
-      0 |-> 2p160
-      1 |-> 3p160
-      2 |-> 4p160
+      ListItem ( 2p160 )
+      ListItem ( 3p160 )
+      ListItem ( 4p160 )
     </store>
     <call-stack>
       .List

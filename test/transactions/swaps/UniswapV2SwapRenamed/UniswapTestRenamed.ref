@@ -2248,16 +2248,16 @@
       uniswapV2SwapTest
     </this-type>
     <env>
-      amountOut |-> var ( 1269 , uint256 )
-      amountOutDesired |-> var ( 1071 , uint256 )
-      daiAmountOut |-> var ( 870 , uint256 )
-      wethAmount |-> var ( 812 , uint256 )
+      amountOut |-> var ( 3 , uint256 )
+      amountOutDesired |-> var ( 2 , uint256 )
+      daiAmountOut |-> var ( 1 , uint256 )
+      wethAmount |-> var ( 0 , uint256 )
     </env>
     <store>
-      812 |-> 1000000000000000000p256
-      870 |-> 2000000000000000000p256
-      1071 |-> 1000000p256
-      1269 |-> 1000000p256
+      ListItem ( 1000000000000000000p256 )
+      ListItem ( 2000000000000000000p256 )
+      ListItem ( 1000000p256 )
+      ListItem ( 1000000p256 )
     </store>
     <call-stack>
       .List

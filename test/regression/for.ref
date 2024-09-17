@@ -81,9 +81,9 @@
       y |-> var ( 1 , uint256 )
     </env>
     <store>
-      0 |-> 5p256
-      1 |-> 20p256
-      2 |-> 10p256
+      ListItem ( 5p256 )
+      ListItem ( 20p256 )
+      ListItem ( 10p256 )
     </store>
     <call-stack>
       .List

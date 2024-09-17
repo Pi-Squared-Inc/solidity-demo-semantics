@@ -80,8 +80,8 @@
       x |-> var ( 0 , bool )
     </env>
     <store>
-      0 |-> false
-      1 |-> true
+      ListItem ( false )
+      ListItem ( true )
     </store>
     <call-stack>
       .List

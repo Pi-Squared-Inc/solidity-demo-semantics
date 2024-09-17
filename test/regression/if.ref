@@ -81,8 +81,8 @@
       y |-> var ( 1 , bool )
     </env>
     <store>
-      0 |-> false
-      1 |-> true
+      ListItem ( false )
+      ListItem ( true )
     </store>
     <call-stack>
       .List
