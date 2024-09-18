@@ -2483,7 +2483,7 @@
       1394 |-> 0p256
     </store>
     <current-function>
-      testSwapMultiHopExactAmountOut
+      testRouterAddLiquidity
     </current-function>
     <call-stack>
       .List
