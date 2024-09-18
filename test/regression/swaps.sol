@@ -134,6 +134,82 @@ contract UniswapV2Router02 {
         _swap(amounts, path, to);
     }
 
+    function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to
+    ) external returns (uint[] memory amounts_liq) {
+        amounts_liq = new uint[](3);
+
+        uint[] memory amounts = _addLiquidity(
+            tokenA,
+            tokenB,
+            amountADesired,
+            amountBDesired,
+            amountAMin,
+            amountBMin
+        );
+
+        amounts_liq[0] = amounts[0];
+        amounts_liq[1] = amounts[1];
+
+        address pair = uniswapV2Library_pairFor(tokenA, tokenB);
+        IERC20(tokenA).transferFrom(msg.sender, pair, amounts[0]);
+        IERC20(tokenB).transferFrom(msg.sender, pair, amounts[1]);
+        amounts_liq[2] = UniswapV2Pair(pair).mint(to);
+    }
+
+    function _addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint amountADesired,
+        uint amountBDesired,
+        uint amountAMin,
+        uint amountBMin
+    ) internal returns (uint[] memory amounts) {
+        amounts = new uint[](2);
+
+        require(get_local_pair(tokenA, tokenB) != address(0));
+
+        uint[] memory reserves = uniswapV2Library_getReserves(tokenA, tokenB);
+        if (reserves[0] == 0 && reserves[1] == 0) {
+            amounts[0] = amountADesired;
+            amounts[1] = amountBDesired;
+        } else {
+            uint amountBOptimal = uniswapV2Library_quote(
+                amountADesired,
+                reserves[0],
+                reserves[1]
+            );
+            if (amountBOptimal <= amountBDesired) {
+                require(
+                    amountBOptimal >= amountBMin,
+                    "UniswapV2Router: INSUFFICIENT_B_AMOUNT"
+                );
+                amounts[0] = amountADesired;
+                amounts[1] = amountBOptimal;
+            } else {
+                uint amountAOptimal = uniswapV2Library_quote(
+                    amountBDesired,
+                    reserves[1],
+                    reserves[0]
+                );
+                assert(amountAOptimal <= amountADesired);
+                require(
+                    amountAOptimal >= amountAMin,
+                    "UniswapV2Router: INSUFFICIENT_A_AMOUNT"
+                );
+                amounts[0] = amountAOptimal;
+                amounts[1] = amountBDesired;
+            }
+        }
+    }
+
+
     function set_local_pair(address tokenA, address tokenB) public{
         address[] memory tokens = uniswapV2Library_sortTokens(tokenA, tokenB);
         local_pairs[tokens[0]][tokens[1]] = address(new UniswapV2Pair(address(tokens[0]), address(tokens[1])));
@@ -221,6 +297,19 @@ contract UniswapV2Router02 {
         uint denominator = (reserveOut-amountOut)*997;
         amountIn = denominator != 0 ? (numerator / denominator) + 1 : 1;
     }
+
+    function uniswapV2Library_quote(
+        uint amountA,
+        uint reserveA,
+        uint reserveB
+    ) internal returns (uint amountB) {
+        require(amountA > 0, "UniswapV2Library: INSUFFICIENT_AMOUNT");
+        require(
+            reserveA > 0 && reserveB > 0,
+            "UniswapV2Library: INSUFFICIENT_LIQUIDITY"
+        );
+        amountB = (amountA * reserveB) / reserveA;
+    }
 }
 
 contract UniswapV2Pair{
@@ -251,6 +340,7 @@ contract UniswapV2Pair{
         uint amount1Out,
         address indexed to
     );
+    event Mint(address indexed sender, uint amount0, uint amount1);
 
     constructor(address _token0, address _token1) {
         token0 = _token0;
@@ -286,6 +376,34 @@ contract UniswapV2Pair{
         emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
     }
 
+    function mint(address to) external returns (uint liquidity) {
+        uint112[] memory pair_reserves = getReserves();
+        uint balance0 = IERC20(token0).balanceOf(address(this));
+        uint balance1 = IERC20(token1).balanceOf(address(this));
+        uint amount0 = balance0 - pair_reserves[0];
+        uint amount1 = balance1 - pair_reserves[1];
+
+        //bool feeOn = _mintFee(pair_reserves[0], pair_reserves[1]);
+        uint _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
+        if (_totalSupply == 0) {
+            liquidity = math_sqrt(amount0 * amount1) - MINIMUM_LIQUIDITY;
+            totalSupply = totalSupply + MINIMUM_LIQUIDITY;
+            balanceOf[address(0)] = balanceOf[address(0)] + MINIMUM_LIQUIDITY;
+        } else {
+            liquidity = math_min(
+                (amount0 * _totalSupply) / pair_reserves[0],
+                (amount1 * _totalSupply) / pair_reserves[1]
+            );
+        }
+        require(liquidity > 0, "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED");
+        totalSupply = totalSupply + liquidity;
+        balanceOf[to] = balanceOf[to] + liquidity;
+
+        _update(balance0, balance1, pair_reserves[0], pair_reserves[1]);
+        //if (feeOn) kLast = uint(reserve0) * reserve1; // reserve0 and reserve1 are up-to-date
+        emit Mint(msg.sender, amount0, amount1);
+    }
+
     function sync() external {
         _update(IERC20(token0).balanceOf(address(this)), IERC20(token1).balanceOf(address(this)), reserve0, reserve1);
     }
@@ -295,6 +413,23 @@ contract UniswapV2Pair{
         reserves[0] = reserve0;
         reserves[1] = reserve1;
         reserves[2] = blockTimestampLast;
+    }
+
+    function math_min(uint x, uint y) internal returns (uint z) {
+        z = x < y ? x : y;
+    }
+
+    function math_sqrt(uint y) internal returns (uint z) {
+        if (y > 3) {
+            z = y;
+            uint x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
     }
 
     function _update(uint balance0, uint balance1, uint112 _reserve0, uint112 _reserve1) private {
@@ -565,11 +700,17 @@ contract UniswapV2SwapTest {
         _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
         for (uint i = 0; i < 1000; i++) {
           testSwapSingleHopExactAmountIn();
-	}
+	    }
     }
 
     function testSwapSingleHopExactAmountIn() public {
         uint256 wethAmount = 1e18;
+
+        _weth = new WETHMock();
+        _dai = new DAIMock();
+        _usdc = new USDCMock();
+        _uni = new UniswapV2Swap(address(_weth), address(_dai), address(_usdc));
+
         _weth.deposit{value: 2*wethAmount}();
         _weth.approve(address(_uni), 2*wethAmount);
         _dai.mint(address(this), wethAmount);
