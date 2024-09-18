@@ -2356,6 +2356,9 @@
       ListItem ( 0p256 )
       ListItem ( 0p256 )
     </store>
+    <current-function>
+      testRouterAddLiquidity
+    </current-function>
     <call-stack>
       .List
     </call-stack>

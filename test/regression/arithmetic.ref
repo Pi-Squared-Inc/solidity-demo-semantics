@@ -96,6 +96,9 @@
       ListItem ( 2p8 )
       ListItem ( 4p8 )
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

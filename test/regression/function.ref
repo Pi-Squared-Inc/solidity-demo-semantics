@@ -2076,6 +2076,9 @@
     <store>
       .List
     </store>
+    <current-function>
+      setUp
+    </current-function>
     <call-stack>
       .List
     </call-stack>

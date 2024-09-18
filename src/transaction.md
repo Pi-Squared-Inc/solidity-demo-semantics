@@ -16,6 +16,7 @@ module SOLIDITY-TRANSACTION
        <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
        <store> _ => .List </store>
+       <current-function> _ => constructor </current-function>
        <contract-id> CTOR </contract-id>
        <contract-init> INIT </contract-init>
        <contract-fn-id> constructor </contract-fn-id>
@@ -42,6 +43,7 @@ module SOLIDITY-TRANSACTION
        <this-type> _ => CTOR </this-type>
        <env> _ => .Map </env>
        <store> _ => .List </store>
+       <current-function> _ => constructor </current-function>
        <contract-id> CTOR </contract-id>
        <contract-init> INIT </contract-init>
        <live-contracts>
@@ -67,6 +69,7 @@ module SOLIDITY-TRANSACTION
        <this-type> _ => TYPE </this-type>
        <env> _ => .Map </env>
        <store> _ => .List </store>
+       <current-function> _ => FUNC </current-function>
        <live-contracts>
          <contract-address> TO </contract-address>
          <contract-type> TYPE </contract-type>

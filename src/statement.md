@@ -19,7 +19,8 @@ module SOLIDITY-STATEMENT
        <this-type> _ => TYPE </this-type>
        <env> _ => E </env>
        <store> _ => S </store>
-       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
+       <current-function> _ => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) => .List </call-stack>
 
   rule <k> return void ; ~> _ => void ~> K </k>
        <msg-sender> THIS => FROM </msg-sender>
@@ -28,14 +29,16 @@ module SOLIDITY-STATEMENT
        <this-type> _ => TYPE </this-type>
        <env> _ => E </env>
        <store> _ => S </store>
-       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE)) => .List </call-stack>
+       <current-function> _ => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) => .List </call-stack>
 
   rule <k> return lv(I:Int, .List, T) ; => return v(L, T) ; ...</k>
        <store> _ [ I <- L ] </store>
 
   rule <k> return V:TypedVal ; ~> _ => V ~> K </k>
        <env> _ => E </env>
-       <call-stack>... ListItem(frame(K, E)) => .List </call-stack> [owise]
+       <current-function> _ => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack> [owise]
 
   // variable declaration
   rule <k> LT:TypeName X:Id = v(V, RT) ; => .K ...</k>

@@ -14,7 +14,8 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .List </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC => constructor </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <contract-fn-id> constructor </contract-fn-id>
@@ -39,7 +40,8 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE => X </this-type>
        <env> E => .Map </env>
        <store> S => .List </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC => constructor </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> X </contract-id>
        <contract-init> INIT </contract-init>
        <live-contracts>
@@ -192,7 +194,8 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE => TYPE' </this-type>
        <env> E => .Map </env>
        <store> S => .List </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC => F </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> TYPE' </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-param-names> PARAMS </contract-fn-param-names>
@@ -217,7 +220,8 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE => TYPE' </this-type>
        <env> E => .Map </env>
        <store> S => .List </store>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE)) </call-stack>
+       <current-function> FUNC => F </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
        <contract-id> TYPE' </contract-id>
        <contract-fn-id> F </contract-fn-id>
        <contract-fn-payable> PAYABLE </contract-fn-payable>
@@ -234,7 +238,8 @@ module SOLIDITY-EXPRESSION
   rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <env> E => .Map </env>
        <store> S </store>
-       <call-stack>... .List => ListItem(frame(K, E)) </call-stack>
+       <current-function> FUNC => F </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-fn-id> F </contract-fn-id>

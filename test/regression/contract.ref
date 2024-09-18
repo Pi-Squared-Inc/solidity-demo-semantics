@@ -352,6 +352,9 @@
       ListItem ( 3p160 )
       ListItem ( 4p160 )
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

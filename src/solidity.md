@@ -70,6 +70,7 @@ module SOLIDITY-CONFIGURATION
         <this-type> Id </this-type>
         <env> .Map </env>
         <store> .List </store>
+        <current-function> Id </current-function>
         <call-stack> .List </call-stack>
         <live-contracts>
           <live-contract multiplicity="*" type="Map">
@@ -164,9 +165,9 @@ module SOLIDITY-DATA
   rule isAggregateType(_) => false [owise]
 
   // external frame
-  syntax Frame ::= frame(continuation: K, env: Map, store: List, from: MInt{160}, type: Id, value: MInt{256})
+  syntax Frame ::= frame(continuation: K, env: Map, store: List, from: MInt{160}, type: Id, value: MInt{256}, func: Id)
   // internal frame
-                 | frame(continuation: K, env: Map)
+                 | frame(continuation: K, env: Map, func: Id)
   syntax Event ::= event(name: Id, args: TypedVals)
 
 endmodule

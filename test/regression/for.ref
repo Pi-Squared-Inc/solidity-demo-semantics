@@ -85,6 +85,9 @@
       ListItem ( 20p256 )
       ListItem ( 10p256 )
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

@@ -134,6 +134,9 @@
     <store>
       .List
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

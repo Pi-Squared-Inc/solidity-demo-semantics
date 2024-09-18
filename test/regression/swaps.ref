@@ -5373,6 +5373,9 @@
       ListItem ( 1p256 )
       ListItem ( 332669001559828603p256 )
     </store>
+    <current-function>
+      testSwapLoop
+    </current-function>
     <call-stack>
       .List
     </call-stack>

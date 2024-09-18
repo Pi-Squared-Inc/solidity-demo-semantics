@@ -2259,6 +2259,9 @@
       ListItem ( 1000000p256 )
       ListItem ( 1000000p256 )
     </store>
+    <current-function>
+      testSwapMultiHopExactAmountOut
+    </current-function>
     <call-stack>
       .List
     </call-stack>
