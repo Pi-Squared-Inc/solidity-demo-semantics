@@ -2407,18 +2407,20 @@ module SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
   rule <k> uniswapV2LibrarySortTokens:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), .TypedVals ) => v(ListItem(V1) ListItem(V2), T[]) ...</k>
        <summarize> true </summarize>
        <store>
-         ... .Map => ((!_:Int |-> V1) (!_:Int |-> V2) (!_:Int |-> default(T[]))
-                      (!_:Int |-> (ListItem(V1) ListItem(V2)))
-                     )
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(default(T[]))
+                ListItem(ListItem(V1) ListItem(V2))
        </store>
     requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
 
   rule <k> uniswapV2LibrarySortTokens:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), .TypedVals ) => v(ListItem(V2) ListItem(V1), T[]) ...</k>
        <summarize> true </summarize>
        <store>
-         ... .Map => ((!_:Int |-> V1) (!_:Int |-> V2) (!_:Int |-> default(T[]))
-                      (!_:Int |-> (ListItem(V2) ListItem(V1)))
-                     )
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(default(T[]))
+                ListItem(ListItem(V2) ListItem(V1))
        </store>
     requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
 
