@@ -96,6 +96,9 @@
       6 |-> 2p8
       7 |-> 4p8
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>

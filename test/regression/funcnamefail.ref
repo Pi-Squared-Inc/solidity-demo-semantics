@@ -1,13 +1,13 @@
 <solidity>
   <k>
-    .K
+    require ( v ( false , bool ) , "" , .TypedVals ) ~> #freezer_;_SOLIDITY-SYNTAX_ExpressionStatement_Expression0_ ( ) ~> return 2 ;  .Statements ~> return void ; ~> .K
   </k>
   <summarize>
     false
   </summarize>
   <compile>
     <current-body>
-      TestArraysContract
+      FuncNameFailTest
     </current-body>
     <ifaces>
       .IfaceCellMap
@@ -15,11 +15,10 @@
     <contracts>
       <contract>
         <contract-id>
-          TestArraysContract
+          FuncNameFailTest
         </contract-id>
         <contract-state>
-          arr |-> uint256 [ ]
-          fixedSizeArr |-> uint256 [ 10 ]
+          .Map
         </contract-state>
         <contract-init>
           .List
@@ -27,19 +26,19 @@
         <contract-fns>
           <contract-fn>
             <contract-fn-id>
-              arr
+              chaincall1
             </contract-fn-id>
             <contract-fn-visibility>
-              public
+              private
             </contract-fn-visibility>
             <contract-fn-arg-types>
-              ListItem ( uint256 )
+              .List
             </contract-fn-arg-types>
             <contract-fn-param-names>
-              ListItem ( $0 )
+              .List
             </contract-fn-param-names>
             <contract-fn-return-types>
-              ListItem ( uint256 [ ] )
+              ListItem ( uint256 )
             </contract-fn-return-types>
             <contract-fn-return-names>
               ListItem ( noId )
@@ -48,7 +47,32 @@
               false
             </contract-fn-payable>
             <contract-fn-body>
-              return arr [ $0 ] ;  .Statements
+              return chaincall2 ( .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              chaincall2
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( false , "" , .TypedVals ) ;  return 2 ;  .Statements
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
@@ -73,7 +97,7 @@
               false
             </contract-fn-payable>
             <contract-fn-body>
-              .Statements
+              uint256 x = chaincall1 ( .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn>
         </contract-fns>
@@ -100,7 +124,7 @@
       2p160
     </this>
     <this-type>
-      TestArraysContract
+      FuncNameFailTest
     </this-type>
     <env>
       .Map
@@ -109,10 +133,11 @@
       .Map
     </store>
     <current-function>
-      constructor
+      chaincall2
     </current-function>
     <call-stack>
-      .List
+      ListItem ( frame (... continuation: #freezer_=_;_SOLIDITY-SYNTAX_VariableDeclarationStatement_VariableDeclaration_Expression1_ ( uint256 x ~> .K ) ~> .Statements ~> .Transactions ~> .K , env: .Map , func: constructor ) )
+      ListItem ( frame (... continuation: #freezerreturn_;_SOLIDITY-SYNTAX_ReturnStatement_Expression0_ ( ) ~> .Statements ~> return void ; ~> .K , env: .Map , func: chaincall1 ) )
     </call-stack>
     <live-contracts>
       <live-contract>
@@ -120,7 +145,7 @@
           2p160
         </contract-address>
         <contract-type>
-          TestArraysContract
+          FuncNameFailTest
         </contract-type>
         <contract-storage>
           .Map

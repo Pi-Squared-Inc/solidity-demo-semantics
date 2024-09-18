@@ -7,7 +7,7 @@
   </summarize>
   <compile>
     <current-body>
-      IfTest
+      FuncNameSucceedTest
     </current-body>
     <ifaces>
       .IfaceCellMap
@@ -15,7 +15,7 @@
     <contracts>
       <contract>
         <contract-id>
-          IfTest
+          FuncNameSucceedTest
         </contract-id>
         <contract-state>
           .Map
@@ -25,6 +25,56 @@
         </contract-init>
         <contract-fns>
           <contract-fn>
+            <contract-fn-id>
+              chaincall1
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return chaincall2 ( .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              chaincall2
+            </contract-fn-id>
+            <contract-fn-visibility>
+              private
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( noId )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              return 2 ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
             <contract-fn-id>
               constructor
             </contract-fn-id>
@@ -47,7 +97,7 @@
               false
             </contract-fn-payable>
             <contract-fn-body>
-              bool x = true ;  bool y = false ;  if ( x ) { y = true ;  .Statements } else { require ( false , "" , .TypedVals ) ;  .Statements }  require ( y , "" , .TypedVals ) ;  y = false ;  x = false ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements } else { y = true ;  .Statements }  require ( y , "" , .TypedVals ) ;  if ( x ) { require ( false , "" , .TypedVals ) ;  .Statements }  .Statements
+              uint256 x = chaincall1 ( .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn>
         </contract-fns>
@@ -74,15 +124,13 @@
       2p160
     </this>
     <this-type>
-      IfTest
+      FuncNameSucceedTest
     </this-type>
     <env>
-      x |-> var ( 0 , bool )
-      y |-> var ( 1 , bool )
+      x |-> var ( 0 , uint256 )
     </env>
     <store>
-      0 |-> false
-      1 |-> true
+      0 |-> 2p256
     </store>
     <current-function>
       constructor
@@ -96,7 +144,7 @@
           2p160
         </contract-address>
         <contract-type>
-          IfTest
+          FuncNameSucceedTest
         </contract-type>
         <contract-storage>
           .Map

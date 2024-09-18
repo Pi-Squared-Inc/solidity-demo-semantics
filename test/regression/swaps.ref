@@ -5373,6 +5373,9 @@
       192914 |-> 1p256
       193030 |-> 499248873309964947p256
     </store>
+    <current-function>
+      testSwapLoop
+    </current-function>
     <call-stack>
       .List
     </call-stack>

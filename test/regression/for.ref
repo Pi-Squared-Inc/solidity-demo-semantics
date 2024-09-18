@@ -85,6 +85,9 @@
       1 |-> 20p256
       2 |-> 10p256
     </store>
+    <current-function>
+      constructor
+    </current-function>
     <call-stack>
       .List
     </call-stack>
