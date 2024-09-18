@@ -87,14 +87,14 @@
       i256_2 |-> var ( 7 , uint8 )
     </env>
     <store>
-      0 |-> 2p8
-      1 |-> 4p8
-      2 |-> 2p8
-      3 |-> 4p8
-      4 |-> 2p8
-      5 |-> 4p8
-      6 |-> 2p8
-      7 |-> 4p8
+      ListItem ( 2p8 )
+      ListItem ( 4p8 )
+      ListItem ( 2p8 )
+      ListItem ( 4p8 )
+      ListItem ( 2p8 )
+      ListItem ( 4p8 )
+      ListItem ( 2p8 )
+      ListItem ( 4p8 )
     </store>
     <current-function>
       constructor

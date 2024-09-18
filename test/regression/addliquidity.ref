@@ -2350,11 +2350,11 @@
       testAmount |-> var ( 0 , uint256 )
     </env>
     <store>
-      0 |-> 131072p256
-      1 |-> 10000p256
-      2 |-> 10000p256
-      3 |-> 0p256
-      4 |-> 0p256
+      ListItem ( 131072p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 0p256 )
+      ListItem ( 0p256 )
     </store>
     <current-function>
       testRouterAddLiquidity

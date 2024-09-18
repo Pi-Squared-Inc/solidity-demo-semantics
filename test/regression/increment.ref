@@ -80,7 +80,7 @@
       x |-> var ( 0 , uint256 )
     </env>
     <store>
-      0 |-> 0p256
+      ListItem ( 0p256 )
     </store>
     <current-function>
       constructor

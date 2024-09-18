@@ -105,7 +105,7 @@
       x |-> var ( 0 , bool )
     </env>
     <store>
-      0 |-> false
+      ListItem ( false )
     </store>
     <current-function>
       constructor

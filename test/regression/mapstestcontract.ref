@@ -132,7 +132,7 @@
       .Map
     </env>
     <store>
-      .Map
+      .List
     </store>
     <current-function>
       constructor

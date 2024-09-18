@@ -2469,18 +2469,18 @@
       UniswapV2SwapTest
     </this-type>
     <env>
-      desiredA |-> var ( 1391 , uint256 )
-      desiredB |-> var ( 1392 , uint256 )
-      minA |-> var ( 1393 , uint256 )
-      minB |-> var ( 1394 , uint256 )
-      testAmount |-> var ( 1390 , uint256 )
+      desiredA |-> var ( 1 , uint256 )
+      desiredB |-> var ( 2 , uint256 )
+      minA |-> var ( 3 , uint256 )
+      minB |-> var ( 4 , uint256 )
+      testAmount |-> var ( 0 , uint256 )
     </env>
     <store>
-      1390 |-> 131072p256
-      1391 |-> 10000p256
-      1392 |-> 10000p256
-      1393 |-> 0p256
-      1394 |-> 0p256
+      ListItem ( 131072p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 0p256 )
+      ListItem ( 0p256 )
     </store>
     <current-function>
       testRouterAddLiquidity
