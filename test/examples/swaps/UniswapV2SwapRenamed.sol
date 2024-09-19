@@ -134,6 +134,82 @@ contract uniswapV2Router02 {
         fidSwap(amounts, path, to);
     }
 
+    function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to
+    ) external returns (uint[] memory amountsLiq) {
+        amountsLiq = new uint[](3);
+
+        uint[] memory amounts = fidAddLiquidity(
+            tokenA,
+            tokenB,
+            amountADesired,
+            amountBDesired,
+            amountAMin,
+            amountBMin
+        );
+
+        amountsLiq[0] = amounts[0];
+        amountsLiq[1] = amounts[1];
+
+        address pair = uniswapV2LibraryPairFor(tokenA, tokenB);
+        iERC20(tokenA).transferFrom(msg.sender, pair, amounts[0]);
+        iERC20(tokenB).transferFrom(msg.sender, pair, amounts[1]);
+        amountsLiq[2] = uniswapV2Pair(pair).mint(to);
+    }
+
+    function fidAddLiquidity(
+        address tokenA,
+        address tokenB,
+        uint amountADesired,
+        uint amountBDesired,
+        uint amountAMin,
+        uint amountBMin
+    ) internal returns (uint[] memory amounts) {
+        amounts = new uint[](2);
+
+        require(getLocalPair(tokenA, tokenB) != address(0));
+
+        uint[] memory reserves = uniswapV2LibraryGetReserves(tokenA, tokenB);
+        if (reserves[0] == 0 && reserves[1] == 0) {
+            amounts[0] = amountADesired;
+            amounts[1] = amountBDesired;
+        } else {
+            uint amountBOptimal = uniswapV2LibraryQuote(
+                amountADesired,
+                reserves[0],
+                reserves[1]
+            );
+            if (amountBOptimal <= amountBDesired) {
+                require(
+                    amountBOptimal >= amountBMin,
+                    "UniswapV2Router: INSUFFICIENT_B_AMOUNT"
+                );
+                amounts[0] = amountADesired;
+                amounts[1] = amountBOptimal;
+            } else {
+                uint amountAOptimal = uniswapV2LibraryQuote(
+                    amountBDesired,
+                    reserves[1],
+                    reserves[0]
+                );
+                assert(amountAOptimal <= amountADesired);
+                require(
+                    amountAOptimal >= amountAMin,
+                    "UniswapV2Router: INSUFFICIENT_A_AMOUNT"
+                );
+                amounts[0] = amountAOptimal;
+                amounts[1] = amountBDesired;
+            }
+        }
+    }
+
+
     function setLocalPair(address tokenA, address tokenB) public{
         address[] memory tokens = uniswapV2LibrarySortTokens(tokenA, tokenB);
         localPairs[tokens[0]][tokens[1]] = address(new uniswapV2Pair(address(tokens[0]), address(tokens[1])));
@@ -221,6 +297,19 @@ contract uniswapV2Router02 {
         uint denominator = (reserveOut-amountOut)*997;
         amountIn = denominator != 0 ? (numerator / denominator) + 1 : 1;
     }
+
+    function uniswapV2LibraryQuote(
+        uint amountA,
+        uint reserveA,
+        uint reserveB
+    ) internal returns (uint amountB) {
+        require(amountA > 0, "UniswapV2Library: INSUFFICIENT_AMOUNT");
+        require(
+            reserveA > 0 && reserveB > 0,
+            "UniswapV2Library: INSUFFICIENT_LIQUIDITY"
+        );
+        amountB = (amountA * reserveB) / reserveA;
+    }
 }
 
 contract uniswapV2Pair{
@@ -251,6 +340,7 @@ contract uniswapV2Pair{
         uint amount1Out,
         address indexed to
     );
+    event mintEvent(address indexed sender, uint amount0, uint amount1);
 
     constructor(address vidToken0, address vidToken1) {
         token0 = vidToken0;
@@ -286,6 +376,34 @@ contract uniswapV2Pair{
         emit swapEvent(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
     }
 
+    function mint(address to) external returns (uint liquidity) {
+        uint112[] memory pairReserves = getReserves();
+        uint balance0 = iERC20(token0).balanceOf(address(this));
+        uint balance1 = iERC20(token1).balanceOf(address(this));
+        uint amount0 = balance0 - pairReserves[0];
+        uint amount1 = balance1 - pairReserves[1];
+
+        //bool feeOn = fidMintFee(pairReserves[0], pairReserves[1]);
+        uint vidTotalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in fidMintFee
+        if (vidTotalSupply == 0) {
+            liquidity = mathSqrt(amount0 * amount1) - constMINIMUMLIQUIDITY;
+            totalSupply = totalSupply + constMINIMUMLIQUIDITY;
+            balanceOf[address(0)] = balanceOf[address(0)] + constMINIMUMLIQUIDITY;
+        } else {
+            liquidity = mathMin(
+                (amount0 * vidTotalSupply) / pairReserves[0],
+                (amount1 * vidTotalSupply) / pairReserves[1]
+            );
+        }
+        require(liquidity > 0, "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED");
+        totalSupply = totalSupply + liquidity;
+        balanceOf[to] = balanceOf[to] + liquidity;
+
+        fidUpdate(balance0, balance1, pairReserves[0], pairReserves[1]);
+        //if (feeOn) kLast = uint(reserve0) * reserve1; // reserve0 and reserve1 are up-to-date
+        emit mintEvent(msg.sender, amount0, amount1);
+    }
+
     function sync() external {
         fidUpdate(iERC20(token0).balanceOf(address(this)), iERC20(token1).balanceOf(address(this)), reserve0, reserve1);
     }
@@ -295,6 +413,23 @@ contract uniswapV2Pair{
         reserves[0] = reserve0;
         reserves[1] = reserve1;
         reserves[2] = blockTimestampLast;
+    }
+
+    function mathMin(uint x, uint y) internal returns (uint z) {
+        z = x < y ? x : y;
+    }
+
+    function mathSqrt(uint y) internal returns (uint z) {
+        if (y > 3) {
+            z = y;
+            uint x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
     }
 
     function fidUpdate(uint balance0, uint balance1, uint112 vidReserve0, uint112 vidReserve1) private {
@@ -554,6 +689,7 @@ contract uSDCMock {
 contract uniswapV2SwapTest {
 
     uniswapV2Swap private vidUni;
+    uniswapV2Router02 private vidRouter;
     wETHMock private vidWeth;
     dAIMock private vidDai;
     uSDCMock private vidUsdc;
@@ -666,5 +802,32 @@ contract uniswapV2SwapTest {
             vidUni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
 
         assert(amountOut == amountOutDesired);
+    }
+
+    function testRouterAddLiquidity() public {
+        uint256 testAmount = 131072; // Hex: 0x20000
+        uint desiredA = 10000; 
+        uint desiredB = 10000; 
+        uint minA = 0; 
+        uint minB = 0; 
+
+        vidRouter = new uniswapV2Router02();
+
+        vidRouter.setLocalPair(address(vidWeth), address(vidDai));
+        vidRouter.setLocalPair(address(vidWeth), address(vidUsdc));
+        vidRouter.setLocalPair(address(vidUsdc), address(vidDai));
+
+        vidDai.mint(address(this), testAmount);
+        vidDai.approve(address(vidRouter), testAmount);
+        vidUsdc.mint(address(this), testAmount);
+        vidUsdc.approve(address(vidRouter), testAmount);
+
+        vidRouter.addLiquidity(address(vidDai), address(vidUsdc), desiredA, desiredB, minA, minB, address(this));
+   
+        assert(vidDai.balanceOf(address(this)) == 121072);
+        assert(vidUsdc.balanceOf(address(this)) == 121072);
+        assert(vidDai.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
+        assert(vidUsdc.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
+        assert(uniswapV2Pair(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))).balanceOf(address(this)) == 9000);
     }
 }

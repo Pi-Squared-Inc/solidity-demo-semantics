@@ -5,8 +5,17 @@ module SOLIDITY-UNISWAP-TOKENS
 
   syntax Id ::= "account"                         [token]
               | "act"                             [token]
+              | "addLiquidity"                    [token]
               | "allowance"                       [token]
               | "allowed"                         [token]
+              | "amountA"                         [token]
+              | "amountADesired"                  [token]
+              | "amountAOptimal"                  [token]
+              | "amountAMin"                      [token]
+              | "amountB"                         [token]
+              | "amountBDesired"                  [token]
+              | "amountBMin"                      [token]
+              | "amountBOptimal"                  [token]
               | "amountIn"                        [token]
               | "amountInMax"                     [token]
               | "amountInWithFee"                 [token]
@@ -14,9 +23,12 @@ module SOLIDITY-UNISWAP-TOKENS
               | "amountOutDesired"                [token]
               | "amountOutMin"                    [token]
               | "amounts"                         [token]
+              | "amountsLiq"                      [token]
+              | "amount0"                         [token]
               | "amount0In"                       [token]
-              | "amount1In"                       [token]
               | "amount0Out"                      [token]
+              | "amount1"                         [token]
+              | "amount1In"                       [token]
               | "amount1Out"                      [token]
               | "approvalEvent"                   [token]
               | "approve"                         [token]
@@ -48,6 +60,8 @@ module SOLIDITY-UNISWAP-TOKENS
               | "decimals"                        [token]
               | "denominator"                     [token]
               | "deposit"                         [token]
+              | "desiredA"                        [token]
+              | "desiredB"                        [token]
               | "dst"                             [token]
               | "emitEvent"                       [token]
               | "from"                            [token]
@@ -60,8 +74,14 @@ module SOLIDITY-UNISWAP-TOKENS
               | "input"                           [token]
               | "kLast"                           [token]
               | "length"                          [token]
+              | "liquidity"                       [token]
               | "localPairs"                      [token]
+              | "mathMin"                         [token]
+              | "mathSqrt"                        [token]
+              | "minA"                            [token]
+              | "minB"                            [token]
               | "mint"                            [token]
+              | "mintEvent"                       [token]
               | "mintOnDeposit"                   [token]
               | "msg"                             [token]
               | "numerator"                       [token]
@@ -75,6 +95,8 @@ module SOLIDITY-UNISWAP-TOKENS
               | "price0CumulativeLast"            [token]
               | "price1CumulativeLast"            [token]
               | "reduced"                         [token]
+              | "reserveA"                        [token]
+              | "reserveB"                        [token]
               | "reserveIn"                       [token]
               | "reserveOut"                      [token]
               | "reserves"                        [token]
@@ -99,6 +121,8 @@ module SOLIDITY-UNISWAP-TOKENS
               | "sync"                            [token]
               | "syncEvent"                       [token]
               | "syncLocalPair"                   [token]
+              | "testAmount"                      [token]
+              | "testRouterAddLiquidity"          [token]
               | "testSwapMultiHopExactAmountIn"   [token]
               | "testSwapMultiHopExactAmountOut"  [token]
               | "testSwapSingleHopExactAmountIn"  [token]
@@ -122,6 +146,7 @@ module SOLIDITY-UNISWAP-TOKENS
               | "uniswapV2LibraryGetAmountsOut"   [token]
               | "uniswapV2LibraryGetReserves"     [token]
               | "uniswapV2LibraryPairFor"         [token]
+              | "uniswapV2LibraryQuote"           [token]
               | "uniswapV2LibrarySortTokens"      [token]
               | "uniswapV2Pair"                   [token]
               | "uniswapV2Router02"               [token]
@@ -140,12 +165,16 @@ module SOLIDITY-UNISWAP-TOKENS
               | "wETHMock"                        [token]
               | "wethownr"                        [token]
               | "wethspdr"                        [token]
+              | "x"                               [token]
+              | "y"                               [token]
+              | "z"                               [token]
 
   syntax Id ::= "vidAllowances"                   [token]
               | "vidBalances"                     [token]
               | "vidDai"                          [token]
               | "vidReserve0"                     [token]
               | "vidReserve1"                     [token]
+              | "vidRouter"                       [token]
               | "vidTo"                           [token]
               | "vidToken0"                       [token]
               | "vidToken1"                       [token]
@@ -153,6 +182,7 @@ module SOLIDITY-UNISWAP-TOKENS
               | "vidUni"                          [token]
               | "vidUsdc"                         [token]
               | "vidWeth"                         [token]
+              | "fidAddLiquidity"                 [token]
               | "fidApprove"                      [token]
               | "fidSpendAllowance"               [token]
               | "fidSwap"                         [token]
@@ -1127,6 +1157,83 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
                   </contract-fn-body>
                 </contract-fn> <contract-fn>
                   <contract-fn-id>
+                    mathMin
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    internal
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( x )
+                    ListItem ( y )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( z )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    z = x < y ? x : y ;  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
+                    mathSqrt
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    internal
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( uint256 )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( y )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( z )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    if ( y > 3 ) { z = y ;  uint256 x = y / 2 + 1 ;  while ( x < z ) { z = x ;  x = ( y / x + x ) / 2 ;  .Statements }  .Statements } else if ( y != 0 ) { z = 1 ;  .Statements }  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
+                    mint
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    external
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( address )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( to )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( liquidity )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    uint112 [ ] memory pairReserves = getReserves ( .TypedVals ) ;  uint256 balance0 = iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 balance1 = iERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 amount0 = balance0 - pairReserves [ 0 ] ;  uint256 amount1 = balance1 - pairReserves [ 1 ] ;  uint256 vidTotalSupply = totalSupply ;  if ( vidTotalSupply == 0 ) { liquidity = mathSqrt ( amount0 * amount1 , .TypedVals ) - constMINIMUMLIQUIDITY ;  totalSupply = totalSupply + constMINIMUMLIQUIDITY ;  balanceOf [ address ( 0 , .TypedVals ) ] = balanceOf [ address ( 0 , .TypedVals ) ] + constMINIMUMLIQUIDITY ;  .Statements } else { liquidity = mathMin ( amount0 * vidTotalSupply / pairReserves [ 0 ] , amount1 * vidTotalSupply / pairReserves [ 1 ] , .TypedVals ) ;  .Statements }  require ( liquidity > 0 , "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED" , .TypedVals ) ;  totalSupply = totalSupply + liquidity ;  balanceOf [ to ] = balanceOf [ to ] + liquidity ;  fidUpdate ( balance0 , balance1 , pairReserves [ 0 ] , pairReserves [ 1 ] , .TypedVals ) ;  emit mintEvent ( msg . sender , amount0 , amount1 , .TypedVals ) ;  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
                     price0CumulativeLast
                   </contract-fn-id>
                   <contract-fn-visibility>
@@ -1309,6 +1416,23 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
               <contract-events>
                 <contract-event>
                   <contract-event-id>
+                    mintEvent
+                  </contract-event-id>
+                  <contract-event-arg-types>
+                    ListItem ( address )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                  </contract-event-arg-types>
+                  <contract-event-param-names>
+                    ListItem ( sender )
+                    ListItem ( amount0 )
+                    ListItem ( amount1 )
+                  </contract-event-param-names>
+                  <contract-event-indexed-pos>
+                    SetItem ( 0 )
+                  </contract-event-indexed-pos>
+                </contract-event> <contract-event>
+                  <contract-event-id>
                     swapEvent
                   </contract-event-id>
                   <contract-event-arg-types>
@@ -1360,6 +1484,78 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
               </contract-init>
               <contract-fns>
                 <contract-fn>
+                  <contract-fn-id>
+                    addLiquidity
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    external
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( address )
+                    ListItem ( address )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( address )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( tokenA )
+                    ListItem ( tokenB )
+                    ListItem ( amountADesired )
+                    ListItem ( amountBDesired )
+                    ListItem ( amountAMin )
+                    ListItem ( amountBMin )
+                    ListItem ( to )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 [ ]::TypeName )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( amountsLiq )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    amountsLiq = new uint256 [ ] ( 3 , .TypedVals ) ;  uint256 [ ] memory amounts = fidAddLiquidity ( tokenA , tokenB , amountADesired , amountBDesired , amountAMin , amountBMin , .TypedVals ) ;  amountsLiq [ 0 ] = amounts [ 0 ] ;  amountsLiq [ 1 ] = amounts [ 1 ] ;  address pair = uniswapV2LibraryPairFor ( tokenA , tokenB , .TypedVals ) ;  iERC20 ( tokenA , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 0 ] , .TypedVals ) ;  iERC20 ( tokenB , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 1 ] , .TypedVals ) ;  amountsLiq [ 2 ] = uniswapV2Pair ( pair , .TypedVals ) . mint ( to , .TypedVals ) ;  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
+                    fidAddLiquidity
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    internal
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( address )
+                    ListItem ( address )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( tokenA )
+                    ListItem ( tokenB )
+                    ListItem ( amountADesired )
+                    ListItem ( amountBDesired )
+                    ListItem ( amountAMin )
+                    ListItem ( amountBMin )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 [ ]::TypeName )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( amounts )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    amounts = new uint256 [ ] ( 2 , .TypedVals ) ;  require ( getLocalPair ( tokenA , tokenB , .TypedVals ) != address ( 0 , .TypedVals ) , .TypedVals ) ;  uint256 [ ] memory reserves = uniswapV2LibraryGetReserves ( tokenA , tokenB , .TypedVals ) ;  if ( reserves [ 0 ] == 0 && reserves [ 1 ] == 0 ) { amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBDesired ;  .Statements } else { uint256 amountBOptimal = uniswapV2LibraryQuote ( amountADesired , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  if ( amountBOptimal <= amountBDesired ) { require ( amountBOptimal >= amountBMin , "UniswapV2Router: INSUFFICIENT_B_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBOptimal ;  .Statements } else { uint256 amountAOptimal = uniswapV2LibraryQuote ( amountBDesired , reserves [ 1 ] , reserves [ 0 ] , .TypedVals ) ;  assert ( amountAOptimal <= amountADesired , .TypedVals ) ;  require ( amountAOptimal >= amountAMin , "UniswapV2Router: INSUFFICIENT_A_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountAOptimal ;  amounts [ 1 ] = amountBDesired ;  .Statements }  .Statements }  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
                   <contract-fn-id>
                     fidSwap
                   </contract-fn-id>
@@ -1726,6 +1922,35 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
                   </contract-fn-body>
                 </contract-fn> <contract-fn>
                   <contract-fn-id>
+                    uniswapV2LibraryQuote
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    internal
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                    ListItem ( uint256 )
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    ListItem ( amountA )
+                    ListItem ( reserveA )
+                    ListItem ( reserveB )
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    ListItem ( uint256 )
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    ListItem ( amountB )
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    require ( amountA > 0 , "UniswapV2Library: INSUFFICIENT_AMOUNT" , .TypedVals ) ;  require ( reserveA > 0 && reserveB > 0 , "UniswapV2Library: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  amountB = amountA * reserveB / reserveA ;  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
                     uniswapV2LibrarySortTokens
                   </contract-fn-id>
                   <contract-fn-visibility>
@@ -2014,6 +2239,7 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
               </contract-id>
               <contract-state>
                 (vidDai |-> dAIMock)
+                (vidRouter |-> uniswapV2Router02)
                 (vidUni |-> uniswapV2Swap)
                 (vidUsdc |-> uSDCMock)
                 (vidWeth |-> wETHMock)
@@ -2046,6 +2272,31 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
                   </contract-fn-payable>
                   <contract-fn-body>
                     vidWeth = new wETHMock ( .TypedVals ) ;  vidDai = new dAIMock ( .TypedVals ) ;  vidUsdc = new uSDCMock ( .TypedVals ) ;  vidUni = new uniswapV2Swap ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  .Statements
+                  </contract-fn-body>
+                </contract-fn> <contract-fn>
+                  <contract-fn-id>
+                    testRouterAddLiquidity
+                  </contract-fn-id>
+                  <contract-fn-visibility>
+                    public
+                  </contract-fn-visibility>
+                  <contract-fn-arg-types>
+                    .List
+                  </contract-fn-arg-types>
+                  <contract-fn-param-names>
+                    .List
+                  </contract-fn-param-names>
+                  <contract-fn-return-types>
+                    .List
+                  </contract-fn-return-types>
+                  <contract-fn-return-names>
+                    .List
+                  </contract-fn-return-names>
+                  <contract-fn-payable>
+                    false
+                  </contract-fn-payable>
+                  <contract-fn-body>
+                    uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  vidRouter = new uniswapV2Router02 ( .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidWeth , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidUsdc , .TypedVals ) , address ( vidDai , .TypedVals ) , .TypedVals ) ;  vidDai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  vidDai . approve ( address ( vidRouter , .TypedVals ) , testAmount , .TypedVals ) ;  vidUsdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  vidUsdc . approve ( address ( vidRouter , .TypedVals ) , testAmount , .TypedVals ) ;  vidRouter . addLiquidity ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( vidDai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( vidUsdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( vidDai . balanceOf ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( vidUsdc . balanceOf ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( uniswapV2Pair ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
                   </contract-fn-body>
                 </contract-fn> <contract-fn>
                   <contract-fn-id>
