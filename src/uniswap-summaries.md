@@ -2446,9 +2446,40 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> uniswapV2LibraryGetAmountIn:Id ( v(V1:MInt{256}, uint256 #as T), v(V2:MInt{256}, T), v(V3:MInt{256}, T), .TypedVals ) => v(((V2 *MInt V1 *MInt 1000p256) /uMInt ((V3 -MInt V1) *MInt 997p256)) +MInt 1p256, T) ...</k>
+       <summarize> true </summarize>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(((V2 *MInt V1 *MInt 1000p256) /uMInt ((V3 -MInt V1) *MInt 997p256)) +MInt 1p256) // amountIn
+                      ListItem(V2 *MInt V1 *MInt 1000p256)                                                      // numerator
+                      ListItem((V3 -MInt V1) *MInt 997p256)                                                     // denominator
+       </store>
+    requires V1 >uMInt 0p256 andBool V2 >uMInt 0p256 andBool V3 >uMInt 0p256
+     andBool ((V3 -MInt V1) *MInt 997p256) =/=MInt 0p256 [priority(40)]
+
+
+    rule <k> uniswapV2LibraryGetAmountIn:Id ( v(V1:MInt{256}, uint256 #as T), v(V2:MInt{256}, T), v(V3:MInt{256}, T), .TypedVals ) => v(1p256, T) ...</k>
+       <summarize> true </summarize>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(1p256)                        // amountIn
+                      ListItem(V2 *MInt V1 *MInt 1000p256)   // numerator
+                      ListItem((V3 -MInt V1) *MInt 997p256)  // denominator
+       </store>
+    requires V1 >uMInt 0p256 andBool V2 >uMInt 0p256 andBool V3 >uMInt 0p256
+     andBool ((V3 -MInt V1) *MInt 997p256) ==MInt 0p256 [priority(40)]
+  
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
+  imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
+
 endmodule
 ```
