@@ -181,7 +181,7 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
-  imports SOLIDITY-UNISWAP-INIT-SUMMARY
+  imports SOLIDITY-UNISWAP-SUMMARIES
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
        <summarize> false </summarize>
