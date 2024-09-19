@@ -2397,3 +2397,58 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
 
 endmodule
 ```
+
+```k
+module SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> uniswapV2LibrarySortTokens:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), .TypedVals ) => v(ListItem(V1) ListItem(V2), T[]) ...</k>
+       <summarize> true </summarize>
+       <store>
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(default(T[]))
+                ListItem(ListItem(V1) ListItem(V2))
+       </store>
+    requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
+
+  rule <k> uniswapV2LibrarySortTokens:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), .TypedVals ) => v(ListItem(V2) ListItem(V1), T[]) ...</k>
+       <summarize> true </summarize>
+       <store>
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(default(T[]))
+                ListItem(ListItem(V2) ListItem(V1))
+       </store>
+    requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
+
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  
+  rule <k> uniswapV2LibraryGetAmountOut:Id ( v(V1:MInt{256}, uint256 #as T), v(V2:MInt{256}, T), v(V3:MInt{256}, T), .TypedVals ) => v((V1 *MInt 997p256  *MInt V3) /uMInt (V2 *MInt 1000p256 +MInt V1 *MInt 997p256), T) ...</k>
+       <summarize> true </summarize>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem((V1 *MInt 997p256  *MInt V3) /uMInt (V2 *MInt 1000p256 +MInt V1 *MInt 997p256) ) // amountOut
+                      ListItem( V1 *MInt 997p256)                                                               // amountInWithFee
+                      ListItem( V1 *MInt 997p256  *MInt V3)                                                     // numerator
+                      ListItem( V2 *MInt 1000p256 +MInt V1  *MInt 997p256)                                      // denominator
+       </store>
+    requires V1 >uMInt 0p256 andBool V2 >uMInt 0p256 andBool V3 >uMInt 0p256 [priority(40)]
+
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-SUMMARIES
+  imports SOLIDITY-UNISWAP-INIT-SUMMARY
+  imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
+  imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
+endmodule
+```
