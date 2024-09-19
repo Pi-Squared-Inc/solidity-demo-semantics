@@ -957,6 +957,83 @@
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
+              mathMin
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( x )
+              ListItem ( y )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( z )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              z = x < y ? x : y ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mathSqrt
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( y )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( z )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              if ( y > 3 ) { z = y ;  uint256 x = y / 2 + 1 ;  while ( x < z ) { z = x ;  x = ( y / x + x ) / 2 ;  .Statements }  .Statements } else if ( y != 0 ) { z = 1 ;  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              mint
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( liquidity )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint112 [ ] memory pairReserves = getReserves ( .TypedVals ) ;  uint256 balance0 = iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 balance1 = iERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ;  uint256 amount0 = balance0 - pairReserves [ 0 ] ;  uint256 amount1 = balance1 - pairReserves [ 1 ] ;  uint256 vidTotalSupply = totalSupply ;  if ( vidTotalSupply == 0 ) { liquidity = mathSqrt ( amount0 * amount1 , .TypedVals ) - constMINIMUMLIQUIDITY ;  totalSupply = totalSupply + constMINIMUMLIQUIDITY ;  balanceOf [ address ( 0 , .TypedVals ) ] = balanceOf [ address ( 0 , .TypedVals ) ] + constMINIMUMLIQUIDITY ;  .Statements } else { liquidity = mathMin ( amount0 * vidTotalSupply / pairReserves [ 0 ] , amount1 * vidTotalSupply / pairReserves [ 1 ] , .TypedVals ) ;  .Statements }  require ( liquidity > 0 , "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED" , .TypedVals ) ;  totalSupply = totalSupply + liquidity ;  balanceOf [ to ] = balanceOf [ to ] + liquidity ;  fidUpdate ( balance0 , balance1 , pairReserves [ 0 ] , pairReserves [ 1 ] , .TypedVals ) ;  emit mintEvent ( msg . sender , amount0 , amount1 , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
               price0CumulativeLast
             </contract-fn-id>
             <contract-fn-visibility>
@@ -1139,6 +1216,23 @@
         <contract-events>
           <contract-event>
             <contract-event-id>
+              mintEvent
+            </contract-event-id>
+            <contract-event-arg-types>
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-event-arg-types>
+            <contract-event-param-names>
+              ListItem ( sender )
+              ListItem ( amount0 )
+              ListItem ( amount1 )
+            </contract-event-param-names>
+            <contract-event-indexed-pos>
+              SetItem ( 0 )
+            </contract-event-indexed-pos>
+          </contract-event> <contract-event>
+            <contract-event-id>
               swapEvent
             </contract-event-id>
             <contract-event-arg-types>
@@ -1190,6 +1284,78 @@
         </contract-init>
         <contract-fns>
           <contract-fn>
+            <contract-fn-id>
+              addLiquidity
+            </contract-fn-id>
+            <contract-fn-visibility>
+              external
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( address )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+              ListItem ( amountADesired )
+              ListItem ( amountBDesired )
+              ListItem ( amountAMin )
+              ListItem ( amountBMin )
+              ListItem ( to )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountsLiq )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amountsLiq = new uint256 [ ] ( 3 , .TypedVals ) ;  uint256 [ ] memory amounts = fidAddLiquidity ( tokenA , tokenB , amountADesired , amountBDesired , amountAMin , amountBMin , .TypedVals ) ;  amountsLiq [ 0 ] = amounts [ 0 ] ;  amountsLiq [ 1 ] = amounts [ 1 ] ;  address pair = uniswapV2LibraryPairFor ( tokenA , tokenB , .TypedVals ) ;  iERC20 ( tokenA , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 0 ] , .TypedVals ) ;  iERC20 ( tokenB , .TypedVals ) . transferFrom ( msg . sender , pair , amounts [ 1 ] , .TypedVals ) ;  amountsLiq [ 2 ] = uniswapV2Pair ( pair , .TypedVals ) . mint ( to , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              fidAddLiquidity
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( address )
+              ListItem ( address )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( tokenA )
+              ListItem ( tokenB )
+              ListItem ( amountADesired )
+              ListItem ( amountBDesired )
+              ListItem ( amountAMin )
+              ListItem ( amountBMin )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 [ ] )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amounts )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              amounts = new uint256 [ ] ( 2 , .TypedVals ) ;  require ( getLocalPair ( tokenA , tokenB , .TypedVals ) != address ( 0 , .TypedVals ) , .TypedVals ) ;  uint256 [ ] memory reserves = uniswapV2LibraryGetReserves ( tokenA , tokenB , .TypedVals ) ;  if ( reserves [ 0 ] == 0 && reserves [ 1 ] == 0 ) { amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBDesired ;  .Statements } else { uint256 amountBOptimal = uniswapV2LibraryQuote ( amountADesired , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ;  if ( amountBOptimal <= amountBDesired ) { require ( amountBOptimal >= amountBMin , "UniswapV2Router: INSUFFICIENT_B_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountADesired ;  amounts [ 1 ] = amountBOptimal ;  .Statements } else { uint256 amountAOptimal = uniswapV2LibraryQuote ( amountBDesired , reserves [ 1 ] , reserves [ 0 ] , .TypedVals ) ;  assert ( amountAOptimal <= amountADesired , .TypedVals ) ;  require ( amountAOptimal >= amountAMin , "UniswapV2Router: INSUFFICIENT_A_AMOUNT" , .TypedVals ) ;  amounts [ 0 ] = amountAOptimal ;  amounts [ 1 ] = amountBDesired ;  .Statements }  .Statements }  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
             <contract-fn-id>
               fidSwap
             </contract-fn-id>
@@ -1556,6 +1722,35 @@
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
+              uniswapV2LibraryQuote
+            </contract-fn-id>
+            <contract-fn-visibility>
+              internal
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+              ListItem ( uint256 )
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              ListItem ( amountA )
+              ListItem ( reserveA )
+              ListItem ( reserveB )
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              ListItem ( uint256 )
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              ListItem ( amountB )
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              require ( amountA > 0 , "UniswapV2Library: INSUFFICIENT_AMOUNT" , .TypedVals ) ;  require ( reserveA > 0 && reserveB > 0 , "UniswapV2Library: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  amountB = amountA * reserveB / reserveA ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
               uniswapV2LibrarySortTokens
             </contract-fn-id>
             <contract-fn-visibility>
@@ -1848,6 +2043,7 @@
         </contract-id>
         <contract-state>
           vidDai |-> dAIMock
+          vidRouter |-> uniswapV2Router02
           vidUni |-> uniswapV2Swap
           vidUsdc |-> uSDCMock
           vidWeth |-> wETHMock
@@ -1880,6 +2076,31 @@
             </contract-fn-payable>
             <contract-fn-body>
               vidWeth = new wETHMock ( .TypedVals ) ;  vidDai = new dAIMock ( .TypedVals ) ;  vidUsdc = new uSDCMock ( .TypedVals ) ;  vidUni = new uniswapV2Swap ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  .Statements
+            </contract-fn-body>
+          </contract-fn> <contract-fn>
+            <contract-fn-id>
+              testRouterAddLiquidity
+            </contract-fn-id>
+            <contract-fn-visibility>
+              public
+            </contract-fn-visibility>
+            <contract-fn-arg-types>
+              .List
+            </contract-fn-arg-types>
+            <contract-fn-param-names>
+              .List
+            </contract-fn-param-names>
+            <contract-fn-return-types>
+              .List
+            </contract-fn-return-types>
+            <contract-fn-return-names>
+              .List
+            </contract-fn-return-names>
+            <contract-fn-payable>
+              false
+            </contract-fn-payable>
+            <contract-fn-body>
+              uint256 testAmount = 131072 ;  uint256 desiredA = 10000 ;  uint256 desiredB = 10000 ;  uint256 minA = 0 ;  uint256 minB = 0 ;  vidRouter = new uniswapV2Router02 ( .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidWeth , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  vidRouter . setLocalPair ( address ( vidUsdc , .TypedVals ) , address ( vidDai , .TypedVals ) , .TypedVals ) ;  vidDai . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  vidDai . approve ( address ( vidRouter , .TypedVals ) , testAmount , .TypedVals ) ;  vidUsdc . mint ( address ( this , .TypedVals ) , testAmount , .TypedVals ) ;  vidUsdc . approve ( address ( vidRouter , .TypedVals ) , testAmount , .TypedVals ) ;  vidRouter . addLiquidity ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , desiredA , desiredB , minA , minB , address ( this , .TypedVals ) , .TypedVals ) ;  assert ( vidDai . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( vidUsdc . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 121072 , .TypedVals ) ;  assert ( vidDai . balanceOf ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( vidUsdc . balanceOf ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) == 10000 , .TypedVals ) ;  assert ( uniswapV2Pair ( vidRouter . getLocalPair ( address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) == 9000 , .TypedVals ) ;  .Statements
             </contract-fn-body>
           </contract-fn> <contract-fn>
             <contract-fn-id>
@@ -2248,19 +2469,21 @@
       uniswapV2SwapTest
     </this-type>
     <env>
-      amountOut |-> var ( 3 , uint256 )
-      amountOutDesired |-> var ( 2 , uint256 )
-      daiAmountOut |-> var ( 1 , uint256 )
-      wethAmount |-> var ( 0 , uint256 )
+      desiredA |-> var ( 1 , uint256 )
+      desiredB |-> var ( 2 , uint256 )
+      minA |-> var ( 3 , uint256 )
+      minB |-> var ( 4 , uint256 )
+      testAmount |-> var ( 0 , uint256 )
     </env>
     <store>
-      ListItem ( 1000000000000000000p256 )
-      ListItem ( 2000000000000000000p256 )
-      ListItem ( 1000000p256 )
-      ListItem ( 1000000p256 )
+      ListItem ( 131072p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 10000p256 )
+      ListItem ( 0p256 )
+      ListItem ( 0p256 )
     </store>
     <current-function>
-      testSwapMultiHopExactAmountOut
+      testRouterAddLiquidity
     </current-function>
     <call-stack>
       .List
@@ -2274,10 +2497,11 @@
           uniswapV2SwapTest
         </contract-type>
         <contract-storage>
-          vidDai |-> 4p160
-          vidUni |-> 6p160
-          vidUsdc |-> 5p160
-          vidWeth |-> 3p160
+          vidDai |-> 36p160
+          vidRouter |-> 43p160
+          vidUni |-> 38p160
+          vidUsdc |-> 37p160
+          vidWeth |-> 35p160
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2287,12 +2511,11 @@
           wETHMock
         </contract-type>
         <contract-storage>
-          allowance |-> ( 2p160 |-> ( 6p160 |-> 16000000000000000000p256 )
-          6p160 |-> ( 7p160 |-> 1251262179218628346p256 ) )
-          balanceOf |-> ( 2p160 |-> 6039089300994697146p256
+          allowance |-> ( 2p160 |-> ( 6p160 |-> 1000000000000000000p256 )
+          6p160 |-> ( 7p160 |-> 0p256 ) )
+          balanceOf |-> ( 2p160 |-> 0p256
           6p160 |-> 0p256
-          8p160 |-> 23364897703329466784p256
-          9p160 |-> 6596012995675836070p256 )
+          8p160 |-> 2000000000000000000p256 )
           constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
         </contract-storage>
       </live-contract> <live-contract>
@@ -2303,13 +2526,11 @@
           dAIMock
         </contract-type>
         <contract-storage>
-          allowance |-> ( 2p160 |-> ( 6p160 |-> 18000000000000000000p256 )
-          6p160 |-> ( 7p160 |-> 1999999999998955749p256 ) )
-          balanceOf |-> ( 2p160 |-> 17873591848868081303p256
-          6p160 |-> 0p256
-          8p160 |-> 16126408151131918697p256 )
+          allowance |-> ( 2p160 |-> ( 6p160 |-> 1000000000000000000p256 ) )
+          balanceOf |-> ( 2p160 |-> 499248873309964947p256
+          8p160 |-> 500751126690035053p256 )
           constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          totalSupply |-> 34000000000000000000p256
+          totalSupply |-> 1000000000000000000p256
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2320,10 +2541,6 @@
         </contract-type>
         <contract-storage>
           constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
-          vidAllowances |-> ( 2p160 |-> ( 6p160 |-> 10000000000000000000p256 ) )
-          vidBalances |-> ( 2p160 |-> 7614082136166272076p256
-          9p160 |-> 4385917863833727924p256 )
-          vidTotalSupply |-> 12000000000000000000p256
         </contract-storage>
       </live-contract> <live-contract>
         <contract-address>
@@ -2361,8 +2578,8 @@
           blockTimestampLast |-> 1724300000p32
           constMINIMUMLIQUIDITY |-> 1000p256
           constUINT112MAX |-> 5192296858534827628530496329220095p256
-          reserve0 |-> 23364897703329466784p112
-          reserve1 |-> 16126408151131918697p112
+          reserve0 |-> 2000000000000000000p112
+          reserve1 |-> 500751126690035053p112
           token0 |-> 3p160
           token1 |-> 4p160
         </contract-storage>
@@ -2374,11 +2591,8 @@
           uniswapV2Pair
         </contract-type>
         <contract-storage>
-          blockTimestampLast |-> 1724300000p32
           constMINIMUMLIQUIDITY |-> 1000p256
           constUINT112MAX |-> 5192296858534827628530496329220095p256
-          reserve0 |-> 6596012995675836070p112
-          reserve1 |-> 4385917863833727924p112
           token0 |-> 3p160
           token1 |-> 5p160
         </contract-storage>
@@ -2395,10 +2609,507 @@
           token0 |-> 4p160
           token1 |-> 5p160
         </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          11p160
+        </contract-address>
+        <contract-type>
+          wETHMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 14p160 |-> 7000000000000000000p256 )
+          14p160 |-> ( 15p160 |-> 0p256 ) )
+          balanceOf |-> ( 2p160 |-> 0p256
+          14p160 |-> 0p256
+          16p160 |-> 1802522810203429866p256
+          17p160 |-> 2197477189796570134p256 )
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          12p160
+        </contract-address>
+        <contract-type>
+          dAIMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 14p160 |-> 2000000000000000000p256 )
+          14p160 |-> ( 15p160 |-> 0p256 ) )
+          balanceOf |-> ( 2p160 |-> 499248873309964947p256
+          14p160 |-> 0p256
+          16p160 |-> 2500751126690035053p256 )
+          constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          totalSupply |-> 3000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          13p160
+        </contract-address>
+        <contract-type>
+          uSDCMock
+        </contract-type>
+        <contract-storage>
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          vidAllowances |-> ( 2p160 |-> ( 14p160 |-> 2000000000000000000p256 ) )
+          vidBalances |-> ( 2p160 |-> 1544187543921826939p256
+          17p160 |-> 455812456078173061p256 )
+          vidTotalSupply |-> 2000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          14p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          dai |-> 12p160
+          router |-> 15p160
+          usdc |-> 13p160
+          weth |-> 11p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          15p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          localPairs |-> ( 11p160 |-> ( 12p160 |-> 16p160
+          13p160 |-> 17p160 )
+          12p160 |-> ( 13p160 |-> 18p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          16p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 1802522810203429866p112
+          reserve1 |-> 2500751126690035053p112
+          token0 |-> 11p160
+          token1 |-> 12p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          17p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 2197477189796570134p112
+          reserve1 |-> 455812456078173061p112
+          token0 |-> 11p160
+          token1 |-> 13p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          18p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 12p160
+          token1 |-> 13p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          19p160
+        </contract-address>
+        <contract-type>
+          wETHMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 22p160 |-> 4000000000000000000p256 )
+          22p160 |-> ( 23p160 |-> 662654630558341691p256 ) )
+          balanceOf |-> ( 2p160 |-> 4662654630558341691p256
+          22p160 |-> 0p256
+          24p160 |-> 5337345369441658309p256 )
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          20p160
+        </contract-address>
+        <contract-type>
+          dAIMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 22p160 |-> 4000000000000000000p256 ) )
+          balanceOf |-> ( 2p160 |-> 7000000000000000000p256
+          24p160 |-> 3000000000000000000p256 )
+          constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          totalSupply |-> 10000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          21p160
+        </contract-address>
+        <contract-type>
+          uSDCMock
+        </contract-type>
+        <contract-storage>
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          22p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          dai |-> 20p160
+          router |-> 23p160
+          usdc |-> 21p160
+          weth |-> 19p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          23p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          localPairs |-> ( 19p160 |-> ( 20p160 |-> 24p160
+          21p160 |-> 25p160 )
+          20p160 |-> ( 21p160 |-> 26p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          24p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 5337345369441658309p112
+          reserve1 |-> 3000000000000000000p112
+          token0 |-> 19p160
+          token1 |-> 20p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          25p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 19p160
+          token1 |-> 21p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          26p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 20p160
+          token1 |-> 21p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          27p160
+        </contract-address>
+        <contract-type>
+          wETHMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 30p160 |-> 16000000000000000000p256 )
+          30p160 |-> ( 31p160 |-> 1325309261116683383p256 ) )
+          balanceOf |-> ( 2p160 |-> 1325309261116683383p256
+          30p160 |-> 0p256
+          32p160 |-> 14674690738882313607p256
+          33p160 |-> 4000000000001003010p256 )
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          28p160
+        </contract-address>
+        <contract-type>
+          dAIMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 30p160 |-> 18000000000000000000p256 )
+          30p160 |-> ( 31p160 |-> 1999999999999314446p256 ) )
+          balanceOf |-> ( 2p160 |-> 9999999999999314446p256
+          30p160 |-> 0p256
+          32p160 |-> 10000000000000685554p256 )
+          constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          totalSupply |-> 20000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          29p160
+        </contract-address>
+        <contract-type>
+          uSDCMock
+        </contract-type>
+        <contract-storage>
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          vidAllowances |-> ( 2p160 |-> ( 30p160 |-> 10000000000000000000p256 ) )
+          vidBalances |-> ( 2p160 |-> 6000000000001000000p256
+          33p160 |-> 3999999999999000000p256 )
+          vidTotalSupply |-> 10000000000000000000p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          30p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          dai |-> 28p160
+          router |-> 31p160
+          usdc |-> 29p160
+          weth |-> 27p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          31p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          localPairs |-> ( 27p160 |-> ( 28p160 |-> 32p160
+          29p160 |-> 33p160 )
+          28p160 |-> ( 29p160 |-> 34p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          32p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 14674690738882313607p112
+          reserve1 |-> 10000000000000685554p112
+          token0 |-> 27p160
+          token1 |-> 28p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          33p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 4000000000001003010p112
+          reserve1 |-> 3999999999999000000p112
+          token0 |-> 27p160
+          token1 |-> 29p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          34p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 28p160
+          token1 |-> 29p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          35p160
+        </contract-address>
+        <contract-type>
+          wETHMock
+        </contract-type>
+        <contract-storage>
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          36p160
+        </contract-address>
+        <contract-type>
+          dAIMock
+        </contract-type>
+        <contract-storage>
+          allowance |-> ( 2p160 |-> ( 43p160 |-> 121072p256 ) )
+          balanceOf |-> ( 2p160 |-> 121072p256
+          46p160 |-> 10000p256 )
+          constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          totalSupply |-> 131072p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          37p160
+        </contract-address>
+        <contract-type>
+          uSDCMock
+        </contract-type>
+        <contract-storage>
+          constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+          vidAllowances |-> ( 2p160 |-> ( 43p160 |-> 121072p256 ) )
+          vidBalances |-> ( 2p160 |-> 121072p256
+          46p160 |-> 10000p256 )
+          vidTotalSupply |-> 131072p256
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          38p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Swap
+        </contract-type>
+        <contract-storage>
+          dai |-> 36p160
+          router |-> 39p160
+          usdc |-> 37p160
+          weth |-> 35p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          39p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          localPairs |-> ( 35p160 |-> ( 36p160 |-> 40p160
+          37p160 |-> 41p160 )
+          36p160 |-> ( 37p160 |-> 42p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          40p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 35p160
+          token1 |-> 36p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          41p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 35p160
+          token1 |-> 37p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          42p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 36p160
+          token1 |-> 37p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          43p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Router02
+        </contract-type>
+        <contract-storage>
+          localPairs |-> ( 35p160 |-> ( 36p160 |-> 44p160
+          37p160 |-> 45p160 )
+          36p160 |-> ( 37p160 |-> 46p160 ) )
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          44p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 35p160
+          token1 |-> 36p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          45p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          token0 |-> 35p160
+          token1 |-> 37p160
+        </contract-storage>
+      </live-contract> <live-contract>
+        <contract-address>
+          46p160
+        </contract-address>
+        <contract-type>
+          uniswapV2Pair
+        </contract-type>
+        <contract-storage>
+          balanceOf |-> ( 0p160 |-> 1000p256
+          2p160 |-> 9000p256 )
+          blockTimestampLast |-> 1724300000p32
+          constMINIMUMLIQUIDITY |-> 1000p256
+          constUINT112MAX |-> 5192296858534827628530496329220095p256
+          reserve0 |-> 10000p112
+          reserve1 |-> 10000p112
+          token0 |-> 36p160
+          token1 |-> 37p160
+          totalSupply |-> 10000p256
+        </contract-storage>
       </live-contract>
     </live-contracts>
     <next-address>
-      11p160
+      47p160
     </next-address>
   </exec>
 </solidity>
