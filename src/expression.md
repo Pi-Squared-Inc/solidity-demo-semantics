@@ -89,8 +89,6 @@ module SOLIDITY-EXPRESSION
        <env>... X |-> var(_ => I, T) ...</env>
 
   // assignment to array element
-  context HOLE [ _ ] = _
-  context _ [ HOLE ] = _
   rule <k> lv(I:Int, L, LT []) [ Idx:Int ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
   rule <k> lv(I:Int, L, LT []) [ v(Idx:MInt{256}, _) ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
@@ -109,8 +107,6 @@ module SOLIDITY-EXPRESSION
   rule write(M:Map, ListItem(Key:Value) L2, V, mapping(_ _ => T2)) => M [ Key <- write({M [ Key ] orDefault default(T2)}:>Value, L2, V, T2) ]
 
   // type conversion
-  context _:ElementaryTypeName ( HOLE:CallArgumentList )
-  context _:Id ( HOLE:CallArgumentList )
   rule uint32(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{32}, uint32)
   rule uint112(v(V:MInt{256}, _)) => v(roundMInt(V)::MInt{112}, uint112)
   rule uint256(v(V:MInt{112}, _)) => v(roundMInt(V)::MInt{256}, uint256)
@@ -149,8 +145,6 @@ module SOLIDITY-EXPRESSION
     requires isAggregateType(T)
 
   // array element lookup
-  context HOLE:Expression [ _:Expression ]
-  context _:Expression [ HOLE:Expression ]
   rule <k> lv(I:Int, L, T []) [ Idx:Int ] => v(read(V, L ListItem(Idx), T[]), T) ...</k>
        <store> _ [ I <- V ] </store>
     requires notBool isAggregateType(T)
@@ -180,13 +174,10 @@ module SOLIDITY-EXPRESSION
 
   // array length
   syntax Id ::= "length" [token]
-  context HOLE . length
   rule <k> lv(I:Int, .List, T) . length => v(Int2MInt(size({read(V, .List, T)}:>List))::MInt{256}, uint) ...</k>
        <store> _ [ I <- V ] </store>
 
   // external call
-  context HOLE . _ ( _:CallArgumentList )
-  context (_ . _) ( HOLE:CallArgumentList )
   rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
        <msg-value> VALUE => 0p256 </msg-value>
@@ -208,10 +199,6 @@ module SOLIDITY-EXPRESSION
     requires isKResult(ARGS)
 
   syntax Id ::= "value" [token]
-
-  context HOLE . _ { value: _ } ( _ )
-  context _ . _ { value: HOLE } ( _ )
-  context _ . _ { _ } ( HOLE:CallArgumentList )
 
   rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
        <msg-sender> FROM => THIS </msg-sender>
@@ -648,5 +635,53 @@ module SOLIDITY-EXPRESSION
   rule <k> E:TypedVal, HOLE:TypedVals => HOLE ~> freezerTypedValsHead(E) ...</k>
     requires isKResult(E) [heat]
   rule <k> HOLE:TypedVals ~> freezerTypedValsHead(E) => E, HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerAssignmentToArrayElementBase(Expression, Expression)
+                 | freezerAssignmentToArrayElementIndex(Expression, Expression)
+  rule <k> HOLE:Expression [ E2:Expression ] = E3:Expression => HOLE ~> freezerAssignmentToArrayElementBase(E2, E3) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerAssignmentToArrayElementBase(E2, E3) => HOLE [ E2 ] = E3 ...</k> [cool]
+  rule <k> E1:Expression [ HOLE:Expression ] = E3:Expression => HOLE ~> freezerAssignmentToArrayElementIndex(E1, E3) ...</k>
+    requires isKResult(E1) [heat]
+  rule <k> HOLE:Expression ~> freezerAssignmentToArrayElementIndex(E1, E3) => E1 [ HOLE ] = E3 ...</k> [cool]
+
+  syntax KItem ::= freezerCallElementaryTypeName(ElementaryTypeName)
+  rule <k> T:ElementaryTypeName ( HOLE:CallArgumentList ) => HOLE ~> freezerCallElementaryTypeName(T) ...</k> [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerCallElementaryTypeName(T) => T ( HOLE ) ...</k> [cool]
+
+  syntax KItem ::= freezerCallId(Id)
+  rule <k> ID:Id ( HOLE:CallArgumentList ) => HOLE ~> freezerCallId(ID) ...</k> [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerCallId(ID) => ID ( HOLE ) ...</k> [cool]
+
+  syntax KItem ::= freezerArrayElementLookupBase(Expression)
+                 | freezerArrayElementLookupIndex(Expression)
+  rule <k> HOLE:Expression [ E:Expression ] => HOLE ~> freezerArrayElementLookupBase(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerArrayElementLookupBase(E) => HOLE [ E ] ...</k> [cool]
+  rule <k> E:Expression [ HOLE:Expression ] => HOLE ~> freezerArrayElementLookupIndex(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerArrayElementLookupIndex(E) => E [ HOLE ] ...</k> [cool]
+
+  syntax KItem ::= freezerLength()
+  rule <k> HOLE:Expression . length => HOLE ~> freezerLength() ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerLength() => HOLE . length ...</k> [cool]
+
+  syntax KItem ::= freezerExternalCallBase(Id, CallArgumentList)
+                 | freezerExternalCallArgs(Expression, Id)
+  rule <k> HOLE:Expression . ID:Id ( ARGS:CallArgumentList ) => HOLE ~> freezerExternalCallBase(ID, ARGS) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerExternalCallBase(ID, ARGS) => (HOLE . ID) ( ARGS ) ...</k> [cool]
+  rule <k> (E:Expression . ID:Id) ( HOLE:CallArgumentList ) => HOLE ~> freezerExternalCallArgs(E, ID) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerExternalCallArgs(E, ID) => (E . ID) ( HOLE ) ...</k> [cool]
+
+  syntax KItem ::= freezerExternalCallWithValueBase(Id, Expression, CallArgumentList)
+                 | freezerExternalCallWithValueValue(Expression, Id, CallArgumentList)
+                 | freezerExternalCallWithValueArgs(Expression, Id, Expression)
+  rule <k> HOLE:Expression . ID:Id { value: V:Expression } ( ARGS:CallArgumentList ) => HOLE ~> freezerExternalCallWithValueBase(ID, V, ARGS) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerExternalCallWithValueBase(ID, V, ARGS) => HOLE . ID { value : V } ( ARGS ) ...</k> [cool]
+  rule <k> E:Expression . ID:Id { value: HOLE:Expression } ( ARGS:CallArgumentList ) => HOLE ~> freezerExternalCallWithValueValue(E, ID, ARGS) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerExternalCallWithValueValue(E, ID, ARGS) => E . ID { value : HOLE } ( ARGS ) ...</k> [cool]
+  rule <k> E:Expression . ID:Id { value: V:Expression } ( HOLE:CallArgumentList ) => HOLE ~> freezerExternalCallWithValueArgs(E, ID, V) ...</k>
+    requires isKResult(E) andBool isKResult(V) [heat]
+  rule <k> HOLE:Expression ~> freezerExternalCallWithValueArgs(E, ID, V) => E . ID { value : V } ( HOLE ) ...</k> [cool]
 
 endmodule
