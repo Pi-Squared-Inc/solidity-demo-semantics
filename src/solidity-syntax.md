@@ -179,23 +179,23 @@ In each code block, various statments and nested blocks can be present.
 Following is a list of supported statements.
 
 ```k
-    syntax ExpressionStatement ::= Expression ";" [strict]
+    syntax ExpressionStatement ::= Expression ";"
 
     syntax VariableDeclarationStatement ::= VariableDeclaration ";"
-                                            | VariableDeclaration "=" Expression ";" [strict(2)]
-                                            | "(" VariableDeclaration "," ")" "=" Expression ";" [strict(2)]
+                                            | VariableDeclaration "=" Expression ";"
+                                            | "(" VariableDeclaration "," ")" "=" Expression ";"
 
-    syntax IfStatement ::= "if" "(" Expression ")" Statement [strict(1)]
-                         | "if" "(" Expression ")" Statement "else" Statement [avoid, strict(1)]
+    syntax IfStatement ::= "if" "(" Expression ")" Statement
+                         | "if" "(" Expression ")" Statement "else" Statement [avoid]
 
     syntax WhileStatement ::= "while" "(" Expression ")" Statement
     syntax Block ::= "for" "(" VariableDeclarationStatement Expression ";" Expression ")" Statement [function]
     rule for (Init Cond ; Post) Body => { Init while(Cond) { Body Post; } }
 
-    syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";" [strict(2)]
+    syntax EmitStatement ::= "emit" Expression "(" CallArgumentList ")" ";"
 
     syntax ReturnStatement ::= "return" ";"
-                            | "return" Expression ";" [strict]
+                            | "return" Expression ";"
 
     syntax RevertStatement ::= "revert" "(" CallArgumentList ")" ";"
                              | "revert" Id "(" CallArgumentList ")" ";"
@@ -207,7 +207,7 @@ Following is a list of supported statements.
 `CallArgumentList` keeps a list of arguments for function calls and such (`revert()`, `emit()`, etc.)
 
 ```k
-    syntax CallArgumentList ::= List{Expression, ","} [overload(exps), strict]
+    syntax CallArgumentList ::= List{Expression, ","} [overload(exps)]
 
 ```
 
@@ -227,7 +227,7 @@ Following is a list of supported expressions. Operator precendences are taken fr
     syntax Expression ::= Id | Literal | LiteralWithSubDenom | ElementaryTypeName
                         > "(" Expression ")" [bracket]
                         | "[" CallArgumentList "]"
-                        | "new" TypeName "(" CallArgumentList ")" [strict(2)]
+                        | "new" TypeName "(" CallArgumentList ")"
                         | Expression "++" | Expression "--"
                         | Expression "[" Expression "]" | Expression "[""]"
                         | Expression "." Id | Expression ".address"
@@ -235,28 +235,27 @@ Following is a list of supported expressions. Operator precendences are taken fr
                         | Expression "(" CallArgumentList ")"
                         > "++" Expression | "--" Expression
                         | "!" Expression
-                        > left: Expression "**" Expression [strict]
+                        > left: Expression "**" Expression
                         > left:
-                              Expression "*" Expression [strict]
-                            | Expression "/" Expression [strict]
-                            | Expression "%" Expression [strict]
+                              Expression "*" Expression
+                            | Expression "/" Expression
+                            | Expression "%" Expression
                         > left:
-                              Expression "+" Expression [strict]
-                            | Expression "-" Expression [strict]
+                              Expression "+" Expression
+                            | Expression "-" Expression
                         > left:
-                              Expression "<" Expression [strict]
-                            | Expression "<=" Expression [strict]
-                            | Expression ">" Expression [strict]
-                            | Expression ">=" Expression [strict]
+                              Expression "<" Expression
+                            | Expression "<=" Expression
+                            | Expression ">" Expression
+                            | Expression ">=" Expression
                         > left:
-                              Expression "==" Expression [strict]
-                            | Expression "!=" Expression [strict]
-                        > left: Expression "&&" Expression [strict(1)]
-                        > left: Expression "||" Expression [strict(1)]
+                              Expression "==" Expression
+                            | Expression "!=" Expression
+                        > left: Expression "&&" Expression
+                        > left: Expression "||" Expression
                         > right:
-                            Expression "?" Expression ":" Expression [strict(1)]
-                            | Expression "=" Expression [strict(2)]
-
+                            Expression "?" Expression ":" Expression
+                            | Expression "=" Expression
 endmodule
 
 ```

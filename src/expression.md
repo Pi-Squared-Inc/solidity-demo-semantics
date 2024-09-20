@@ -515,4 +515,138 @@ module SOLIDITY-EXPRESSION
   rule retval(.List) => void
   rule retval(ListItem(noId)) => void
   rule retval(ListItem(X:Id)) => X
+
+  // Heating and cooling rules
+  syntax KItem ::= freezerAssignment(Expression)
+  rule <k> E:Expression = HOLE:Expression => HOLE ~> freezerAssignment(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerAssignment(E) => E = HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerTernaryOperator(Expression, Expression)
+  rule <k> HOLE:Expression ? E1:Expression : E2:Expression => HOLE ~> freezerTernaryOperator(E1, E2) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerTernaryOperator(E1, E2) => HOLE ? E1 : E2 ...</k> [cool]
+
+  syntax KItem ::= freezerOr(Expression)
+  rule <k> HOLE:Expression || E:Expression => HOLE ~> freezerOr(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerOr(E) => HOLE || E ...</k> [cool]
+
+  syntax KItem ::= freezerAnd(Expression)
+  rule <k> HOLE:Expression && E:Expression => HOLE ~> freezerAnd(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerAnd(E) => HOLE && E ...</k> [cool]
+
+  syntax KItem ::= freezerEq1(Expression)
+                 | freezerEq2(Expression)
+  rule <k> HOLE:Expression == E:Expression => HOLE ~> freezerEq1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerEq1(E) => HOLE == E ...</k> [cool]
+  rule <k> E:Expression == HOLE:Expression => HOLE ~> freezerEq2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerEq2(E) => E == HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerNeq1(Expression)
+                 | freezerNeq2(Expression)
+  rule <k> HOLE:Expression != E:Expression => HOLE ~> freezerNeq1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerNeq1(E) => HOLE != E ...</k> [cool]
+  rule <k> E:Expression != HOLE:Expression => HOLE ~> freezerNeq2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerNeq2(E) => E != HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerLt1(Expression)
+                 | freezerLt2(Expression)
+  rule <k> HOLE:Expression < E:Expression => HOLE ~> freezerLt1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerLt1(E) => HOLE < E ...</k> [cool]
+  rule <k> E:Expression < HOLE:Expression => HOLE ~> freezerLt2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerLt2(E) => E < HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerLeq1(Expression)
+                 | freezerLeq2(Expression)
+  rule <k> HOLE:Expression <= E:Expression => HOLE ~> freezerLeq1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerLeq1(E) => HOLE <= E ...</k> [cool]
+  rule <k> E:Expression <= HOLE:Expression => HOLE ~> freezerLeq2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerLeq2(E) => E <= HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerGt1(Expression)
+                 | freezerGt2(Expression)
+  rule <k> HOLE:Expression > E:Expression => HOLE ~> freezerGt1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerGt1(E) => HOLE > E ...</k> [cool]
+  rule <k> E:Expression > HOLE:Expression => HOLE ~> freezerGt2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerGt2(E) => E > HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerGeq1(Expression)
+                 | freezerGeq2(Expression)
+  rule <k> HOLE:Expression >= E:Expression => HOLE ~> freezerGeq1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerGeq1(E) => HOLE >= E ...</k> [cool]
+  rule <k> E:Expression >= HOLE:Expression => HOLE ~> freezerGeq2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerGeq2(E) => E >= HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerAdd1(Expression)
+                 | freezerAdd2(Expression)
+  rule <k> HOLE:Expression + E:Expression => HOLE ~> freezerAdd1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerAdd1(E) => HOLE + E ...</k> [cool]
+  rule <k> E:Expression + HOLE:Expression => HOLE ~> freezerAdd2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerAdd2(E) => E + HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerSub1(Expression)
+                 | freezerSub2(Expression)
+  rule <k> HOLE:Expression - E:Expression => HOLE ~> freezerSub1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerSub1(E) => HOLE - E ...</k> [cool]
+  rule <k> E:Expression - HOLE:Expression => HOLE ~> freezerSub2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerSub2(E) => E - HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerMul1(Expression)
+                 | freezerMul2(Expression)
+  rule <k> HOLE:Expression * E:Expression => HOLE ~> freezerMul1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerMul1(E) => HOLE * E ...</k> [cool]
+  rule <k> E:Expression * HOLE:Expression => HOLE ~> freezerMul2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerMul2(E) => E * HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerDiv1(Expression)
+                 | freezerDiv2(Expression)
+  rule <k> HOLE:Expression / E:Expression => HOLE ~> freezerDiv1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerDiv1(E) => HOLE / E ...</k> [cool]
+  rule <k> E:Expression / HOLE:Expression => HOLE ~> freezerDiv2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerDiv2(E) => E / HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerMod1(Expression)
+                 | freezerMod2(Expression)
+  rule <k> HOLE:Expression % E:Expression => HOLE ~> freezerMod1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerMod1(E) => HOLE % E ...</k> [cool]
+  rule <k> E:Expression % HOLE:Expression => HOLE ~> freezerMod2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerMod2(E) => E % HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerExp1(Expression)
+                 | freezerExp2(Expression)
+  rule <k> HOLE:Expression ** E:Expression => HOLE ~> freezerExp1(E) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerExp1(E) => HOLE ** E ...</k> [cool]
+  rule <k> E:Expression ** HOLE:Expression => HOLE ~> freezerExp2(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:Expression ~> freezerExp2(E) => E ** HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerNew(TypeName)
+  rule <k> new T:TypeName ( HOLE:CallArgumentList ) => HOLE ~> freezerNew(T) ...</k> [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerNew(T) => new T ( HOLE ) ...</k> [cool]
+
+  syntax KItem ::= freezerCallArgumentListHead(Expression)
+                 | freezerCallArgumentListTail(CallArgumentList)
+  rule <k> HOLE:Expression, L:CallArgumentList => HOLE ~> freezerCallArgumentListTail(L) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerCallArgumentListTail(L) => HOLE, L ...</k> [cool]
+  rule <k> E:Expression, HOLE:CallArgumentList => HOLE ~> freezerCallArgumentListHead(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerCallArgumentListHead(E) => E, HOLE ...</k> [cool]
+
+  syntax KItem ::= freezerTypedValsHead(TypedVal)
+                 | freezerTypedValsTail(TypedVals)
+  rule <k> HOLE:TypedVal, L:TypedVals => HOLE ~> freezerTypedValsTail(L) ...</k> [heat]
+  rule <k> HOLE:TypedVal ~> freezerTypedValsTail(L) => HOLE, L ...</k> [cool]
+  rule <k> E:TypedVal, HOLE:TypedVals => HOLE ~> freezerTypedValsHead(E) ...</k>
+    requires isKResult(E) [heat]
+  rule <k> HOLE:TypedVals ~> freezerTypedValsHead(E) => E, HOLE ...</k> [cool]
+
 endmodule

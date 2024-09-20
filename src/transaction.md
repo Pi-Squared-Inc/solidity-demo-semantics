@@ -57,7 +57,7 @@ module SOLIDITY-TRANSACTION
        <next-address> ADDR => ADDR +MInt 1p160 </next-address>
     [owise]
 
-  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [strict(6)]
+  syntax Transaction ::= txn(from: Decimal, to: MInt{160}, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList)
   rule txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => txn(FROM, Int2MInt(Number2Int(TO)), VALUE, NOW, FUNC, ARGS)
 
   rule <k> txn(FROM, TO, VALUE, NOW, FUNC, ARGS) => bind(.List, PARAMS, TYPES, ARGS, .List, .List) ~> BODY ...</k>
@@ -81,5 +81,12 @@ module SOLIDITY-TRANSACTION
        <contract-fn-arg-types> TYPES </contract-fn-arg-types>
        <contract-fn-body> BODY </contract-fn-body>
     requires isKResult(ARGS)
+
+  syntax KItem ::= freezerTransactionCreate(Decimal, Decimal, Decimal, Id)
+                 | freezerTransactionTxn(Decimal, MInt{160}, Decimal, Decimal, Id)
+  rule <k> create(FROM, VALUE, NOW, CTOR, HOLE:CallArgumentList) => HOLE ~> freezerTransactionCreate(FROM, VALUE, NOW, CTOR) ...</k> [heat]
+  rule <k> HOLE ~> freezerTransactionCreate(FROM, VALUE, NOW, CTOR) => create(FROM, VALUE, NOW, CTOR, HOLE) ...</k> [cool]
+  rule <k> txn(FROM, TO, VALUE, NOW, FUNC, HOLE:CallArgumentList) => HOLE ~> freezerTransactionTxn(FROM, TO, VALUE, NOW, FUNC) ...</k> [heat]
+  rule <k> HOLE:CallArgumentList ~> freezerTransactionTxn(FROM, TO, VALUE, NOW, FUNC) => txn(FROM, TO, VALUE, NOW, FUNC, HOLE) ...</k> [cool]
 
 endmodule

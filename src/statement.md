@@ -88,4 +88,33 @@ module SOLIDITY-STATEMENT
   // while statement
   rule while (Cond) Body => if (Cond) {Body while(Cond) Body} else {.Statements}
 
+  // Heating and cooling rules
+  syntax KItem ::= freezerExpressionStatement()
+  rule <k> HOLE:Expression ; => HOLE ~> freezerExpressionStatement() ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerExpressionStatement() => HOLE ; ...</k> [cool]
+
+  syntax KItem ::= freezerVariableDeclarationStatementA(VariableDeclaration)
+  rule <k> D:VariableDeclaration = HOLE:Expression ; => HOLE ~> freezerVariableDeclarationStatementA(D) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerVariableDeclarationStatementA(D) => D = HOLE ; ...</k> [cool]
+
+  syntax KItem ::= freezerVariableDeclarationStatementB(VariableDeclaration)
+  rule <k> ( D:VariableDeclaration , ) = HOLE:Expression ; => HOLE ~> freezerVariableDeclarationStatementB(D) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerVariableDeclarationStatementB(D) => ( D , ) = HOLE ; ...</k> [cool]
+
+  syntax KItem ::= freezerIfStatement(Statement)
+  rule <k> if ( HOLE:Expression ) S:Statement => HOLE ~> freezerIfStatement(S) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerIfStatement(S) => if ( HOLE ) S ...</k> [cool]
+
+  syntax KItem ::= freezerIfElseStatement(Statement, Statement)
+  rule <k> if ( HOLE:Expression ) S1:Statement else S2:Statement => HOLE ~> freezerIfElseStatement(S1, S2) ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerIfElseStatement(S1, S2) => if ( HOLE ) S1 else S2 ...</k> [cool]
+
+  syntax KItem ::= freezerEmitStatement(Expression)
+  rule <k> emit E:Expression ( HOLE:CallArgumentList ) ; => HOLE ~> freezerEmitStatement(E) ...</k> [heat]
+  rule <k> HOLE ~> freezerEmitStatement(E) => emit E ( HOLE ) ; ...</k> [cool]
+
+  syntax KItem ::= freezerReturnStatement()
+  rule <k> return HOLE:Expression ; => HOLE ~> freezerReturnStatement() ...</k> [heat]
+  rule <k> HOLE:Expression ~> freezerReturnStatement() => return HOLE ; ...</k> [cool]
+
 endmodule
