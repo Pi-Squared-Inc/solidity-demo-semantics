@@ -2721,7 +2721,56 @@ module SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
        </store>
     requires V1 >uMInt 0p256 andBool V2 >uMInt 0p256 andBool V3 >uMInt 0p256
      andBool ((V3 -MInt V1) *MInt 997p256) ==MInt 0p256 [priority(40)]
-  
+
+endmodule
+```
+
+```k  
+module SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> uniswapV2LibraryPairFor:Id ( v(V1:MInt{160}, address), v(V2:MInt{160}, address), .TypedVals ) => v(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V1) ListItem(V2), T), address) ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... localPairs |-> ((mapping (address _ => mapping (address _ => address ) )) #as T) ...</contract-state>
+       <contract-storage> CS </contract-storage>
+       <store>
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V1) ListItem(V2), T))
+                ListItem(V1)
+                ListItem(V2)
+                ListItem(default(address[]))
+                ListItem( ListItem(V1) ListItem(V2) )
+                ListItem( ListItem(V1) ListItem(V2) )
+       </store>
+    requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
+
+  rule <k> uniswapV2LibraryPairFor:Id ( v(V1:MInt{160}, address), v(V2:MInt{160}, address), .TypedVals ) => v(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V2) ListItem(V1), T), address) ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... localPairs |-> ((mapping (address _ => mapping (address _ => address ) )) #as T) ...</contract-state>
+       <contract-storage> CS </contract-storage>
+       <store>
+         S => S ListItem(V1)
+                ListItem(V2)
+                ListItem(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V2) ListItem(V1), T))
+                ListItem(V1)
+                ListItem(V2)
+                ListItem(default(address[]))
+                ListItem( ListItem(V2) ListItem(V1) )
+                ListItem( ListItem(V2) ListItem(V1) )
+       </store>
+    requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
+
 endmodule
 ```
 
@@ -2731,6 +2780,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
+  imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
 
 endmodule
 ```
