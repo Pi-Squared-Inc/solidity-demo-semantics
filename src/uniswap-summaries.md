@@ -2775,12 +2775,65 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-FIDUPDATE-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
+                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
+                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
+       </store>
+       <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
+                                             [ price0CumulativeLast <- ({Storage[price0CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V4:MInt{112} /uMInt V3:MInt{112}):MInt{256}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256}]
+                                             [ price1CumulativeLast <- {Storage[price1CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V3:MInt{112} /uMInt V4:MInt{112}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256} ]
+                                             [ reserve0 <- roundMInt(V1):MInt{112} ]
+                                             [ reserve1 <- roundMInt(V2):MInt{112} ]
+       </contract-storage> 
+       <block-timestamp> Timestamp </block-timestamp>
+    requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256} 
+     andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+     andBool (roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) >uMInt 0p32
+     andBool V3 =/=MInt 0p112
+     andBool V4 =/=MInt 0p112 [priority(40)] // Branch requires
+
+
+  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
+                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
+                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
+        </store>
+        <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
+                                              [ reserve0 <- roundMInt(V1):MInt{112} ]
+                                              [ reserve1 <- roundMInt(V2):MInt{112} ]
+        </contract-storage> 
+        <block-timestamp> Timestamp </block-timestamp>
+      requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+       andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+       andBool ((roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) <=uMInt 0p32
+        orBool V3 ==MInt 0p112 
+        orBool V4 ==MInt 0p112) [priority(40)]
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-UNISWAP-FIDUPDATE-SUMMARY
 
 endmodule
 ```
