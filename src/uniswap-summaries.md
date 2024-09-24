@@ -2833,6 +2833,17 @@ module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-STATEMENT
   imports SOLIDITY-UNISWAP-TOKENS
 
+  // Bind to initial block and declaration of i
+  rule <k> bind(STORE, ListItem(amounts) ListItem(path) ListItem(vidTo), ListItem(uint256 [ ]:TypeName) ListItem(address [ ]:TypeName) ListItem(address), lv(I0, .List, uint256 [ ]), lv(I1, .List, address [ ]), v(V, address), .TypedVals, .List, .List) ~> {uint256 i ; Ss:Statements } Ss':Statements => Ss ~> restoreEnv((amounts |-> var(size(S), uint256 [ ])) (path |-> var(size(S) +Int 1, address [ ])) (vidTo |-> var(size(S) +Int 2, address))) ~> Ss' ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amounts |-> var(size(S), uint256 [ ]))
+                          (path |-> var(size(S) +Int 1, address [ ]))
+                          (vidTo |-> var(size(S) +Int 2, address))
+                          (i |-> var(size(S) +Int 3, uint256))
+       </env>
+       <store> S => S ListItem(STORE [ I0 ]) ListItem(STORE [ I1 ]) ListItem(V) ListItem(default(uint256)) </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
   // Start of while loop to evaluated condition
   rule <k> while ((i < path . length - 1) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, Tp)}:>List))::MInt{256} -MInt Int2MInt(1)::MInt{256}), bool)) {Body while(Cond) Body} else {.Statements} Ss ...</k>
        <summarize> true </summarize>
