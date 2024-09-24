@@ -2860,7 +2860,7 @@ module SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
        <summarize> true </summarize>
        <this> THIS </this>
-       <contract-address> THIS </contract-address>w
+       <contract-address> THIS </contract-address>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
