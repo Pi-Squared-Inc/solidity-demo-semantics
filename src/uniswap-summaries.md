@@ -204,7 +204,7 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
 
   rule <k> _:Program => .K ...</k>
       <summarize> true </summarize>
-      (_:CompileCell => 
+      (_:CompileCell =>
         <compile>
           <current-body>
             uniswapV2SwapTest
@@ -2682,7 +2682,7 @@ endmodule
 module SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
-  
+
   rule <k> uniswapV2LibraryGetAmountOut:Id ( v(V1:MInt{256}, uint256 #as T), v(V2:MInt{256}, T), v(V3:MInt{256}, T), .TypedVals ) => v((V1 *MInt 997p256  *MInt V3) /uMInt (V2 *MInt 1000p256 +MInt V1 *MInt 997p256), T) ...</k>
        <summarize> true </summarize>
        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
@@ -2725,7 +2725,7 @@ module SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
 endmodule
 ```
 
-```k  
+```k
 module SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -2785,7 +2785,7 @@ module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
        <contract-address> THIS </contract-address>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4)
                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
        </store>
@@ -2794,9 +2794,9 @@ module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
                                              [ price1CumulativeLast <- {Storage[price1CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V3:MInt{112} /uMInt V4:MInt{112}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256} ]
                                              [ reserve0 <- roundMInt(V1):MInt{112} ]
                                              [ reserve1 <- roundMInt(V2):MInt{112} ]
-       </contract-storage> 
+       </contract-storage>
        <block-timestamp> Timestamp </block-timestamp>
-    requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256} 
+    requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
      andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
      andBool (roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) >uMInt 0p32
      andBool V3 =/=MInt 0p112
@@ -2809,19 +2809,19 @@ module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
         <contract-address> THIS </contract-address>
         <this-type> TYPE </this-type>
         <contract-id> TYPE </contract-id>
-        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
+        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4)
                        ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
                        ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
         </store>
         <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
                                               [ reserve0 <- roundMInt(V1):MInt{112} ]
                                               [ reserve1 <- roundMInt(V2):MInt{112} ]
-        </contract-storage> 
+        </contract-storage>
         <block-timestamp> Timestamp </block-timestamp>
       requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
        andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
        andBool ((roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) <=uMInt 0p32
-        orBool V3 ==MInt 0p112 
+        orBool V3 ==MInt 0p112
         orBool V4 ==MInt 0p112) [priority(40)]
 endmodule
 ```
