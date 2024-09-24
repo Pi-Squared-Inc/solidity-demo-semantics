@@ -2827,6 +2827,70 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  // from == 0p160 and to == 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) </store>
+    requires V1 ==MInt 0p160 andBool V2 ==MInt 0p160 [priority(40)]
+
+  // from == 0p160 and to != 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) </store>
+       <contract-storage> Storage => Storage [ vidTotalSupply <- {Storage[vidTotalSupply] orDefault 0p256}:>MInt{256} +MInt V3:MInt{256} ]
+                                             [ vidBalances    <- write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
+       </contract-storage>
+    requires V1 ==MInt 0p160 andBool V2 =/=MInt 0p160 [priority(40)]
+
+
+  // from != 0p160 and to == 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>w
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 ))))
+       </store>
+       <contract-storage> Storage => Storage [ vidTotalSupply <- {Storage[vidTotalSupply] orDefault 0p256}:>MInt{256} -MInt V3:MInt{256} ]
+                                             [ vidBalances    <- write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
+       </contract-storage>
+    requires V1 =/=MInt 0p160 andBool V2 ==MInt 0p160
+      andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
+
+
+  // from != 0p160 and to != 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 ))))
+       </store>
+       <contract-storage> Storage => Storage [ vidBalances <- write({write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256)))}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ] </contract-storage>
+    requires V1 =/=MInt 0p160 andBool V2 =/=MInt 0p160
+      andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -2834,6 +2898,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-SUMMARY
+  imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
 
 endmodule
 ```
