@@ -1,6 +1,6 @@
 <solidity>
   <k>
-    require ( v ( false , bool ) , "" , .TypedVals ) ~> #freezer_;_SOLIDITY-SYNTAX_ExpressionStatement_Expression0_ ( ) ~> return 2 ;  .Statements ~> return void ; ~> .K
+    require ( v ( false , bool ) , "" , .TypedVals ) ~> freezerExpressionStatement ( ) ~> return 2 ;  .Statements ~> return void ; ~> .K
   </k>
   <summarize>
     false
@@ -136,8 +136,8 @@
       chaincall2
     </current-function>
     <call-stack>
-      ListItem ( frame (... continuation: #freezer_=_;_SOLIDITY-SYNTAX_VariableDeclarationStatement_VariableDeclaration_Expression1_ ( uint256 x ~> .K ) ~> .Statements ~> .Transactions ~> .K , env: .Map , func: constructor ) )
-      ListItem ( frame (... continuation: #freezerreturn_;_SOLIDITY-SYNTAX_ReturnStatement_Expression0_ ( ) ~> .Statements ~> return void ; ~> .K , env: .Map , func: chaincall1 ) )
+      ListItem ( frame (... continuation: freezerVariableDeclarationStatementA ( uint256 x ) ~> .Statements ~> .Transactions ~> .K , env: .Map , func: constructor ) )
+      ListItem ( frame (... continuation: freezerReturnStatement ( ) ~> .Statements ~> return void ; ~> .K , env: .Map , func: chaincall1 ) )
     </call-stack>
     <live-contracts>
       <live-contract>

@@ -100,7 +100,7 @@ module SOLIDITY-DATA-SYNTAX
 
   syntax Transactions ::= List{Transaction, ","}
   syntax Transaction ::= txn(from: Decimal, to: Decimal, value: Decimal, timestamp: Decimal, func: Id, args: CallArgumentList) [function]
-  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList) [strict(5)]
+  syntax Transaction ::= create(from: Decimal, value: Decimal, timestamp: Decimal, ctor: Id, args: CallArgumentList)
 endmodule
 
 module SOLIDITY-DATA
@@ -118,7 +118,7 @@ module SOLIDITY-DATA
   syntax Id ::= "constructor" [token]
 
   syntax TypedVal ::= v(Value, TypeName) | lv(BaseRef, List, TypeName) | Int | String | "void"
-  syntax TypedVals ::= List{TypedVal, ","} [overload(exps), strict]
+  syntax TypedVals ::= List{TypedVal, ","} [overload(exps)]
   syntax Expression ::= TypedVal
   syntax CallArgumentList ::= TypedVals
   syntax KResult ::= TypedVal | TypedVals
