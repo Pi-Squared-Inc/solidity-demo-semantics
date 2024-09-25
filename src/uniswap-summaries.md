@@ -2951,6 +2951,13 @@ module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
        <summarize> true </summarize>
        <current-function> fidSwap </current-function> [priority(40)]
 
+  // swap result to end of loop
+  rule <k> void ~> freezerExpressionStatement() ~> .Statements ~> restoreEnv(E) ~> i++ ; .Statements ~> restoreEnv(E) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (i |-> var(I, uint256)) ) => E </env>
+       <store> ( _ [ I <- V:MInt{256} ] ) #as S => S [ I <- V +MInt Int2MInt(1)::MInt{256} ] </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
 endmodule
 ```
 
