@@ -2886,6 +2886,106 @@ module SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
        <contract-storage> Storage => Storage [ vidBalances <- write({write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256)))}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ] </contract-storage>
     requires V1 =/=MInt 0p160 andBool V2 =/=MInt 0p160
       andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-SETUP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  rule <k> bind ( .List , .List , .List , .TypedVals , .List , .List ) ~> vidWeth = new wETHMock ( .TypedVals ) ;  vidDai = new dAIMock ( .TypedVals ) ;  vidUsdc = new uSDCMock ( .TypedVals ) ;  vidUni = new uniswapV2Swap ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  .Statements => .K  ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <live-contracts>
+                   ...
+                 <live-contract>
+                   <contract-address> THIS </contract-address>
+                   <contract-type> TYPE </contract-type>
+                   <contract-storage>
+                     S => S [ vidWeth <- ADDR ] [ vidDai <- ADDR +MInt 1p160 ] [ vidUsdc <- ADDR +MInt 2p160 ] [ vidUni <- ADDR +MInt 3p160 ]
+                   </contract-storage>
+                   ...
+                 </live-contract>
+         (.Bag => <live-contract>
+                    <contract-address> ADDR </contract-address>
+                    <contract-type> wETHMock </contract-type>
+                    <contract-storage>
+                      constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                    </contract-storage>
+                    ...
+                  </live-contract>
+                  <live-contract>
+                   <contract-address> ADDR +MInt 1p160 </contract-address>
+                   <contract-type> dAIMock </contract-type>
+                   <contract-storage>
+                     constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                   </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 2p160 </contract-address>
+                    <contract-type> uSDCMock </contract-type>
+                    <contract-storage>
+                      constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 3p160 </contract-address>
+                    <contract-type> uniswapV2Swap </contract-type>
+                    <contract-storage>
+                      dai |-> ADDR +MInt 1p160
+                      router |-> ADDR +MInt 4p160
+                      usdc |-> ADDR +MInt 2p160
+                      weth |-> ADDR
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 4p160 </contract-address>
+                    <contract-type> uniswapV2Router02 </contract-type>
+                    <contract-storage>
+                      localPairs |-> ( ADDR |-> ( (ADDR +MInt 1p160 |-> ADDR +MInt 5p160)
+                                                  (ADDR +MInt 2p160 |-> ADDR +MInt 6p160) )
+                      (ADDR +MInt 1p160 |-> ( ADDR +MInt 2p160 |-> ADDR +MInt 7p160 )) )
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 5p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR
+                      token1 |-> ADDR +MInt 1p160
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 6p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR
+                      token1 |-> ADDR +MInt 2p160
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 7p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR +MInt 1p160
+                      token1 |-> ADDR +MInt 2p160
+                    </contract-storage>
+                  </live-contract>)
+         ...
+       </live-contracts>
+       <next-address> ADDR => ADDR +MInt 8p160 </next-address>
+       <current-function> setUp </current-function> [priority(40)]
 
 endmodule
 ```
@@ -2899,6 +2999,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
+  imports SOLIDITY-UNISWAP-SETUP-SUMMARY
 
 endmodule
 ```
