@@ -204,7 +204,7 @@ module SOLIDITY-UNISWAP-INIT-SUMMARY
 
   rule <k> _:Program => .K ...</k>
       <summarize> true </summarize>
-      (_:CompileCell => 
+      (_:CompileCell =>
         <compile>
           <current-body>
             uniswapV2SwapTest
@@ -2682,7 +2682,7 @@ endmodule
 module SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
-  
+
   rule <k> uniswapV2LibraryGetAmountOut:Id ( v(V1:MInt{256}, uint256 #as T), v(V2:MInt{256}, T), v(V3:MInt{256}, T), .TypedVals ) => v((V1 *MInt 997p256  *MInt V3) /uMInt (V2 *MInt 1000p256 +MInt V1 *MInt 997p256), T) ...</k>
        <summarize> true </summarize>
        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
@@ -2725,7 +2725,7 @@ module SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
 endmodule
 ```
 
-```k  
+```k
 module SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -2771,58 +2771,6 @@ module SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
        </store>
     requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
 
-endmodule
-```
-
-```k
-module SOLIDITY-UNISWAP-FIDUPDATE-SUMMARY
-  imports SOLIDITY-CONFIGURATION
-  imports SOLIDITY-UNISWAP-TOKENS
-
-  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
-       <summarize> true </summarize>
-       <this> THIS </this>
-       <contract-address> THIS </contract-address>
-       <this-type> TYPE </this-type>
-       <contract-id> TYPE </contract-id>
-       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
-                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
-                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
-       </store>
-       <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
-                                             [ price0CumulativeLast <- ({Storage[price0CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V4:MInt{112} /uMInt V3:MInt{112}):MInt{256}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256}]
-                                             [ price1CumulativeLast <- {Storage[price1CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V3:MInt{112} /uMInt V4:MInt{112}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256} ]
-                                             [ reserve0 <- roundMInt(V1):MInt{112} ]
-                                             [ reserve1 <- roundMInt(V2):MInt{112} ]
-       </contract-storage> 
-       <block-timestamp> Timestamp </block-timestamp>
-    requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256} 
-     andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
-     andBool (roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) >uMInt 0p32
-     andBool V3 =/=MInt 0p112
-     andBool V4 =/=MInt 0p112 [priority(40)] // Branch requires
-
-
-  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
-        <summarize> true </summarize>
-        <this> THIS </this>
-        <contract-address> THIS </contract-address>
-        <this-type> TYPE </this-type>
-        <contract-id> TYPE </contract-id>
-        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4) 
-                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
-                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
-        </store>
-        <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
-                                              [ reserve0 <- roundMInt(V1):MInt{112} ]
-                                              [ reserve1 <- roundMInt(V2):MInt{112} ]
-        </contract-storage> 
-        <block-timestamp> Timestamp </block-timestamp>
-      requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
-       andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
-       andBool ((roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) <=uMInt 0p32
-        orBool V3 ==MInt 0p112 
-        orBool V4 ==MInt 0p112) [priority(40)]
 endmodule
 ```
 
@@ -2957,6 +2905,121 @@ module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
        <env> ( _ (i |-> var(I, uint256)) ) => E </env>
        <store> ( _ [ I <- V:MInt{256} ] ) #as S => S [ I <- V +MInt Int2MInt(1)::MInt{256} ] </store>
        <current-function> fidSwap </current-function> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4)
+                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
+                      ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
+       </store>
+       <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
+                                             [ price0CumulativeLast <- ({Storage[price0CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V4:MInt{112} /uMInt V3:MInt{112}):MInt{256}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256}]
+                                             [ price1CumulativeLast <- {Storage[price1CumulativeLast] orDefault 0p256}:>MInt{256} +MInt roundMInt(V3:MInt{112} /uMInt V4:MInt{112}):MInt{256} *MInt roundMInt(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{256} ]
+                                             [ reserve0 <- roundMInt(V1):MInt{112} ]
+                                             [ reserve1 <- roundMInt(V2):MInt{112} ]
+       </contract-storage>
+       <block-timestamp> Timestamp </block-timestamp>
+    requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+     andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+     andBool (roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) >uMInt 0p32
+     andBool V3 =/=MInt 0p112
+     andBool V4 =/=MInt 0p112 [priority(40)] // Branch requires
+
+
+  rule <k> fidUpdate:Id ( v(V1:MInt{256}, uint256 #as T1), v(V2:MInt{256}, T1), v(V3:MInt{112}, uint112 #as T2), v(V4:MInt{112}, T2)) => void ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) ListItem(V4)
+                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32})                                                              // blockTimestamp
+                       ListItem(roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) // timeElapsed
+        </store>
+        <contract-storage> Storage => Storage [ blockTimestampLast <- roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} ]
+                                              [ reserve0 <- roundMInt(V1):MInt{112} ]
+                                              [ reserve1 <- roundMInt(V2):MInt{112} ]
+        </contract-storage>
+        <block-timestamp> Timestamp </block-timestamp>
+      requires V1 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+       andBool V2 <=uMInt {Storage[constUINT112MAX] orDefault 0p256}:>MInt{256}
+       andBool ((roundMInt(Timestamp %uMInt Int2MInt(2 ^Int 32):MInt{256}):MInt{32} -MInt {Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}) <=uMInt 0p32
+        orBool V3 ==MInt 0p112
+        orBool V4 ==MInt 0p112) [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  // from == 0p160 and to == 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) </store>
+    requires V1 ==MInt 0p160 andBool V2 ==MInt 0p160 [priority(40)]
+
+  // from == 0p160 and to != 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3) </store>
+       <contract-storage> Storage => Storage [ vidTotalSupply <- {Storage[vidTotalSupply] orDefault 0p256}:>MInt{256} +MInt V3:MInt{256} ]
+                                             [ vidBalances    <- write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
+       </contract-storage>
+    requires V1 ==MInt 0p160 andBool V2 =/=MInt 0p160 [priority(40)]
+
+
+  // from != 0p160 and to == 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 ))))
+       </store>
+       <contract-storage> Storage => Storage [ vidTotalSupply <- {Storage[vidTotalSupply] orDefault 0p256}:>MInt{256} -MInt V3:MInt{256} ]
+                                             [ vidBalances    <- write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
+       </contract-storage>
+    requires V1 =/=MInt 0p160 andBool V2 ==MInt 0p160
+      andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
+
+
+  // from != 0p160 and to != 0p160
+  rule <k> fidUpdate:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256)) => void ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(V3)
+                      ListItem(read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 ))))
+       </store>
+       <contract-storage> Storage => Storage [ vidBalances <- write({write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256)))}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ] </contract-storage>
+    requires V1 =/=MInt 0p160 andBool V2 =/=MInt 0p160
+      andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
 
 endmodule
 ```
@@ -2968,8 +3031,9 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
-  imports SOLIDITY-UNISWAP-FIDUPDATE-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
+  imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
+  imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
 
 endmodule
 ```
