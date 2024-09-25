@@ -2845,7 +2845,7 @@ module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
        <current-function> fidSwap </current-function> [priority(40)]
 
   // Start of while loop to evaluated condition
-  rule <k> while ((i < path . length - 1) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, Tp)}:>List))::MInt{256} -MInt Int2MInt(1)::MInt{256}), bool)) {Body while(Cond) Body} else {.Statements} Ss ...</k>
+  rule <k> while ((i < path . length - 1) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, Tp)}:>List))::MInt{256} -MInt Int2MInt(1)::MInt{256}), bool)) {Body while(Cond) Body} else {.Statements} ~> Ss ...</k>
        <summarize> true </summarize>
        <env>... (i |-> var(Ii, uint256)) (path |-> var(Ip, Tp)) ...</env>
        <store> _ [ Ii <- Vi ] [ Ip <- Vp ] </store>
