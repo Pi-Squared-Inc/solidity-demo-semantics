@@ -3125,6 +3125,30 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-GETRESERVES-SUMMARY 
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> bind ( _STORE , .List , .List , .TypedVals , ListItem ( uint112 []:TypeName ) , ListItem ( reserves ) ) ~> reserves = new uint112 [ ] ( 3 , .TypedVals ) ;  reserves [ 0 ] = reserve0 ;  reserves [ 1 ] = reserve1 ;  reserves [ 2 ] = blockTimestampLast ;  .Statements ~> return reserves ; ~> .K => return v ( ListItem({Storage[reserve0] orDefault 0p112}:>MInt{112}) ListItem({Storage[reserve1] orDefault 0p112}:>MInt{112}) ListItem(roundMInt({Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{112}) , uint112 [ ] ) ; ~> .K</k> 
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <current-function> getReserves </current-function>
+        <env> ENV=> ENV [ reserves <- var(size(S), uint112 []) ] </env>
+        <store> S => S ListItem(
+                              ListItem({Storage[reserve0] orDefault 0p112}:>MInt{112})
+                              ListItem({Storage[reserve1] orDefault 0p112}:>MInt{112})
+                              ListItem(roundMInt({Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{112})
+                            )
+        </store>
+        <contract-storage> Storage </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -3134,6 +3158,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
+  imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
 
 endmodule
