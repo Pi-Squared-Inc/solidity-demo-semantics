@@ -2775,6 +2775,140 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  // Bind to initial block and declaration of i
+  rule <k> bind(STORE, ListItem(amounts) ListItem(path) ListItem(vidTo), ListItem(uint256 [ ]:TypeName) ListItem(address [ ]:TypeName) ListItem(address), lv(I0, .List, uint256 [ ]), lv(I1, .List, address [ ]), v(V, address), .TypedVals, .List, .List) ~> {uint256 i ; Ss:Statements } Ss':Statements => Ss ~> restoreEnv((amounts |-> var(size(S), uint256 [ ])) (path |-> var(size(S) +Int 1, address [ ])) (vidTo |-> var(size(S) +Int 2, address))) ~> Ss' ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amounts |-> var(size(S), uint256 [ ]))
+                          (path |-> var(size(S) +Int 1, address [ ]))
+                          (vidTo |-> var(size(S) +Int 2, address))
+                          (i |-> var(size(S) +Int 3, uint256))
+       </env>
+       <store> S => S ListItem(STORE [ I0 ]) ListItem(STORE [ I1 ]) ListItem(V) ListItem(default(uint256)) </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // Start of while loop to evaluated condition
+  rule <k> while ((i < path . length - 1) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, Tp)}:>List))::MInt{256} -MInt Int2MInt(1)::MInt{256}), bool)) {Body while(Cond) Body} else {.Statements} ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (i |-> var(Ii, uint256)) (path |-> var(Ip, Tp)) ...</env>
+       <store> _ [ Ii <- Vi ] [ Ip <- Vp ] </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // While loop body to SortTokens call
+  rule <k> ({ { address input = path [ i ] ;  address output = path [ i + 1 ] ;  address [ ] memory tokens = uniswapV2LibrarySortTokens ( input , output , .TypedVals ) ;  Ss:Statements }  Post:Statements } #as S)  while ( E:Expression ) S Ss':Statements => uniswapV2LibrarySortTokens ( v ( read(Vp, ListItem(MInt2Unsigned(Vi)), address []) , address ) , v ( read(Vp, ListItem(MInt2Unsigned(Vi) +Int 1), address []) , address ) , .TypedVals ) ~> freezerVariableDeclarationStatementA ( address [ ] memory tokens ) ~> Ss ~> restoreEnv(ENV) ~> Post ~> restoreEnv(ENV) ~> while (E) S Ss' ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (i |-> var(Ii, uint256)) (path |-> var(Ip, address [])) ) #as ENV =>
+         ENV (input |-> var(size(STORE), address)) (output |-> var(size(STORE) +Int 1, address))
+       </env>
+       <store>
+         ( _ [ Ii <- Vi:MInt{256} ] [ Ip <- Vp ] ) #as STORE =>
+         STORE ListItem(read(Vp, ListItem(MInt2Unsigned(Vi)), address []))
+           ListItem(read(Vp, ListItem(MInt2Unsigned(Vi) +Int 1), address []))
+       </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // SortTokens call to evaluation of ternary operation condition, 1
+  // apply this instead of SortTokens summary if possible
+  rule <k> uniswapV2LibrarySortTokens ( v ( V1 , address ) , v ( V2 , address ) , .TypedVals ) ~> freezerVariableDeclarationStatementA ( address [ ] memory tokens ) ~> uint256 amountOut = amounts [ i + 1 ] ;  uint256 amount0Out = input == tokens [ 0 ] ? uint256 ( 0 , .TypedVals ) : amountOut ;  uint256 amount1Out = input == tokens [ 0 ] ? amountOut : uint256 ( 0 , .TypedVals ) ;  address to = i < path . length - 2 ? uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) : vidTo ; Ss:Statements => v(Vi <uMInt (Int2MInt(size({read(Vp, .List, address [])}:>List))::MInt{256} -MInt Int2MInt(2)::MInt{256}), bool) ~> freezerTernaryOperator ( uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) , vidTo ) ~> freezerVariableDeclarationStatementA ( address to ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (i |-> var(Ii, uint256)) (amounts |-> var(Ia, uint256 [])) (path |-> var(Ip, address [])) ) #as ENV =>
+         ENV (tokens |-> var(size(STORE) +Int 4, address []))
+             (amountOut |-> var(size(STORE) +Int 5, uint256))
+             (amount0Out |-> var(size(STORE) +Int 6, uint256))
+             (amount1Out |-> var(size(STORE) +Int 7, uint256))
+       </env>
+       <store>
+         ( _ [ Ii <- Vi:MInt{256} ] [ Ia <- Va ] [ Ip <- Vp ] ) #as STORE =>
+         STORE ListItem(V1)                         // added by SortTokens
+               ListItem(V2)                         // added by SortTokens
+               ListItem(default(address[]))         // added by SortTokens
+               ListItem(ListItem(V1) ListItem(V2))  // added by SortTokens
+               ListItem(ListItem(V1) ListItem(V2))
+               ListItem(read(Va, ListItem(MInt2Unsigned(Vi) +Int 1), uint256 []))
+               ListItem(Int2MInt(0)::MInt{256})
+               ListItem(read(Va, ListItem(MInt2Unsigned(Vi) +Int 1), uint256 []))
+       </store>
+       <current-function> fidSwap </current-function>
+    requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(39)]
+
+  // SortTokens call to evaluation of ternary operation condition, 2
+  // apply this instead of SortTokens summary if possible
+  rule <k> uniswapV2LibrarySortTokens ( v ( V1 , address ) , v ( V2 , address ) , .TypedVals ) ~> freezerVariableDeclarationStatementA ( address [ ] memory tokens ) ~> uint256 amountOut = amounts [ i + 1 ] ;  uint256 amount0Out = input == tokens [ 0 ] ? uint256 ( 0 , .TypedVals ) : amountOut ;  uint256 amount1Out = input == tokens [ 0 ] ? amountOut : uint256 ( 0 , .TypedVals ) ;  address to = i < path . length - 2 ? uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) : vidTo ; Ss:Statements => v(Vi <uMInt (Int2MInt(size({read(Vp, .List, address [])}:>List))::MInt{256} -MInt Int2MInt(2)::MInt{256}), bool) ~> freezerTernaryOperator ( uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) , vidTo ) ~> freezerVariableDeclarationStatementA ( address to ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (i |-> var(Ii, uint256)) (amounts |-> var(Ia, uint256 [])) (path |-> var(Ip, address [])) ) #as ENV =>
+         ENV (tokens |-> var(size(STORE) +Int 4, address []))
+             (amountOut |-> var(size(STORE) +Int 5, uint256))
+             (amount0Out |-> var(size(STORE) +Int 6, uint256))
+             (amount1Out |-> var(size(STORE) +Int 7, uint256))
+       </env>
+       <store>
+         ( _ [ Ii <- Vi:MInt{256} ] [ Ia <- Va ] [ Ip <- Vp ] ) #as STORE =>
+         STORE ListItem(V1)                         // added by SortTokens
+               ListItem(V2)                         // added by SortTokens
+               ListItem(default(address[]))         // added by SortTokens
+               ListItem(ListItem(V2) ListItem(V1))  // added by SortTokens
+               ListItem(ListItem(V2) ListItem(V1))
+               ListItem(read(Va, ListItem(MInt2Unsigned(Vi) +Int 1), uint256 []))
+               ListItem(read(Va, ListItem(MInt2Unsigned(Vi) +Int 1), uint256 []))
+               ListItem(Int2MInt(0)::MInt{256})
+       </store>
+       <current-function> fidSwap </current-function>
+    requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(39)]
+
+  // Ternary operator, false
+  rule <k> v(false, bool) ~> freezerTernaryOperator ( uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) , vidTo ) => v(V, T) ...</k>
+       <summarize> true </summarize>
+       <env>... vidTo |-> var(I, T) ...</env>
+       <store> _ [ I <- V ] </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // Ternary operator, true
+  rule <k> v(true, bool) ~> freezerTernaryOperator ( uniswapV2LibraryPairFor ( output , path [ i + 2 ] , .TypedVals ) , vidTo ) => uniswapV2LibraryPairFor ( v(Vo, address), v(read(Vp, ListItem(MInt2Unsigned(Vi) +Int 2), address []), address), .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <env>... (output |-> var(Io, address)) (i |-> var(Ii, uint256)) (path |-> var(Ip, address []))...</env>
+       <store> _ [ Io <- Vo:MInt{160} ] [ Ii <- Vi:MInt{256} ] [ Ip <- Vp ] </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // Assignment from ternary operator until PairFor call
+  rule <k> v(V, address) ~> freezerVariableDeclarationStatementA ( address to ) ~> uniswapV2Pair ( uniswapV2LibraryPairFor ( input , output , .TypedVals ) , .TypedVals ) . swap ( amount0Out , amount1Out , to , .TypedVals ) ; Ss:Statements => uniswapV2LibraryPairFor ( v ( Vi , address ) , v ( Vo , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( .TypedVals ) ~> freezerCallId ( uniswapV2Pair ) ~> freezerExternalCallBase ( swap , v ( V0 , uint256 ) , v ( V1 , uint256 ) , v ( V , address ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (input |-> var(Ii, address))
+             (output |-> var(Io, address))
+             (amount0Out |-> var(I0, uint256))
+             (amount1Out |-> var(I1, uint256)) ) #as ENV =>
+         ENV (to |-> var(size(STORE), address))
+       </env>
+       <store>
+         ( _ [ Ii <- Vi:MInt{160} ] [ Io <- Vo:MInt{160} ]
+             [ I0 <- V0:MInt{256} ] [ I1 <- V1:MInt{256} ] ) #as STORE =>
+         STORE ListItem(V)
+       </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // PairFor result to external call to swap
+  rule <k> v(V, address) ~> freezerCallArgumentListTail ( .TypedVals ) ~> freezerCallId ( uniswapV2Pair ) ~> freezerExternalCallBase ( swap , TV0 , TV1 , TV2 , .TypedVals ) => v(V, uniswapV2Pair).swap( TV0 , TV1 , TV2 , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <current-function> fidSwap </current-function> [priority(40)]
+
+  // swap result to end of loop
+  rule <k> void ~> freezerExpressionStatement() ~> .Statements ~> restoreEnv(E) ~> i++ ; .Statements ~> restoreEnv(E) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (i |-> var(I, uint256)) ) => E </env>
+       <store> ( _ [ I <- V:MInt{256} ] ) #as S => S [ I <- V +MInt Int2MInt(1)::MInt{256} ] </store>
+       <current-function> fidSwap </current-function> [priority(40)]
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
@@ -2886,6 +3020,106 @@ module SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
        <contract-storage> Storage => Storage [ vidBalances <- write({write({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256)))}:>Value, ListItem(V2), ({read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ] </contract-storage>
     requires V1 =/=MInt 0p160 andBool V2 =/=MInt 0p160
       andBool {read({Storage [ vidBalances ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-SETUP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  rule <k> bind ( .List , .List , .List , .TypedVals , .List , .List ) ~> vidWeth = new wETHMock ( .TypedVals ) ;  vidDai = new dAIMock ( .TypedVals ) ;  vidUsdc = new uSDCMock ( .TypedVals ) ;  vidUni = new uniswapV2Swap ( address ( vidWeth , .TypedVals ) , address ( vidDai , .TypedVals ) , address ( vidUsdc , .TypedVals ) , .TypedVals ) ;  .Statements => .K  ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <live-contracts>
+                   ...
+                 <live-contract>
+                   <contract-address> THIS </contract-address>
+                   <contract-type> TYPE </contract-type>
+                   <contract-storage>
+                     S => S [ vidWeth <- ADDR ] [ vidDai <- ADDR +MInt 1p160 ] [ vidUsdc <- ADDR +MInt 2p160 ] [ vidUni <- ADDR +MInt 3p160 ]
+                   </contract-storage>
+                   ...
+                 </live-contract>
+         (.Bag => <live-contract>
+                    <contract-address> ADDR </contract-address>
+                    <contract-type> wETHMock </contract-type>
+                    <contract-storage>
+                      constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                    </contract-storage>
+                    ...
+                  </live-contract>
+                  <live-contract>
+                   <contract-address> ADDR +MInt 1p160 </contract-address>
+                   <contract-type> dAIMock </contract-type>
+                   <contract-storage>
+                     constUINTMAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                   </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 2p160 </contract-address>
+                    <contract-type> uSDCMock </contract-type>
+                    <contract-storage>
+                      constUINT256MAX |-> 115792089237316195423570985008687907853269984665640564039457584007913129639935p256
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 3p160 </contract-address>
+                    <contract-type> uniswapV2Swap </contract-type>
+                    <contract-storage>
+                      dai |-> ADDR +MInt 1p160
+                      router |-> ADDR +MInt 4p160
+                      usdc |-> ADDR +MInt 2p160
+                      weth |-> ADDR
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 4p160 </contract-address>
+                    <contract-type> uniswapV2Router02 </contract-type>
+                    <contract-storage>
+                      localPairs |-> ( ADDR |-> ( (ADDR +MInt 1p160 |-> ADDR +MInt 5p160)
+                                                  (ADDR +MInt 2p160 |-> ADDR +MInt 6p160) )
+                      (ADDR +MInt 1p160 |-> ( ADDR +MInt 2p160 |-> ADDR +MInt 7p160 )) )
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 5p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR
+                      token1 |-> ADDR +MInt 1p160
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 6p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR
+                      token1 |-> ADDR +MInt 2p160
+                    </contract-storage>
+                  </live-contract>
+                  <live-contract>
+                    <contract-address> ADDR +MInt 7p160 </contract-address>
+                    <contract-type> uniswapV2Pair </contract-type>
+                    <contract-storage>
+                      constMINIMUMLIQUIDITY |-> 1000p256
+                      constUINT112MAX |-> 5192296858534827628530496329220095p256
+                      token0 |-> ADDR +MInt 1p160
+                      token1 |-> ADDR +MInt 2p160
+                    </contract-storage>
+                  </live-contract>)
+         ...
+       </live-contracts>
+       <next-address> ADDR => ADDR +MInt 8p160 </next-address>
+       <current-function> setUp </current-function> [priority(40)]
 
 endmodule
 ```
@@ -2921,9 +3155,11 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
+  imports SOLIDITY-UNISWAP-SETUP-SUMMARY
 
 endmodule
 ```
