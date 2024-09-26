@@ -2697,6 +2697,106 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> bind(_STORE, ListItem ( tokenA ) ListItem ( tokenB ) , ListItem ( address ) ListItem ( address ) , v ( V1 , address ) , v ( V2 , address ) , .TypedVals , ListItem ( uint256 [ ]:TypeName ) , ListItem ( reserves ) ) ~> reserves = new uint256 [ ] ( 2 , .TypedVals ) ;  address [ ] memory tokens = uniswapV2LibrarySortTokens ( tokenA , tokenB , .TypedVals ) ;  uint112 [ ] memory pairReserves = uniswapV2Pair ( uniswapV2LibraryPairFor ( tokenA , tokenB , .TypedVals ) , .TypedVals ) . getReserves ( .TypedVals ) ;  Ss:Statements => v ( read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V1) ListItem(V2), T) , uniswapV2Pair ) . getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... localPairs |-> ((mapping (address _ => mapping (address _ => address ) )) #as T) ...</contract-state>
+       <contract-storage> CS </contract-storage>
+       <env> .Map => .Map (tokenA |-> var(size(S), address))
+                          (tokenB |-> var(size(S) +Int 1, address))
+                          (reserves |-> var(size(S) +Int 3, uint256 [ ]))
+                          (tokens |-> var(size(S) +Int 8, address [ ]))
+       </env>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(default(uint256 [ ]))
+                      ListItem( ListItem ( 0p256 ) ListItem ( 0p256 ) )
+                      ListItem(V1) ListItem(V2) ListItem(default(address [ ]))
+                      ListItem( ListItem (V1) ListItem (V2) )
+                      ListItem( ListItem (V1) ListItem (V2) )
+                      ListItem(V1) ListItem(V2)
+                      ListItem(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V1) ListItem(V2), T))
+                      ListItem(V1) ListItem(V2) ListItem(default(address [ ]))
+                      ListItem( ListItem (V1) ListItem (V2) )
+                      ListItem( ListItem (V1) ListItem (V2) )
+       </store>
+  <current-function> uniswapV2LibraryGetReserves </current-function>
+    requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
+
+  rule <k> bind(_STORE, ListItem ( tokenA ) ListItem ( tokenB ) , ListItem ( address ) ListItem ( address ) , v ( V1 , address ) , v ( V2 , address ) , .TypedVals , ListItem ( uint256 [ ]:TypeName ) , ListItem ( reserves ) ) ~> reserves = new uint256 [ ] ( 2 , .TypedVals ) ;  address [ ] memory tokens = uniswapV2LibrarySortTokens ( tokenA , tokenB , .TypedVals ) ;  uint112 [ ] memory pairReserves = uniswapV2Pair ( uniswapV2LibraryPairFor ( tokenA , tokenB , .TypedVals ) , .TypedVals ) . getReserves ( .TypedVals ) ;  Ss:Statements => v ( read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V2) ListItem(V1), T) , uniswapV2Pair ) . getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... localPairs |-> ((mapping (address _ => mapping (address _ => address ) )) #as T) ...</contract-state>
+       <contract-storage> CS </contract-storage>
+       <env> .Map => .Map (tokenA |-> var(size(S), address))
+                          (tokenB |-> var(size(S) +Int 1, address))
+                          (reserves |-> var(size(S) +Int 3, uint256 [ ]))
+                          (tokens |-> var(size(S) +Int 8, address [ ]))
+       </env>
+       <store> S => S ListItem(V1) ListItem(V2) ListItem(default(uint256 [ ]))
+                      ListItem( ListItem ( 0p256 ) ListItem ( 0p256 ) )
+                      ListItem(V1) ListItem(V2) ListItem(default(address [ ]))
+                      ListItem( ListItem (V2) ListItem (V1) )
+                      ListItem( ListItem (V2) ListItem (V1) )
+                      ListItem(V1) ListItem(V2)
+                      ListItem(read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V2) ListItem(V1), T))
+                      ListItem(V1) ListItem(V2) ListItem(default(address [ ]))
+                      ListItem( ListItem (V2) ListItem (V1) )
+                      ListItem( ListItem (V2) ListItem (V1) )
+       </store>
+  <current-function> uniswapV2LibraryGetReserves </current-function>
+    requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
+
+  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <env>
+         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
+         ENV (pairReserves |-> var(size(STORE), uint112[]))
+       </env>
+       <store>
+         ( _ [ Ia <- Va:MInt{160} ] [ It <- Vt ] ) #as STORE =>
+         (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]) ])
+         ListItem(R)
+       </store>
+  <current-function> uniswapV2LibraryGetReserves </current-function>
+    requires Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160} [priority(40)]
+
+  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <contract-address> THIS </contract-address>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <env>
+         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
+         ENV (pairReserves |-> var(size(STORE), uint112[]))
+       </env>
+       <store>
+         ( _ [ Ia <- Va:MInt{160} ] [ It <- Vt ] ) #as STORE =>
+         (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]) ])
+         ListItem(R)
+       </store>
+  <current-function> uniswapV2LibraryGetReserves </current-function>
+    requires notBool (Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160}) [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
@@ -3154,6 +3254,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
+  imports SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
