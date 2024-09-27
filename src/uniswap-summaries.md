@@ -2759,10 +2759,6 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
 
   rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
        <summarize> true </summarize>
-       <this> THIS </this>
-       <contract-address> THIS </contract-address>
-       <this-type> TYPE </this-type>
-       <contract-id> TYPE </contract-id>
        <env>
          ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
          ENV (pairReserves |-> var(size(STORE), uint112[]))
@@ -2777,10 +2773,6 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
 
   rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
        <summarize> true </summarize>
-       <this> THIS </this>
-       <contract-address> THIS </contract-address>
-       <this-type> TYPE </this-type>
-       <contract-id> TYPE </contract-id>
        <env>
          ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
          ENV (pairReserves |-> var(size(STORE), uint112[]))
