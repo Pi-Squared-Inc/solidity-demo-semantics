@@ -3137,8 +3137,9 @@ module SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
         <this-type> TYPE </this-type>
         <contract-id> TYPE </contract-id>
         <current-function> getReserves </current-function>
-        <env> ENV=> ENV [ reserves <- var(size(S), uint112 []) ] </env>
-        <store> S => S ListItem(
+        <env> ENV=> ENV [ reserves <- var(size(S) +Int 1, uint112 []) ] </env>
+        <store> S => S ListItem(default(uint112 []))
+                       ListItem(
                               ListItem({Storage[reserve0] orDefault 0p112}:>MInt{112})
                               ListItem({Storage[reserve1] orDefault 0p112}:>MInt{112})
                               ListItem(roundMInt({Storage[blockTimestampLast] orDefault 0p32}:>MInt{32}):MInt{112})
