@@ -2728,7 +2728,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
                       ListItem( ListItem (V1) ListItem (V2) )
                       ListItem( ListItem (V1) ListItem (V2) )
        </store>
-  <current-function> uniswapV2LibraryGetReserves </current-function>
+       <current-function> uniswapV2LibraryGetReserves </current-function>
     requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
 
   // Start to getReserves call. Lift conditions from SortTokens, PairFor.
@@ -2756,7 +2756,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
                       ListItem( ListItem (V2) ListItem (V1) )
                       ListItem( ListItem (V2) ListItem (V1) )
        </store>
-  <current-function> uniswapV2LibraryGetReserves </current-function>
+       <current-function> uniswapV2LibraryGetReserves </current-function>
     requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
 
   // getReserves result to end. tokenA == tokens[0]
@@ -2770,7 +2770,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
          (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]) ])
          ListItem(R)
        </store>
-  <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
+       <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
        <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack>
     requires Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160} [priority(40)]
 
@@ -2785,7 +2785,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
          (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]) ])
          ListItem(R)
        </store>
-  <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
+       <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
        <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack>
     requires notBool (Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160}) [priority(40)]
 
