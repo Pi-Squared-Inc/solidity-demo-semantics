@@ -2703,7 +2703,8 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-STATEMENT
   imports SOLIDITY-UNISWAP-TOKENS
 
-  // Start to getReserves call. Lift conditions from SortTokens, PairFor.
+  // uniswapV2LibraryGetReserves call to getReserves call.
+  // Lift conditions from SortTokens, PairFor.
   rule <k> uniswapV2LibraryGetReserves ( v ( V1:MInt{160} , address ) , v ( V2:MInt{160} , address ) , .TypedVals ) ~> K => v ( read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V1) ListItem(V2), T) , uniswapV2Pair ) . getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> Ss ~> return reserves ; ~> .K </k>
        <summarize> true </summarize>
        <this> THIS </this>
@@ -2734,7 +2735,8 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
        <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
     requires V1 <uMInt V2 andBool V1 =/=MInt 0p160 [priority(40)]
 
-  // Start to getReserves call. Lift conditions from SortTokens, PairFor.
+  // uniswapV2LibraryGetReserves call to getReserves call.
+  // Lift conditions from SortTokens, PairFor.
   rule <k> uniswapV2LibraryGetReserves ( v ( V1:MInt{160} , address ) , v ( V2:MInt{160} , address ) , .TypedVals ) ~> K => v ( read({CS [ localPairs ] orDefault .Map}:>Value, ListItem(V2) ListItem(V1), T) , uniswapV2Pair ) . getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> Ss ~> return reserves ; ~> .K </k>
        <summarize> true </summarize>
        <this> THIS </this>
@@ -2765,7 +2767,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
        <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
     requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
 
-  // getReserves result to end. tokenA == tokens[0]
+  // getReserves result to uniswapV2LibraryGetReserves return. tokenA == tokens[0]
   rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; ~> .K => v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]), uint256 [ ]) ~> K ...</k>
        <summarize> true </summarize>
        <env>
@@ -2780,7 +2782,7 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
        <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack>
     requires Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160} [priority(40)]
 
-  // getReserves result to end. tokenA != tokens[0]
+  // getReserves result to uniswapV2LibraryGetReserves return. tokenA != tokens[0]
   rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; ~> .K => v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]), uint256 [ ]) ~> K ...</k>
        <summarize> true </summarize>
        <env>
