@@ -2760,33 +2760,33 @@ module SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
     requires V2 <uMInt V1 andBool V2 =/=MInt 0p160 [priority(40)]
 
   // getReserves result to end. tokenA == tokens[0]
-  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
+  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; ~> .K => v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]), uint256 [ ]) ~> K ...</k>
        <summarize> true </summarize>
        <env>
-         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
-         ENV (pairReserves |-> var(size(STORE), uint112[]))
+         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) => E
        </env>
        <store>
          ( _ [ Ia <- Va:MInt{160} ] [ It <- Vt ] ) #as STORE =>
          (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V1)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V2)::MInt{256}, uint256[]) ])
          ListItem(R)
        </store>
-  <current-function> uniswapV2LibraryGetReserves </current-function>
+  <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack>
     requires Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160} [priority(40)]
 
   // getReserves result to end. tokenA != tokens[0]
-  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; => return v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]), uint256 [ ]); ...</k>
+  rule <k> v ( (ListItem ( V1:MInt{112} ) ListItem ( V2:MInt{112} ) ListItem ( _:MInt{112} )) #as R, uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory pairReserves ) ~> reserves [ 0 ] = tokenA == tokens [ 0 ] ? pairReserves [ 0 ] : pairReserves [ 1 ] ;  reserves [ 1 ] = tokenA == tokens [ 0 ] ? pairReserves [ 1 ] : pairReserves [ 0 ] ;  .Statements ~> return reserves ; ~> .K => v(write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]), uint256 [ ]) ~> K ...</k>
        <summarize> true </summarize>
        <env>
-         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) #as ENV =>
-         ENV (pairReserves |-> var(size(STORE), uint112[]))
+         ( _ (tokenA |-> var(Ia, address)) (reserves |-> var(Ir, uint256 [])) (tokens |-> var(It, address [])) ) => E
        </env>
        <store>
          ( _ [ Ia <- Va:MInt{160} ] [ It <- Vt ] ) #as STORE =>
          (STORE [ Ir <- write({write({STORE [ Ir ]}:>Value, ListItem(0), roundMInt(V2)::MInt{256}, uint256[])}:>Value, ListItem(1), roundMInt(V1)::MInt{256}, uint256[]) ])
          ListItem(R)
        </store>
-  <current-function> uniswapV2LibraryGetReserves </current-function>
+  <current-function> uniswapV2LibraryGetReserves => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack>
     requires notBool (Va ==MInt {read(Vt, ListItem(0), address[])}:>MInt{160}) [priority(40)]
 
 endmodule
