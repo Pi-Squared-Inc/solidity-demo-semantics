@@ -2679,6 +2679,76 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  rule <k> uniswapV2LibraryGetAmountsOut:Id ( v ( V1:MInt{256} , uint256 ) , lv ( I2 , .List , address [ ]:TypeName ) , .TypedVals:CallArgumentList ) ~> K => SsFor ~> restoreEnv((amountIn |-> var(size(STORE), uint256)) (path |-> var(size(STORE) +Int 1, address [ ])) (amounts |-> var(size(STORE) +Int 3, uint256 [ ]))) ~> Ss ~> return amounts ; ~> .K </k>
+       <summarize> true </summarize>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-fn-id> uniswapV2LibraryGetAmountsOut </contract-fn-id>
+       <contract-fn-body> require ( path . length >= 2 , "UniswapV2Library: INVALID_PATH" , .TypedVals ) ; amounts = new uint256 [ ] ( path . length , .TypedVals ) ; amounts [ 0 ] = amountIn ; { uint256 i ; SsFor:Statements } Ss:Statements </contract-fn-body>
+       <env> E => (amountIn |-> var(size(STORE), uint256))
+                  (path |-> var(size(STORE) +Int 1, address [ ]))
+                  (amounts |-> var(size(STORE) +Int 3, uint256 [ ]))
+                  (i |-> var(size(STORE) +Int 4, uint256))
+       </env>
+       <store> ( _ [ I2 <- V2 ] ) #as STORE =>
+               STORE ListItem(V1) ListItem(V2) ListItem(default(uint256 [ ]))
+                     ListItem((makeList(size({read(V2, .List, address [ ])}:>List), default(uint256))) [ 0 <- V1 ] )
+                     ListItem(default(uint256))
+       </store>
+       <current-function> FUNC => uniswapV2LibraryGetAmountsOut </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
+    requires Int2MInt(size({read(V2, .List, address [ ])}:>List))::MInt{256} >=uMInt 2p256 [priority(40)]
+
+  rule <k> while (( i < path . length - 1 ) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, address [ ])}:>List))::MInt{256} -MInt 1p256), bool)) {Body while(Cond) Body} else {.Statements} ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (i |-> var(Ii, uint256)) (path |-> var(Ip, address [ ])) ...</env>
+       <store> _ [ Ii <- Vi ] [ Ip <- Vp ] </store>
+       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
+
+  rule <k> if ( v ( true , bool ) ) { { { uint256 [ ] memory reserves = uniswapV2LibraryGetReserves ( path [ i ] , path [ i + 1 ] , .TypedVals ) ;  Ss'':Statements }  Ss':Statements }  Ss:Statements } else { .Statements } => uniswapV2LibraryGetReserves ( v ( read(Vp, ListItem(MInt2Unsigned(Vi)), address []) , address ) , v ( read(Vp, ListItem(MInt2Unsigned(Vi) +Int 1), address []) , address ) , .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint256 [ ] memory reserves ) ~> Ss'' ~> restoreEnv(E) ~> Ss' ~> restoreEnv(E) ~>  Ss ~> restoreEnv(E) ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (i |-> var(Ii, uint256)) (path |-> var(Ip, address [])) ) #as E </env>
+       <store> _ [ Ii <- Vi:MInt{256} ] [ Ip <- Vp ] </store>
+       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
+
+  rule <k> v ( ListItem ( V1:MInt{256} ) ListItem ( V2:MInt{256} ) , uint256 [ ] ) ~> freezerVariableDeclarationStatementA ( uint256 [ ] memory reserves ) ~> amounts [ i + 1 ] = uniswapV2LibraryGetAmountOut ( amounts [ i ] , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ; Ss:Statements => uniswapV2LibraryGetAmountOut ( v ( read(Va, ListItem(MInt2Unsigned(Vi)), uint256 []) , uint256 ) , v ( V1 , uint256 ) , v ( V2 , uint256 ) , .TypedVals ) ~> freezerAssignment ( amounts [ i + 1 ] ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (i |-> var(Ii, uint256)) (amounts |-> var(Ia, uint256 [])) ) #as E =>
+         E (reserves |-> var(size(STORE), uint256 [ ]))
+       </env>
+       <store> ( _ [ Ii <- Vi:MInt{256} ] [ Ia <- Va ]) #as STORE =>
+               STORE ListItem(ListItem(V1) ListItem(V2))
+       </store>
+       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
+
+  rule <k> v ( V , uint256 ) ~> freezerAssignment ( amounts [ i + 1 ] ) ~> freezerExpressionStatement ( ) ~> .Statements ~> restoreEnv ( ( _ (i |-> var ( Ii , uint256 )) ) #as ENV ) ~> i ++ ;  .Statements ~> restoreEnv ( ENV ) => .K ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (i |-> var(Ii, uint256)) (amounts |-> var(Ia, uint256 [])) ) => ENV
+       </env>
+       <store> ( _ [ Ii <- Vi:MInt{256} ] ) #as STORE =>
+               STORE [Ia <- write({STORE [ Ia ]}:>Value, ListItem(MInt2Unsigned(Vi) +Int 1), V, uint256[])] [ Ii <- Vi +MInt 1p256 ]
+       </store>
+       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
+
+  rule <k> if ( v ( false , bool ) ) { _:Statements } else { .Statements } ~> .Statements ~> restoreEnv ( _:Map ) ~> .Statements ~> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
+       <summarize> true </summarize>
+       <env> _ => E </env>
+       <store> _ [ Ia <- Va ] </store>
+       <current-function> uniswapV2LibraryGetAmountsOut => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack> [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
@@ -3257,6 +3327,7 @@ endmodule
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
+  imports SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTOUT-SUMMARY
   imports SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
