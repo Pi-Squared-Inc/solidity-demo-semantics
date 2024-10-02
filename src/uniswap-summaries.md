@@ -3280,6 +3280,13 @@ module SOLIDITY-MATHSQRT-SUMMARY
        <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
     requires V >uMInt 3p256 [priority(40)]
 
+  // While loop rewrite and condition evaluation
+  rule <k> while (( x < z ) #as Cond) Body:Statement Ss:Statements => if (v(Vx <uMInt Vz, bool)) {Body while(Cond) Body} else {.Statements} ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (x |-> var(Ix, uint256)) (z |-> var(Iz, uint256)) ...</env>
+       <store> _ [ Ix <- Vx:MInt{256} ] [ Iz <- Vz:MInt{256} ] </store>
+       <current-function> mathSqrt </current-function> [priority(40)]
+
   // y <= 3 && y != 0
   rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) => v (1p256, uint256) ...</k>
        <summarize> true </summarize>
