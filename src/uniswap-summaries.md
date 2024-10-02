@@ -3260,6 +3260,7 @@ module SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
 
+  // y > 3. Start to while loop
   rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) ~> K => Ss ~> restoreEnv( (y |-> var(size(STORE), uint256)) (z |-> var(size(STORE) +Int 1, uint256)) ) ~> .Statements ~> return z ; ~> .K </k>
        <summarize> true </summarize>
        <this-type> TYPE </this-type>
@@ -3279,6 +3280,7 @@ module SOLIDITY-MATHSQRT-SUMMARY
        <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
     requires V >uMInt 3p256 [priority(40)]
 
+  // y <= 3 && y != 0
   rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) => v (1p256, uint256) ...</k>
        <summarize> true </summarize>
        <store> STORE => STORE ListItem(V) ListItem(1p256) </store>
