@@ -3254,6 +3254,40 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-MATHSQRT-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) ~> K => Ss ~> restoreEnv( (y |-> var(size(STORE), uint256)) (z |-> var(size(STORE) +Int 1, uint256)) ) ~> .Statements ~> return z ; ~> .K </k>
+       <summarize> true </summarize>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-fn-id> mathSqrt </contract-fn-id>
+       <contract-fn-body> if ( y > 3 ) { z = y ;  uint256 x = y / 2 + 1 ; Ss:Statements } else if ( y != 0 ) { _:Statements }  .Statements </contract-fn-body>
+       <env> E => (y |-> var(size(STORE), uint256))
+                  (z |-> var(size(STORE) +Int 1, uint256))
+                  (x |-> var(size(STORE) +Int 2, uint256))
+       </env>
+       <store> STORE =>
+               STORE ListItem(V) // y
+                     ListItem(V) // z
+                     ListItem((V /uMInt 2p256) +MInt 1p256) // x
+        </store>
+       <current-function> FUNC => mathSqrt </current-function>
+       <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
+    requires V >uMInt 3p256 [priority(40)]
+
+  rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) => v (1p256, uint256) ...</k>
+       <summarize> true </summarize>
+       <store> STORE => STORE ListItem(V) ListItem(1p256) </store>
+    requires V <=uMInt 3p256 andBool V =/=MInt 0p256 [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -3266,6 +3300,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
+  imports SOLIDITY-MATHSQRT-SUMMARY
 
 endmodule
 ```
