@@ -3287,6 +3287,20 @@ module SOLIDITY-MATHSQRT-SUMMARY
        <store> _ [ Ix <- Vx:MInt{256} ] [ Iz <- Vz:MInt{256} ] </store>
        <current-function> mathSqrt </current-function> [priority(40)]
 
+  // While condition evaluated to true until next while statement
+  rule <k> if ( v ( true , bool ) ) { { z = x ;  x = ( y / x + x ) / 2 ;  .Statements }  Ss:Statements } else { .Statements } => Ss ~> restoreEnv(E) ...</k>
+       <summarize> true </summarize>
+       <env>
+         ( _ (x |-> var(Ix, uint256))
+             (y |-> var(Iy, uint256))
+             (z |-> var(Iz, uint256)) ) #as E
+       </env>
+       <store>
+          ( _ [ Ix <- Vx:MInt{256} ] [ Iy <- Vy:MInt{256} ] ) #as STORE =>
+          STORE [ Iz <- Vx ] [ Ix <- ((Vy /uMInt Vx) +MInt Vx) /uMInt 2p256 ]
+       </store>
+       <current-function> mathSqrt </current-function> [priority(40)]
+
   // y <= 3 && y != 0
   rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) => v (1p256, uint256) ...</k>
        <summarize> true </summarize>
