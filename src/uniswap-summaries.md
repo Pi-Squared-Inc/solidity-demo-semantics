@@ -2685,6 +2685,7 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
 
+  // Call to GetAmountsOut to beginning of while loop
   rule <k> uniswapV2LibraryGetAmountsOut:Id ( v ( V1:MInt{256} , uint256 ) , lv ( I2 , .List , address [ ]:TypeName ) , .TypedVals:CallArgumentList ) ~> K => SsFor ~> restoreEnv((amountIn |-> var(size(STORE), uint256)) (path |-> var(size(STORE) +Int 1, address [ ])) (amounts |-> var(size(STORE) +Int 3, uint256 [ ]))) ~> Ss ~> return amounts ; ~> .K </k>
        <summarize> true </summarize>
        <this-type> TYPE </this-type>
@@ -2705,18 +2706,21 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        <call-stack>... .List => ListItem(frame(K, E, FUNC)) </call-stack>
     requires Int2MInt(size({read(V2, .List, address [ ])}:>List))::MInt{256} >=uMInt 2p256 [priority(40)]
 
+  // While loop rewrite and condition evaluation
   rule <k> while (( i < path . length - 1 ) #as Cond) Body:Statement Ss:Statements => if (v(Vi <uMInt (Int2MInt(size({read(Vp, .List, address [ ])}:>List))::MInt{256} -MInt 1p256), bool)) {Body while(Cond) Body} else {.Statements} ~> Ss ...</k>
        <summarize> true </summarize>
        <env>... (i |-> var(Ii, uint256)) (path |-> var(Ip, address [ ])) ...</env>
        <store> _ [ Ii <- Vi ] [ Ip <- Vp ] </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
+  // While condition evaluated to true until call to uniswapV2LibraryGetReserves
   rule <k> if ( v ( true , bool ) ) { { { uint256 [ ] memory reserves = uniswapV2LibraryGetReserves ( path [ i ] , path [ i + 1 ] , .TypedVals ) ;  Ss'':Statements }  Ss':Statements }  Ss:Statements } else { .Statements } => uniswapV2LibraryGetReserves ( v ( read(Vp, ListItem(MInt2Unsigned(Vi)), address []) , address ) , v ( read(Vp, ListItem(MInt2Unsigned(Vi) +Int 1), address []) , address ) , .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint256 [ ] memory reserves ) ~> Ss'' ~> restoreEnv(E) ~> Ss' ~> restoreEnv(E) ~>  Ss ~> restoreEnv(E) ...</k>
        <summarize> true </summarize>
        <env> ( _ (i |-> var(Ii, uint256)) (path |-> var(Ip, address [])) ) #as E </env>
        <store> _ [ Ii <- Vi:MInt{256} ] [ Ip <- Vp ] </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
+  // uniswapV2LibraryGetReserves return until call to uniswapV2LibraryGetAmountOut
   rule <k> v ( ListItem ( V1:MInt{256} ) ListItem ( V2:MInt{256} ) , uint256 [ ] ) ~> freezerVariableDeclarationStatementA ( uint256 [ ] memory reserves ) ~> amounts [ i + 1 ] = uniswapV2LibraryGetAmountOut ( amounts [ i ] , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ; Ss:Statements => uniswapV2LibraryGetAmountOut ( v ( read(Va, ListItem(MInt2Unsigned(Vi)), uint256 []) , uint256 ) , v ( V1 , uint256 ) , v ( V2 , uint256 ) , .TypedVals ) ~> freezerAssignment ( amounts [ i + 1 ] ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
        <summarize> true </summarize>
        <env>
@@ -2728,6 +2732,7 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
+  // uniswapV2LibraryGetAmountOut to end of while body
   rule <k> v ( V , uint256 ) ~> freezerAssignment ( amounts [ i + 1 ] ) ~> freezerExpressionStatement ( ) ~> .Statements ~> restoreEnv ( ( _ (i |-> var ( Ii , uint256 )) ) #as ENV ) ~> i ++ ;  .Statements ~> restoreEnv ( ENV ) => .K ...</k>
        <summarize> true </summarize>
        <env>
@@ -2738,6 +2743,7 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
+  // While condition evaluated to false until return from getAmountsOut to caller
   rule <k> if ( v ( false , bool ) ) { _:Statements } else { .Statements } ~> .Statements ~> restoreEnv ( _:Map ) ~> .Statements ~> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
        <summarize> true </summarize>
        <env> _ => E </env>
