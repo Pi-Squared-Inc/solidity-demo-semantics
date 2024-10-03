@@ -2743,8 +2743,8 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
-  // While condition evaluated to false until return from getAmountsOut to caller
-  rule <k> if ( v ( false , bool ) ) { _:Statements } else { .Statements } ~> .Statements ~> restoreEnv ( _:Map ) ~> .Statements ~> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
+  // End of function: final environment restoration until return from getAmountsOut to caller
+  rule <k> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
        <summarize> true </summarize>
        <env> _ => E </env>
        <store> _ [ Ia <- Va ] </store>
