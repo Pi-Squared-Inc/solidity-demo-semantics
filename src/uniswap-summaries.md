@@ -3301,6 +3301,21 @@ module SOLIDITY-MATHSQRT-SUMMARY
        </store>
        <current-function> mathSqrt </current-function> [priority(40)]
 
+  // Skip environment updates when not needed.
+  // These occur due to the multiple block statements, introduced by the if
+  // statement that the while rewrites to.
+  rule <k> restoreEnv( _:Map ) ~> .Statements ~> restoreEnv( E:Map ) => restoreEnv(E) ...</k>
+       <summarize> true </summarize>
+       <current-function> mathSqrt </current-function> [priority(40)]
+
+  // End of function: final environment restoration to return to caller
+  rule <k> restoreEnv ( _:Map (z |-> var(Iz, uint256)) ) ~> .Statements ~> return z ; ~> .K => v (Vz, uint256) ~> K </k>
+       <summarize> true </summarize>
+       <env> _ => E </env>
+       <store> _ [ Iz <- Vz ] </store>
+       <current-function> mathSqrt => FUNC </current-function>
+       <call-stack>... ListItem(frame(K, E, FUNC)) => .List </call-stack> [priority(40)]
+
   // y <= 3 && y != 0
   rule <k> mathSqrt:Id ( v(V:MInt{256}, uint256), .TypedVals ) => v (1p256, uint256) ...</k>
        <summarize> true </summarize>
