@@ -2743,6 +2743,13 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
+  // Skip environment updates when not needed.
+  // These occur due to the multiple block statements, introduced by the if
+  // statement that the while rewrites to.
+  rule <k> restoreEnv( _:Map ) ~> .Statements ~> restoreEnv( E:Map ) => restoreEnv(E) ...</k>
+       <summarize> true </summarize>
+       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
+
   // End of function: final environment restoration until return from getAmountsOut to caller
   rule <k> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
        <summarize> true </summarize>
