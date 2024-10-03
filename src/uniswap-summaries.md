@@ -3096,6 +3096,30 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SWAP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to getReserves call
+  rule <k> bind ( _STORE , ListItem(amount0Out) ListItem(amount1Out) ListItem(to) , ListItem(uint256) ListItem(uint256) ListItem(address) , v(V1, uint256), v(V2, uint256), v(V3, address), .TypedVals, .List, .List) ~> require ( amount0Out > 0 || amount1Out > 0 , "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; uint112 [ ] memory reserves = getReserves ( .TypedVals ) ; Ss:Statements => getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory reserves ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amount0Out |-> var(size(S), uint256))
+                          (amount1Out |-> var(size(S) +Int 1, uint256))
+                          (to |-> var(size(S) +Int 2, address))
+       </env>
+       <store> S => S ListItem(V1) // amount0Out
+                      ListItem(V2) // amount1Out
+                      ListItem(V3) // to
+       </store>
+       <current-function> swap </current-function>
+    requires V1 >uMInt 0p256 orBool V2 >uMInt 0p256 [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
@@ -3449,6 +3473,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
