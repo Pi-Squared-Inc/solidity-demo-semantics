@@ -123,3 +123,21 @@ contract SomeToken {
     }
 
 }
+
+contract SomeTokenTest {
+
+    SomeToken public _someToken;
+
+    function testERC20Transfer() public {
+
+        // Create SomeToken
+        uint256 _init_supply = 1e18;
+        _someToken = new SomeToken("SomeToken", "STK", _init_supply);
+
+        // Transfer 100 tokens from msg.sender to some random address
+        uint256 _value = 100;
+        _someToken.transfer(address(0xdead), _value);
+
+    }
+
+}
