@@ -20,9 +20,7 @@ contract SomeToken {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
-    constructor(string memory name_, string memory symbol_, uint256 init_supply) {
-        _name = name_;
-        _symbol = symbol_;
+    constructor(uint256 init_supply) {
         _mint(msg.sender, init_supply);
     }
 
@@ -132,7 +130,7 @@ contract SomeTokenTest {
 
         // Create SomeToken
         uint256 _init_supply = 1e18;
-        _someToken = new SomeToken("SomeToken", "STK", _init_supply);
+        _someToken = new SomeToken(_init_supply);
 
         // Transfer 100 tokens from msg.sender to some random address
         uint256 _value = 100;
