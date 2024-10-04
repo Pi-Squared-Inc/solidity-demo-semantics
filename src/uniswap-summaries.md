@@ -3430,11 +3430,45 @@ module SOLIDITY-UNISWAP-MINT-SUMMARY
                       ListItem(V2) // wad
         </store> 
         <env>
-          ENV => ENV [ usr <- var(size(S)      , address) ]
+          ENV => ENV [ usr <- var(size(S)       , address) ]
                      [ wad <- var(size(S) +Int 1, uint256) ]
         </env>
         <contract-storage> Storage => Storage [ totalSupply <- {Storage[totalSupply] orDefault 0p256}:>MInt{256} +MInt V2:MInt{256} ]
                                               [ balanceOf   <- write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V2:MInt{256}), (mapping ( address account => uint256))) ]
+        </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  syntax KItem ::= "stopFunction"
+
+  rule <k> bind ( _STORE,
+                  ListItem ( usr ) ListItem ( wad ),
+                  ListItem ( address ) ListItem ( uint256 ) ,
+                  v ( V1:MInt{160} , address ),
+                  v ( V2:MInt{256} , uint256 ),
+                  .TypedVals , ListItem ( bool ) , ListItem ( noId ) ) ~> allowance [ msg . sender ] [ usr ] = wad ;  emit approvalEvent ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements ~> return void ; ~> .K =>return v ( true , bool ) ; ... </k>
+       <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <current-function> approve </current-function>
+        <store> S => S ListItem(V1) // usr
+                       ListItem(V2) // wad
+        </store>
+        <env>
+          ENV => ENV [ usr <- var(size(S)       , address) ]
+                     [ wad <- var(size(S) +Int 1, uint256) ]
+        </env>
+        <msg-sender> SENDER </msg-sender>
+        <contract-storage>
+          Storage => Storage [ allowance <- write( {Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), (V1 |-> V2:MInt{256}), (mapping ( address daiownr => mapping ( address daispdr => uint256))) )]
         </contract-storage> [priority(40)]
 endmodule
 ```
@@ -3455,6 +3489,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
+  imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
 
 endmodule
 ```
