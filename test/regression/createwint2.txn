@@ -1,0 +1,2 @@
+create(1, 0, 1724300000, SomeTokenCreate, ),
+txn(1, 2, 0, 1724300000, testSomeTokenCreate, )
