@@ -3536,6 +3536,25 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> transferFrom:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256), .TypedVals ) ~> Ss => v ( true , bool ) ~> Ss </k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <store> S => S ListItem(V1) // src
+                       ListItem(V2) // dst
+                       ListItem(V3) // wad
+        </store>
+        <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
+        </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -3553,6 +3572,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
   imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
 
 endmodule
 ```
