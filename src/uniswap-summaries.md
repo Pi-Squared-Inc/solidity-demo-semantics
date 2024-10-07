@@ -3395,6 +3395,37 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-MINT-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> bind ( _STORE,
+                  ListItem ( usr ) ListItem ( wad ),
+                  ListItem ( address ) ListItem ( uint256 ),
+                  v ( V1:MInt{160} , address ),
+                  v ( V2:MInt{256} , uint256 ),
+                  .TypedVals , .List , .List ) ~> balanceOf [ usr ] = balanceOf [ usr ] + wad ;  totalSupply = totalSupply + wad ;  emit transferEvent ( address ( 0 , .TypedVals ) , usr , wad , .TypedVals ) ;  .Statements ~> return void ; ~> .K => return void ; ~> .K </k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <current-function> mint </current-function>
+        <store> S => S ListItem(V1) // usr
+                      ListItem(V2) // wad
+        </store> 
+        <env>
+          ENV => ENV [ usr <- var(size(S)      , address) ]
+                     [ wad <- var(size(S) +Int 1, uint256) ]
+        </env>
+        <contract-storage> Storage => Storage [ totalSupply <- {Storage[totalSupply] orDefault 0p256}:>MInt{256} +MInt V2:MInt{256} ]
+                                              [ balanceOf   <- write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V2:MInt{256}), (mapping ( address account => uint256))) ]
+        </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -3409,6 +3440,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
   imports SOLIDITY-MATHSQRT-SUMMARY
+  imports SOLIDITY-UNISWAP-MINT-SUMMARY
 
 endmodule
 ```
