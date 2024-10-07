@@ -3450,7 +3450,7 @@ module SOLIDITY-UNISWAP-APPROVE-SUMMARY
                   ListItem ( address ) ListItem ( uint256 ) ,
                   v ( V1:MInt{160} , address ),
                   v ( V2:MInt{256} , uint256 ),
-                  .TypedVals , ListItem ( bool ) , ListItem ( noId ) ) ~> allowance [ msg . sender ] [ usr ] = wad ;  emit approvalEvent ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements ~> return void ; ~> .K =>return v ( true , bool ) ; ... </k>
+                  .TypedVals , ListItem ( bool ) , ListItem ( noId ) ) ~> allowance [ msg . sender ] [ usr ] = wad ;  emit approvalEvent ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements ~> return void ; ~> .K => return v ( true , bool ) ;  ~> .Statements ~> return void ; ... </k>
        <summarize> true </summarize>
         <this> THIS </this>
         <contract-address> THIS </contract-address>
@@ -3466,7 +3466,7 @@ module SOLIDITY-UNISWAP-APPROVE-SUMMARY
         </env>
         <msg-sender> SENDER </msg-sender>
         <contract-storage>
-          Storage => Storage [ allowance <- write( {Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), (V1 |-> V2:MInt{256}), (mapping ( address daiownr => mapping ( address daispdr => uint256))) )]
+          Storage => Storage [ allowance <- write( { Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), write(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), (mapping ( address daiownr => mapping ( address daispdr => uint256)))), ListItem(V1), V2:MInt{256}, (mapping ( address spender => uint256 ))),(mapping ( address daiownr => mapping ( address daispdr => uint256))))]
         </contract-storage> [priority(40)]
 endmodule
 ```
