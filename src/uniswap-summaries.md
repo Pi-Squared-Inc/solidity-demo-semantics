@@ -3445,8 +3445,6 @@ module SOLIDITY-UNISWAP-APPROVE-SUMMARY
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-UNISWAP-TOKENS
 
-  syntax KItem ::= "stopFunction"
-
   rule <k> bind ( _STORE,
                   ListItem ( usr ) ListItem ( wad ),
                   ListItem ( address ) ListItem ( uint256 ) ,
