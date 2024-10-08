@@ -3174,6 +3174,15 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // After if conditions: compute params and address for first balanceOf call
+  rule <k> balance0 = iERC20 ( vidToken0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ; Ss:Statements => v ( Vv0 , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerAssignment ( balance0 ) ~> freezerExpressionStatement ( ) ~> Ss...</k>
+       <summarize> true </summarize>
+       <env>... (vidToken0 |-> var(Iv0, address)) ...</env>
+       <store> _ [ Iv0 <- Vv0 ] </store>
+       <this> THIS:MInt{160} </this>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
