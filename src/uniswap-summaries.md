@@ -3192,6 +3192,19 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // Second balanceOf return to condition of first ternary operator evaluation
+  rule <k> v ( V:MInt{256} , uint256 ) ~> freezerAssignment ( balance1 ) ~> freezerExpressionStatement ( ) ~> .Statements ~> restoreEnv ( ( _:Map (amount0Out |-> var ( Ia0 , uint256 )) (balance0 |-> var ( Ib0 , uint256 )) (reserves |-> var ( Ir , uint112 [ ] )) ) #as ENV ) ~> uint256 amount0In = balance0 > reserves [ 0 ] - amount0Out ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ; Ss:Statements => v ( Vb0 >uMInt (roundMInt(Vr0)::MInt{256} -MInt Va0), bool ) ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount0In ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (balance1 |-> var(Ib1, uint256)) ) => ENV </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ib1 <- _ ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(_) ListItem(_) ]
+               ) #as STORE => STORE [ Ib1 <- V ]
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
