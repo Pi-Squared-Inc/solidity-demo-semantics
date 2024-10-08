@@ -3520,7 +3520,7 @@ module SOLIDITY-UNISWAP-APPROVE-SUMMARY
         <this-type> TYPE </this-type>
         <contract-id> TYPE </contract-id>
         <current-function> approve </current-function>
-        <contract-state>  (allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) )) </contract-state>
+        <contract-state>...  allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ) ...</contract-state>
         <store> S => S ListItem(V1) // usr
                        ListItem(V2) // wad
         </store>
