@@ -3135,6 +3135,7 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
 
   // getReserves new scope 1 to first if condition evaluation
   rule <k> { address vidToken0 = token0 ;  address vidToken1 = token1 ; require ( to != vidToken0 && to != vidToken1 , "UniswapV2: INVALID_TO" , .TypedVals ) ; if ( amount0Out > 0 ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ;  Ss':Statements } Ss:Statements => if ( v( Va0 >uMInt 0p256, bool) ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ; ~> Ss' ~> restoreEnv(ENV) ~> Ss ...</k>
+       <summarize> true </summarize>
        <env> ( _ (amount0Out |-> var(Ia0, uint256))
                  (to |-> var(Ito, address)) ) #as ENV =>
              ENV [ vidToken0 <- var(size(STORE), address)]
