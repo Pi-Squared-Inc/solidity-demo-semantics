@@ -3205,6 +3205,44 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // First ternary operator evaluated to true -> assignment to amount0In
+  rule <k> v ( true , bool ) ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount0In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var ( Ia0 , uint256 ))
+                (balance0 |-> var ( Ib0 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] )) ) #as ENV =>
+             ENV [ amount0In <- var(size(STORE), uint256)]
+       </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(_) ListItem(_) ]
+               ) #as STORE => STORE ListItem(Vb0 -MInt (roundMInt(Vr0)::MInt{256} -MInt Va0))
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second ternary operator, to its condition evaluation
+  rule <k> uint256 amount1In = balance1 > reserves [ 1 ] - amount1Out ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ; Ss:Statements => v ( Vb1 >uMInt (roundMInt(Vr1)::MInt{256} -MInt Va1), bool ) ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount1In ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amount1Out |-> var ( Ia1 , uint256 ))
+                (balance1 |-> var ( Ib1 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] ))
+       ...</env>
+       <store> _ [ Ia1 <- Va1:MInt{256} ]
+                 [ Ib1 <- Vb1:MInt{256} ]
+                 [ Ir <- ListItem(_) ListItem(Vr1:MInt{112}) ListItem(_) ]
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second ternary operator evaluated to false -> assignment to amount1In
+  rule <k> v ( false , bool ) ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount1In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ENV => ENV [ amount1In <- var(size(STORE), uint256)] </env>
+       <store> STORE => STORE ListItem(0p256) </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
