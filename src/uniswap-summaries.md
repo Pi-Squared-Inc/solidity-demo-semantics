@@ -3183,6 +3183,15 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // First balanceOf return to compute params and address for second balanceOf call
+  rule <k> v ( V:MInt{256} , uint256 ) ~> freezerAssignment ( balance0 ) ~> freezerExpressionStatement ( ) ~> balance1 = iERC20 ( vidToken1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ; Ss:Statements => v ( Vv1 , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerAssignment ( balance1 ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (balance0 |-> var(Ib0, uint256)) (vidToken1 |-> var(Iv1, address)) ...</env>
+       <store> ( _ [ Iv1 <- Vv1 ] [ Ib0 <- _ ] ) #as STORE => STORE [ Ib0 <- V ] </store>
+       <this> THIS:MInt{160} </this>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
