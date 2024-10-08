@@ -3545,12 +3545,15 @@ module SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
         <summarize> true </summarize>
         <this> THIS </this>
         <contract-address> THIS </contract-address>
+        <msg-sender> SENDER </msg-sender>
         <store> S => S ListItem(V1) // src
                        ListItem(V2) // dst
                        ListItem(V3) // wad
         </store>
         <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address account => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address account => uint256))) ]
-        </contract-storage> [priority(40)]
+        </contract-storage>
+    requires {read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256}
+       andBool (V1 ==MInt SENDER orBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => mapping ( address spender => uint256 )))), ListItem(SENDER), (mapping ( address spender => uint256 )))}:>MInt{256} ==MInt {Storage[constUINTMAX] orDefault 0p256}:>MInt{256}) [priority(40)]
 endmodule
 ```
 
