@@ -3163,6 +3163,17 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // Second if condition evaluated to true to transfer call
+  rule <k> if ( v( true, bool) ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; => v ( Vv1 , iERC20 ) . transfer ( v ( Vto , address ) , v ( Va1 , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
+       <summarize> true </summarize>
+       <env>... (amount1Out |-> var(Ia1, uint256))
+                (to |-> var(Ito, address))
+                (vidToken1 |-> var(Iv1, address))
+       ...</env>
+       <store> _ [ Ia1 <- Va1 ] [ Ito <- Vto ] [ Iv1 <- Vv1 ] </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
