@@ -3089,6 +3089,69 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SWAP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to getReserves call
+  rule <k> bind ( _STORE , ListItem(amount0Out) ListItem(amount1Out) ListItem(to) , ListItem(uint256) ListItem(uint256) ListItem(address) , v(V1, uint256), v(V2, uint256), v(V3, address), .TypedVals, .List, .List) ~> require ( amount0Out > 0 || amount1Out > 0 , "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; uint112 [ ] memory reserves = getReserves ( .TypedVals ) ; Ss:Statements => getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory reserves ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amount0Out |-> var(size(S), uint256))
+                          (amount1Out |-> var(size(S) +Int 1, uint256))
+                          (to |-> var(size(S) +Int 2, address))
+       </env>
+       <store> S => S ListItem(V1) // amount0Out
+                      ListItem(V2) // amount1Out
+                      ListItem(V3) // to
+       </store>
+       <current-function> swap </current-function>
+    requires V1 >uMInt 0p256 orBool V2 >uMInt 0p256 [priority(40)]
+
+  // getReserves return to new scope 1
+  rule <k> v ( (ListItem(V1:MInt{112}) ListItem(V2:MInt{112}) ListItem(_V3:MInt{112})) #as RetVal , uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory reserves ) ~> require ( amount0Out < reserves [ 0 ] && amount1Out < reserves [ 1 ] , "UniswapV2: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  uint256 balance0 ;  uint256 balance1 ; Ss:Statements => Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var(Ia0, uint256))
+                 (amount1Out |-> var(Ia1, uint256)) ) #as ENV =>
+             ENV [ reserves <- var(size(STORE), uint112 []) ]
+                 [ balance0 <- var(size(STORE) +Int 1, uint256)]
+                 [ balance1 <- var(size(STORE) +Int 2, uint256)]
+       </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ] [ Ia1 <- Va1:MInt{256} ] ) #as STORE =>
+               STORE ListItem(RetVal) // reserves
+                     ListItem(0p256)  // balance0 (default init)
+                     ListItem(0p256)  // balance1 (default init)
+       </store>
+       <current-function> swap </current-function>
+    requires Va0 <uMInt roundMInt(V1)::MInt{256} andBool Va1 <uMInt roundMInt(V2)::MInt{256} [priority(40)]
+
+  // getReserves new scope 1 to first if condition evaluation
+  rule <k> { address vidToken0 = token0 ;  address vidToken1 = token1 ; require ( to != vidToken0 && to != vidToken1 , "UniswapV2: INVALID_TO" , .TypedVals ) ; if ( amount0Out > 0 ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ;  Ss':Statements } Ss:Statements => if ( v( Va0 >uMInt 0p256, bool) ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ; ~> Ss' ~> restoreEnv(ENV) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var(Ia0, uint256))
+                 (to |-> var(Ito, address)) ) #as ENV =>
+             ENV [ vidToken0 <- var(size(STORE), address)]
+                 [ vidToken1 <- var(size(STORE) +Int 1, address)]
+       </env>
+       <store>
+         ( _ [ Ia0 <- Va0:MInt{256} ] [ Ito <- Vto:MInt{160} ] ) #as STORE =>
+         STORE ListItem({S[token0] orDefault default(address)}:>Value) // vidToken0, assign from token0
+               ListItem({S[token1] orDefault default(address)}:>Value) // vidToken1, assign from token1
+       </store>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... (token0 |-> address) (token1 |-> address) ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+       <current-function> swap </current-function>
+    requires Vto =/=MInt {S[token0] orDefault default(address)}:>MInt{160} andBool Vto =/=MInt {S[token1] orDefault default(address)}:>MInt{160} [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-UNISWAP-TOKENS
@@ -3416,11 +3479,44 @@ module SOLIDITY-UNISWAP-MINT-SUMMARY
                       ListItem(V2) // wad
         </store> 
         <env>
-          ENV => ENV [ usr <- var(size(S)      , address) ]
+          ENV => ENV [ usr <- var(size(S)       , address) ]
                      [ wad <- var(size(S) +Int 1, uint256) ]
         </env>
         <contract-storage> Storage => Storage [ totalSupply <- {Storage[totalSupply] orDefault 0p256}:>MInt{256} +MInt V2:MInt{256} ]
                                               [ balanceOf   <- write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V2:MInt{256}), (mapping ( address account => uint256))) ]
+        </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> bind ( _STORE,
+                  ListItem ( usr ) ListItem ( wad ),
+                  ListItem ( address ) ListItem ( uint256 ) ,
+                  v ( V1:MInt{160} , address ),
+                  v ( V2:MInt{256} , uint256 ),
+                  .TypedVals , ListItem ( bool ) , ListItem ( noId ) ) ~> allowance [ msg . sender ] [ usr ] = wad ;  emit approvalEvent ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements ~> return void ; ~> .K => return v ( true , bool ) ;  ~> .Statements ~> return void ; ... </k>
+       <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <current-function> approve </current-function>
+        <contract-state>...  allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ) ...</contract-state>
+        <store> S => S ListItem(V1) // usr
+                       ListItem(V2) // wad
+        </store>
+        <env>
+          ENV => ENV [ usr <- var(size(S)       , address) ]
+                     [ wad <- var(size(S) +Int 1, uint256) ]
+        </env>
+        <msg-sender> SENDER </msg-sender>
+        <contract-storage>
+          Storage => Storage [ allowance <- write( { Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), write(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), (mapping ( address daiownr => mapping ( address daispdr => uint256)))), ListItem(V1), V2:MInt{256}, (mapping ( address spender => uint256 ))),(mapping ( address daiownr => mapping ( address daispdr => uint256))))]
         </contract-storage> [priority(40)]
 endmodule
 ```
@@ -3435,12 +3531,14 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
+  imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
 
 endmodule
 ```
