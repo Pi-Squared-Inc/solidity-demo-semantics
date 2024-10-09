@@ -3267,8 +3267,8 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
-  // Requirements after ternary operators
-  rule <k> require ( amount0In > 0 || amount1In > 0 , "UniswapV2: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  { uint256 balance0Adjusted = balance0 * 1000 - amount0In * 3 ;  uint256 balance1Adjusted = balance1 * 1000 - amount1In * 3 ;  require ( balance0Adjusted * balance1Adjusted >= uint256 ( reserves [ 0 ] , .TypedVals ) * reserves [ 1 ] * 1000 ** 2 , "UniswapV2: K" , .TypedVals ) ;  .Statements } Ss:Statements => .K ~> Ss ...</k>
+  // Requirements after ternary operators and args to fidUpdate
+  rule <k> require ( amount0In > 0 || amount1In > 0 , "UniswapV2: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  { uint256 balance0Adjusted = balance0 * 1000 - amount0In * 3 ;  uint256 balance1Adjusted = balance1 * 1000 - amount1In * 3 ;  require ( balance0Adjusted * balance1Adjusted >= uint256 ( reserves [ 0 ] , .TypedVals ) * reserves [ 1 ] * 1000 ** 2 , "UniswapV2: K" , .TypedVals ) ;  .Statements } fidUpdate ( balance0 , balance1 , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ; Ss:Statements => fidUpdate ( v ( Vb0 , uint256 ) , v ( Vb1 , uint256 ) , v ( Vr0 , uint112 ) , v ( Vr1 , uint112 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
        <summarize> true </summarize>
        <env>... (amount0In |-> var ( Ia0 , uint256 ))
                 (amount1In |-> var ( Ia1 , uint256 ))
