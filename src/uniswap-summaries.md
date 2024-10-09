@@ -2990,7 +2990,7 @@ module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
                ) #as S => S [ Ia <- V ]
        </store>
        <current-function> swapExactTokensForTokens </current-function>
-    requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size({read(V, .List, uint256 [ ])}:>List))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
+    requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size(V))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
 
 endmodule
 ```
