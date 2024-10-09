@@ -2992,6 +2992,14 @@ module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
        <current-function> swapExactTokensForTokens </current-function>
     requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size(V))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
 
+  // uniswapV2LibraryPairFor return to transferFrom call
+  rule <k> v ( Vpair:MInt{160} , address ) ~> freezerCallArgumentListTail ( v ( Vamounts0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) => v ( Vp0 , iERC20 ) . transferFrom ( v ( SENDER , address ) , v ( Vpair , address ) , v ( Vamounts0 , uint256 ) , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <env>... (path |-> var ( Ip , address [ ] )) ...</env>
+       <store> _ [ Ip <- ListItem(Vp0:MInt{160}) _ ] </store>
+       <msg-sender> SENDER </msg-sender>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
 endmodule
 ```
 
