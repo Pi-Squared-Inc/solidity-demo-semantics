@@ -3267,6 +3267,29 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // Requirements after ternary operators
+  rule <k> require ( amount0In > 0 || amount1In > 0 , "UniswapV2: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  { uint256 balance0Adjusted = balance0 * 1000 - amount0In * 3 ;  uint256 balance1Adjusted = balance1 * 1000 - amount1In * 3 ;  require ( balance0Adjusted * balance1Adjusted >= uint256 ( reserves [ 0 ] , .TypedVals ) * reserves [ 1 ] * 1000 ** 2 , "UniswapV2: K" , .TypedVals ) ;  .Statements } Ss:Statements => .K ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amount0In |-> var ( Ia0 , uint256 ))
+                (amount1In |-> var ( Ia1 , uint256 ))
+                (balance0 |-> var ( Ib0 , uint256 ))
+                (balance1 |-> var ( Ib1 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] ))
+       ...</env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ia1 <- Va1:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ib1 <- Vb1:MInt{256} ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(Vr1:MInt{112}) ListItem(_) ]
+               ) #as STORE =>
+               STORE ListItem(Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256)
+                     ListItem(Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function>
+    requires (Va0 >uMInt 0p256 orBool Va1 >uMInt 0p256)
+     andBool ((Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256) *MInt (Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)) >=uMInt (roundMInt(Vr0)::MInt{256} *MInt roundMInt(Vr1)::MInt{256} *MInt 1000000p256) [priority(40)]
+
 endmodule
 ```
 
