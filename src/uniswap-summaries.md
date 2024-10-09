@@ -2955,6 +2955,41 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to uniswapV2LibraryGetAmountsOut call
+  rule <k> bind ( STORE , ListItem ( amountIn ) ListItem ( amountOutMin ) ListItem ( path ) ListItem ( to ) , ListItem ( uint256 ) ListItem ( uint256 ) ListItem ( address [ ]:TypeName ) ListItem ( address ) , v ( V1:MInt{256} , uint256 ) , v ( V2:MInt{256} , uint256 ) , lv ( I3 , .List , address [ ] ) , v ( V4:MInt{160} , address ) , .TypedVals , ListItem ( uint256 [ ]:TypeName ) , ListItem ( amounts ) ) ~> amounts = uniswapV2LibraryGetAmountsOut ( amountIn , path , .TypedVals ) ; Ss:Statements => uniswapV2LibraryGetAmountsOut ( v ( V1 , uint256 ) , lv ( size(S) +Int 2 , .List , address [ ] ) , .TypedVals ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amountIn |-> var(size(S), uint256))
+                          (amountOutMin |-> var(size(S) +Int 1, uint256))
+                          (path |-> var(size(S) +Int 2, address [ ]))
+                          (to |-> var(size(S) +Int 3, address))
+                          (amounts |-> var(size(S) +Int 4, uint256 [ ]))
+       </env>
+       <store> S => S ListItem(V1) // amountIn
+                      ListItem(V2) // amountOutMin
+                      ListItem(STORE [ I3 ]) // path
+                      ListItem(V4) // to
+                      ListItem(default(uint256 [ ])) // amounts
+       </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // uniswapV2LibraryGetAmountsOut return to requires
+  rule <k> v ( V:List , uint256 [ ] ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; Ss:Statements => Ss ... </k>
+       <summarize> true </summarize>
+       <env>... (amountOutMin |-> var(Iao, uint256)) (amounts |-> var(Ia, uint256 [ ])) ...</env>
+       <store> ( _ [ Iao <- Vao:MInt{256} ] ) #as S => S [ Ia <- V ] </store>
+       <current-function> swapExactTokensForTokens </current-function>
+    requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size({read(V, .List, uint256 [ ])}:>List))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -3733,6 +3768,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-UNISWAP-SWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
