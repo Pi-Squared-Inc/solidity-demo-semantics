@@ -2978,11 +2978,17 @@ module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
        </store>
        <current-function> swapExactTokensForTokens </current-function> [priority(40)]
 
-  // uniswapV2LibraryGetAmountsOut return to requires
-  rule <k> v ( V:List , uint256 [ ] ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; Ss:Statements => Ss ... </k>
+  // uniswapV2LibraryGetAmountsOut return to uniswapV2LibraryPairFor call
+  rule <k> v ( (ListItem(Va0:MInt{256}) _) #as V:List , uint256 [ ] ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; iERC20 ( path [ 0 ] , .TypedVals ) . transferFrom ( msg . sender , uniswapV2LibraryPairFor ( path [ 0 ] , path [ 1 ] , .TypedVals ) , amounts [ 0 ] , .TypedVals ) ;  Ss:Statements => uniswapV2LibraryPairFor ( v ( Vp0 , address ) , v ( Vp1 , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( Va0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) ~> freezerExpressionStatement ( ) ~> Ss ... </k>
        <summarize> true </summarize>
-       <env>... (amountOutMin |-> var(Iao, uint256)) (amounts |-> var(Ia, uint256 [ ])) ...</env>
-       <store> ( _ [ Iao <- Vao:MInt{256} ] ) #as S => S [ Ia <- V ] </store>
+       <env>... (amountOutMin |-> var(Iao, uint256))
+                (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var ( Ip , address [ ] ))
+       ...</env>
+       <store> ( _ [ Iao <- Vao:MInt{256} ]
+                   [ Ip <- ListItem(Vp0:MInt{160}) ListItem(Vp1:MInt{160}) _ ]
+               ) #as S => S [ Ia <- V ]
+       </store>
        <current-function> swapExactTokensForTokens </current-function>
     requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size({read(V, .List, uint256 [ ])}:>List))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
 
