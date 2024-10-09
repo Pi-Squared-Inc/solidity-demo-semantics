@@ -3288,7 +3288,7 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function>
     requires (Va0 >uMInt 0p256 orBool Va1 >uMInt 0p256)
-     andBool ((Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256) *MInt (Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)) >=uMInt (roundMInt(Vr0)::MInt{256} *MInt roundMInt(Vr1)::MInt{256} *MInt 1000000p256) [priority(40)]
+     andBool (((Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256) *MInt (Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)) >=uMInt (roundMInt(Vr0)::MInt{256} *MInt roundMInt(Vr1)::MInt{256} *MInt 1000000p256)) [priority(40)]
 
   // fidUpdate return to end of swap
   rule <k> void ~> freezerExpressionStatement ( ) ~> emit swapEvent ( msg . sender , amount0In , amount1In , amount0Out , amount1Out , to , .TypedVals ) ;  .Statements => .K ...</k>
