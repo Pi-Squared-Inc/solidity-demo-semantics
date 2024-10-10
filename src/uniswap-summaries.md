@@ -3148,17 +3148,6 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <current-function> swap </current-function>
     requires Vto =/=MInt {S[token0] orDefault default(address)}:>MInt{160} andBool Vto =/=MInt {S[token1] orDefault default(address)}:>MInt{160} [priority(40)]
 
-  // First if condition evaluated to true to transfer call
-  rule <k> if ( v( true, bool) ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ; => v ( Vv0 , iERC20 ) . transfer ( v ( Vto , address ) , v ( Va0 , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
-       <summarize> true </summarize>
-       <env>... (amount0Out |-> var(Ia0, uint256))
-                (to |-> var(Ito, address))
-                (vidToken0 |-> var(Iv0, address))
-       ...</env>
-       <store> _ [ Ia0 <- Va0 ] [ Ito <- Vto ] [ Iv0 <- Vv0 ] </store>
-       <this-type> uniswapV2Pair </this-type>
-       <current-function> swap </current-function> [priority(40)]
-
   // Second if condition evaluation
   rule <k> if ( amount1Out > 0 ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; Ss:Statements => if ( v( Va1 >uMInt 0p256, bool) ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; ~> Ss ...</k>
        <summarize> true </summarize>
@@ -3167,14 +3156,15 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
+  // First if condition evaluated to true to transfer call
   // Second if condition evaluated to true to transfer call
-  rule <k> if ( v( true, bool) ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; => v ( Vv1 , iERC20 ) . transfer ( v ( Vto , address ) , v ( Va1 , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
+  rule <k> if ( v( true, bool) ) iERC20 ( Token:Id , .TypedVals ) . transfer ( to , AmountOut:Id , .TypedVals ) ; => v ( Vtoken , iERC20 ) . transfer ( v ( Vto , address ) , v ( Vamount , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
        <summarize> true </summarize>
-       <env>... (amount1Out |-> var(Ia1, uint256))
+       <env>... (AmountOut |-> var(Iamount, uint256))
                 (to |-> var(Ito, address))
-                (vidToken1 |-> var(Iv1, address))
+                (Token |-> var(Itoken, address))
        ...</env>
-       <store> _ [ Ia1 <- Va1 ] [ Ito <- Vto ] [ Iv1 <- Vv1 ] </store>
+       <store> _ [ Iamount <- Vamount ] [ Ito <- Vto ] [ Itoken <- Vtoken ] </store>
        <this-type> uniswapV2Pair </this-type>
        <current-function> swap </current-function> [priority(40)]
 
