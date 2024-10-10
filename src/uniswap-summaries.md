@@ -3148,6 +3148,17 @@ module SOLIDITY-UNISWAP-SWAP-SUMMARY
        <current-function> swap </current-function>
     requires Vto =/=MInt {S[token0] orDefault default(address)}:>MInt{160} andBool Vto =/=MInt {S[token1] orDefault default(address)}:>MInt{160} [priority(40)]
 
+  // First if condition evaluated to true to transfer call
+  rule <k> if ( v( true, bool) ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ; => v ( Vv0 , iERC20 ) . transfer ( v ( Vto , address ) , v ( Va0 , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
+       <summarize> true </summarize>
+       <env>... (amount0Out |-> var(Ia0, uint256))
+                (to |-> var(Ito, address))
+                (vidToken0 |-> var(Iv0, address))
+       ...</env>
+       <store> _ [ Ia0 <- Va0 ] [ Ito <- Vto ] [ Iv0 <- Vv0 ] </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
   // Second if condition evaluation
   rule <k> if ( amount1Out > 0 ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; Ss:Statements => if ( v( Va1 >uMInt 0p256, bool) ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; ~> Ss ...</k>
        <summarize> true </summarize>
