@@ -3671,6 +3671,60 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> transferFrom:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256), .TypedVals ) => v ( true , bool ) ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <contract-address> THIS </contract-address>
+        <msg-sender> SENDER </msg-sender>
+        <contract-state>... 
+          (allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))
+          (balanceOf |-> mapping ( address daiact => uint256 ))
+          (constUINTMAX |-> uint256) ...
+        </contract-state>
+        <store> S => S ListItem(V1) // src
+                       ListItem(V2) // dst
+                       ListItem(V3) // wad
+        </store>
+        <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address daiact => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address daiact => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address daiact => uint256))) ]
+        </contract-storage>
+    requires {read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // balanceOf[src] >= wad
+       andBool (V1 ==MInt SENDER orBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} ==MInt {Storage[constUINTMAX] orDefault 0p256}:>MInt{256}) [priority(40)]
+
+    rule <k> transferFrom:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256), .TypedVals ) => v ( true , bool ) ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <contract-address> THIS </contract-address>
+        <msg-sender> SENDER </msg-sender>
+        <contract-state>... 
+          (allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))
+          (balanceOf |-> mapping ( address daiact => uint256 ))
+          (constUINTMAX |-> uint256) ...
+        </contract-state>
+        <store> S => S ListItem(V1) // src
+                       ListItem(V2) // dst
+                       ListItem(V3) // wad
+        </store>
+        <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address daiact => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address daiact => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address daiact => uint256))) ]
+                                              [ allowance <- write({ Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), write(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))), ListItem(SENDER), {read(read( {Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} -MInt V3:MInt{256}, (mapping ( address daispdr => uint256 ))), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))) ]                                                  
+        </contract-storage>
+    requires {read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // balanceOf[src] >= wad
+     andBool (V1 =/=MInt SENDER andBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} =/=MInt {Storage[constUINTMAX] orDefault 0p256}:>MInt{256}) // src != msg.sender && allowance[src][msg.sender] != constUINTMAX
+     andBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // allowance[src][msg.sender] >= wad
+     [priority(40)] 
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-INIT-SUMMARY
   imports SOLIDITY-UNISWAP-SORTTOKENS-SUMMARY
@@ -3688,6 +3742,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
   imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
 
 endmodule
 ```
