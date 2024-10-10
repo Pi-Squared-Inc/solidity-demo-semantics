@@ -82,8 +82,9 @@ module SOLIDITY-STATEMENT
        <env> E </env>
 
   syntax KItem ::= restoreEnv(Map)
+  rule <k> restoreEnv( _:Map ) ~> .Statements ~> restoreEnv( E:Map ) => restoreEnv(E) ...</k>
   rule <k> restoreEnv(E) => .K ...</k>
-       <env> _ => E </env>
+       <env> _ => E </env> [owise]
 
   // while statement
   rule while (Cond) Body => if (Cond) {Body while(Cond) Body} else {.Statements}
