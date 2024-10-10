@@ -3000,6 +3000,16 @@ module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
        <msg-sender> SENDER </msg-sender>
        <current-function> swapExactTokensForTokens </current-function> [priority(40)]
 
+  // transferFrom return to fidSwap call
+  rule <k> v ( true , bool ) ~> freezerExpressionStatement ( ) ~> fidSwap ( amounts , path , to , .TypedVals ) ; Ss:Statements => fidSwap ( lv ( Ia , .List , uint256 [ ] ) , lv ( Ip , .List , address [ ] ) , v ( Vto , address ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var (Ip , address [ ]))
+                (to |-> var(Ito, address))
+       ...</env>
+       <store> _ [ Ito <- Vto:MInt{160} ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
 endmodule
 ```
 
