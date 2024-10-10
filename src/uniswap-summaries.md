@@ -3010,6 +3010,13 @@ module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
        <store> _ [ Ito <- Vto:MInt{160} ] </store>
        <current-function> swapExactTokensForTokens </current-function> [priority(40)]
 
+  // fidSwap return to function return
+  rule <k> void ~> freezerExpressionStatement ( ) ~> .Statements ~> return amounts ; => return v(Va, uint256 [ ]) ; ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ])) ...</env>
+       <store> _ [ Ia <- Va ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
 endmodule
 ```
 
