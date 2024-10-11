@@ -3710,6 +3710,9 @@ module SOLIDITY-UNISWAP-SYNC-SUMMARY
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
 
+  // bind to first balanceOf call.
+  // Note that due to the evaluation order of the arguments' list (of fidUpdate),
+  // the call that appears second in the argument list is evaluated first.
   rule <k> bind ( _STORE , .List , .List , .TypedVals , .List , .List ) ~> fidUpdate ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , iERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , reserve0 , reserve1 , .TypedVals ) ; Ss:Statements => v ( {S[token1] orDefault 0p160}:>Value , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( {S[reserve0] orDefault 0p112}:>Value , uint112 ) , v ( {S[reserve1] orDefault 0p112}:>Value , uint112 ) , .TypedVals ) ~> freezerCallArgumentListHead ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ) ~> freezerCallId ( fidUpdate ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
        <summarize> true </summarize>
        <this> THIS </this>
@@ -3720,6 +3723,7 @@ module SOLIDITY-UNISWAP-SYNC-SUMMARY
        <contract-storage> S </contract-storage>
        <current-function> sync </current-function> [priority(40)]
 
+  // First balanceOf return to second balanceOf call
   rule <k> v ( B1 , uint256 ) ~> freezerCallArgumentListTail ( v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ~> freezerCallArgumentListHead ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ) =>  v ( {S[token0] orDefault 0p160}:>Value , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ...</k>
        <summarize> true </summarize>
        <this> THIS </this>
@@ -3730,10 +3734,12 @@ module SOLIDITY-UNISWAP-SYNC-SUMMARY
        <contract-storage> S </contract-storage>
        <current-function> sync </current-function> [priority(40)]
 
+  // Second balanceOf return to fidUpdate call
   rule <k>  v ( B0 , uint256 ) ~> freezerCallArgumentListTail ( v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ~> freezerCallId ( fidUpdate ) => fidUpdate ( v ( B0 , uint256 ) , v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ...</k>
        <summarize> true </summarize>
        <current-function> sync </current-function> [priority(40)]
 
+  // fidUpdate return to function return
   rule <k> void ~> freezerExpressionStatement ( ) ~> .Statements ~> return void ; ~> .K => return void ; ~> .K </k>
        <summarize> true </summarize>
        <current-function> sync </current-function> [priority(40)]
