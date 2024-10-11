@@ -2955,6 +2955,72 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to uniswapV2LibraryGetAmountsOut call
+  rule <k> bind ( STORE , ListItem ( amountIn ) ListItem ( amountOutMin ) ListItem ( path ) ListItem ( to ) , ListItem ( uint256 ) ListItem ( uint256 ) ListItem ( address [ ]:TypeName ) ListItem ( address ) , v ( V1:MInt{256} , uint256 ) , v ( V2:MInt{256} , uint256 ) , lv ( I3 , .List , address [ ] ) , v ( V4:MInt{160} , address ) , .TypedVals , ListItem ( uint256 [ ]:TypeName ) , ListItem ( amounts ) ) ~> amounts = uniswapV2LibraryGetAmountsOut ( amountIn , path , .TypedVals ) ; Ss:Statements => uniswapV2LibraryGetAmountsOut ( v ( V1 , uint256 ) , lv ( size(S) +Int 2 , .List , address [ ] ) , .TypedVals ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amountIn |-> var(size(S), uint256))
+                          (amountOutMin |-> var(size(S) +Int 1, uint256))
+                          (path |-> var(size(S) +Int 2, address [ ]))
+                          (to |-> var(size(S) +Int 3, address))
+                          (amounts |-> var(size(S) +Int 4, uint256 [ ]))
+       </env>
+       <store> S => S ListItem(V1) // amountIn
+                      ListItem(V2) // amountOutMin
+                      ListItem(STORE [ I3 ]) // path
+                      ListItem(V4) // to
+                      ListItem(default(uint256 [ ])) // amounts
+       </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // uniswapV2LibraryGetAmountsOut return to uniswapV2LibraryPairFor call
+  rule <k> v ( (ListItem(Va0:MInt{256}) _) #as V:List , uint256 [ ] ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; iERC20 ( path [ 0 ] , .TypedVals ) . transferFrom ( msg . sender , uniswapV2LibraryPairFor ( path [ 0 ] , path [ 1 ] , .TypedVals ) , amounts [ 0 ] , .TypedVals ) ;  Ss:Statements => uniswapV2LibraryPairFor ( v ( Vp0 , address ) , v ( Vp1 , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( Va0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) ~> freezerExpressionStatement ( ) ~> Ss ... </k>
+       <summarize> true </summarize>
+       <env>... (amountOutMin |-> var(Iao, uint256))
+                (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var ( Ip , address [ ] ))
+       ...</env>
+       <store> ( _ [ Iao <- Vao:MInt{256} ]
+                   [ Ip <- ListItem(Vp0:MInt{160}) ListItem(Vp1:MInt{160}) _ ]
+               ) #as S => S [ Ia <- V ]
+       </store>
+       <current-function> swapExactTokensForTokens </current-function>
+    requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size(V))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
+
+  // uniswapV2LibraryPairFor return to transferFrom call
+  rule <k> v ( Vpair:MInt{160} , address ) ~> freezerCallArgumentListTail ( v ( Vamounts0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) => v ( Vp0 , iERC20 ) . transferFrom ( v ( SENDER , address ) , v ( Vpair , address ) , v ( Vamounts0 , uint256 ) , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <env>... (path |-> var ( Ip , address [ ] )) ...</env>
+       <store> _ [ Ip <- ListItem(Vp0:MInt{160}) _ ] </store>
+       <msg-sender> SENDER </msg-sender>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // transferFrom return to fidSwap call
+  rule <k> v ( true , bool ) ~> freezerExpressionStatement ( ) ~> fidSwap ( amounts , path , to , .TypedVals ) ; Ss:Statements => fidSwap ( lv ( Ia , .List , uint256 [ ] ) , lv ( Ip , .List , address [ ] ) , v ( Vto , address ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var (Ip , address [ ]))
+                (to |-> var(Ito, address))
+       ...</env>
+       <store> _ [ Ito <- Vto:MInt{160} ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // fidSwap return to function return
+  rule <k> void ~> freezerExpressionStatement ( ) ~> .Statements ~> return amounts ; => return v(Va, uint256 [ ]) ; ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ])) ...</env>
+       <store> _ [ Ia <- Va ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -3733,6 +3799,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-UNISWAP-SWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
