@@ -3734,6 +3734,10 @@ module SOLIDITY-UNISWAP-SYNC-SUMMARY
        <summarize> true </summarize>
        <current-function> sync </current-function> [priority(40)]
 
+  rule <k> void ~> freezerExpressionStatement ( ) ~> .Statements ~> return void ; ~> .K => return void ; ~> .K </k>
+       <summarize> true </summarize>
+       <current-function> sync </current-function> [priority(40)]
+
 endmodule
 ```
 
