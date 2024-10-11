@@ -3704,6 +3704,40 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SYNC-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  rule <k> bind ( _STORE , .List , .List , .TypedVals , .List , .List ) ~> fidUpdate ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , iERC20 ( token1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) , reserve0 , reserve1 , .TypedVals ) ; Ss:Statements => v ( {S[token1] orDefault 0p160}:>Value , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( {S[reserve0] orDefault 0p112}:>Value , uint112 ) , v ( {S[reserve1] orDefault 0p112}:>Value , uint112 ) , .TypedVals ) ~> freezerCallArgumentListHead ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ) ~> freezerCallId ( fidUpdate ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... (token1 |-> address) (reserve0 |-> uint112) (reserve1 |-> uint112) ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+       <current-function> sync </current-function> [priority(40)]
+
+  rule <k> v ( B1 , uint256 ) ~> freezerCallArgumentListTail ( v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ~> freezerCallArgumentListHead ( iERC20 ( token0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ) =>  v ( {S[token0] orDefault 0p160}:>Value , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... (token0 |-> address) ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+       <current-function> sync </current-function> [priority(40)]
+
+  rule <k>  v ( B0 , uint256 ) ~> freezerCallArgumentListTail ( v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ~> freezerCallId ( fidUpdate ) => fidUpdate ( v ( B0 , uint256 ) , v ( B1 , uint256 ) , v ( R0 , uint112 ) , v ( R1 , uint112 ) , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <current-function> sync </current-function> [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-APPROVE-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -3808,6 +3842,7 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
+  imports SOLIDITY-UNISWAP-SYNC-SUMMARY
   imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
   imports SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
 
