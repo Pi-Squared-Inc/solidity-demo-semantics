@@ -8,10 +8,12 @@ requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
 requires "uniswap-summaries.md"
+requires "ukm.k"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
+  imports UKM
 
   syntax Id ::= "Id" [token]
 
@@ -62,10 +64,10 @@ module SOLIDITY-CONFIGURATION
         </contracts>
       </compile>
       <exec>
-        <msg-sender> 0p160 </msg-sender>
-        <msg-value> 0p256 </msg-value>
-        <tx-origin> 0p160 </tx-origin>
-        <block-timestamp> 0p256 </block-timestamp>
+        <msg-sender> Caller() </msg-sender>
+        <msg-value> CallValue() </msg-value>
+        <tx-origin> Origin() </tx-origin>
+        <block-timestamp> BlockTimestamp() </block-timestamp>
         <this> 0p160 </this>
         <this-type> Id </this-type>
         <env> .Map </env>
