@@ -407,6 +407,9 @@ module SOLIDITY-EXPRESSION
   rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, v(V:Value, RT:TypeName), ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
        <env> E => E [ X <- var(size(S), LT) ] </env>
        <store> S => S ListItem(convert(V, RT, LT)) </store>
+  rule <k> bind(STORE, ListItem(X:Id) PARAMS, ListItem(LT:TypeName) TYPES, N:Int, ARGS, L1:List, L2:List) => bind(STORE, PARAMS, TYPES, ARGS, L1, L2) ...</k>
+       <env> E => E [ X <- var(size(S), LT) ] </env>
+       <store> S => S ListItem(convert(N, LT)) </store>
   rule <k> bind(STORE, .List, .List, .CallArgumentList, ListItem(LT:TypeName) TYPES, ListItem(X:Id) NAMES) => bind(STORE, .List, .List, .CallArgumentList, TYPES, NAMES) ...</k>
        <env> E => E [ X <- var(size(S), LT) ] </env>
        <store> S => S ListItem(default(LT)) </store>

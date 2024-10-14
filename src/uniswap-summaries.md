@@ -2743,13 +2743,6 @@ module SOLIDITY-UNISWAP-GETAMOUNTSOUT-SUMMARY
        </store>
        <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
 
-  // Skip environment updates when not needed.
-  // These occur due to the multiple block statements, introduced by the if
-  // statement that the while rewrites to.
-  rule <k> restoreEnv( _:Map ) ~> .Statements ~> restoreEnv( E:Map ) => restoreEnv(E) ...</k>
-       <summarize> true </summarize>
-       <current-function> uniswapV2LibraryGetAmountsOut </current-function> [priority(40)]
-
   // End of function: final environment restoration until return from getAmountsOut to caller
   rule <k> restoreEnv ( _:Map (amounts |-> var(Ia, uint256 [])) ) ~> .Statements ~> return amounts ; ~> .K => v ( Va , uint256 [] ) ~> K </k>
        <summarize> true </summarize>
@@ -2962,6 +2955,72 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to uniswapV2LibraryGetAmountsOut call
+  rule <k> bind ( STORE , ListItem ( amountIn ) ListItem ( amountOutMin ) ListItem ( path ) ListItem ( to ) , ListItem ( uint256 ) ListItem ( uint256 ) ListItem ( address [ ]:TypeName ) ListItem ( address ) , v ( V1:MInt{256} , uint256 ) , v ( V2:MInt{256} , uint256 ) , lv ( I3 , .List , address [ ] ) , v ( V4:MInt{160} , address ) , .TypedVals , ListItem ( uint256 [ ]:TypeName ) , ListItem ( amounts ) ) ~> amounts = uniswapV2LibraryGetAmountsOut ( amountIn , path , .TypedVals ) ; Ss:Statements => uniswapV2LibraryGetAmountsOut ( v ( V1 , uint256 ) , lv ( size(S) +Int 2 , .List , address [ ] ) , .TypedVals ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amountIn |-> var(size(S), uint256))
+                          (amountOutMin |-> var(size(S) +Int 1, uint256))
+                          (path |-> var(size(S) +Int 2, address [ ]))
+                          (to |-> var(size(S) +Int 3, address))
+                          (amounts |-> var(size(S) +Int 4, uint256 [ ]))
+       </env>
+       <store> S => S ListItem(V1) // amountIn
+                      ListItem(V2) // amountOutMin
+                      ListItem(STORE [ I3 ]) // path
+                      ListItem(V4) // to
+                      ListItem(default(uint256 [ ])) // amounts
+       </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // uniswapV2LibraryGetAmountsOut return to uniswapV2LibraryPairFor call
+  rule <k> v ( (ListItem(Va0:MInt{256}) _) #as V:List , uint256 [ ] ) ~> freezerAssignment ( amounts ) ~> freezerExpressionStatement ( ) ~> require ( amounts [ amounts . length - 1 ] >= amountOutMin , "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; iERC20 ( path [ 0 ] , .TypedVals ) . transferFrom ( msg . sender , uniswapV2LibraryPairFor ( path [ 0 ] , path [ 1 ] , .TypedVals ) , amounts [ 0 ] , .TypedVals ) ;  Ss:Statements => uniswapV2LibraryPairFor ( v ( Vp0 , address ) , v ( Vp1 , address ) , .TypedVals ) ~> freezerCallArgumentListTail ( v ( Va0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) ~> freezerExpressionStatement ( ) ~> Ss ... </k>
+       <summarize> true </summarize>
+       <env>... (amountOutMin |-> var(Iao, uint256))
+                (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var ( Ip , address [ ] ))
+       ...</env>
+       <store> ( _ [ Iao <- Vao:MInt{256} ]
+                   [ Ip <- ListItem(Vp0:MInt{160}) ListItem(Vp1:MInt{160}) _ ]
+               ) #as S => S [ Ia <- V ]
+       </store>
+       <current-function> swapExactTokensForTokens </current-function>
+    requires {read(V, ListItem(MInt2Unsigned(Int2MInt(size(V))::MInt{256} -MInt 1p256)), uint256 [ ])}:>MInt{256} >=uMInt Vao [priority(40)]
+
+  // uniswapV2LibraryPairFor return to transferFrom call
+  rule <k> v ( Vpair:MInt{160} , address ) ~> freezerCallArgumentListTail ( v ( Vamounts0 , uint256 ) , .TypedVals ) ~> freezerCallArgumentListHead ( msg . sender ) ~> freezerExternalCallArgs ( iERC20 ( path [ 0 ] , .TypedVals ) , transferFrom ) => v ( Vp0 , iERC20 ) . transferFrom ( v ( SENDER , address ) , v ( Vpair , address ) , v ( Vamounts0 , uint256 ) , .TypedVals ) ...</k>
+       <summarize> true </summarize>
+       <env>... (path |-> var ( Ip , address [ ] )) ...</env>
+       <store> _ [ Ip <- ListItem(Vp0:MInt{160}) _ ] </store>
+       <msg-sender> SENDER </msg-sender>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // transferFrom return to fidSwap call
+  rule <k> v ( true , bool ) ~> freezerExpressionStatement ( ) ~> fidSwap ( amounts , path , to , .TypedVals ) ; Ss:Statements => fidSwap ( lv ( Ia , .List , uint256 [ ] ) , lv ( Ip , .List , address [ ] ) , v ( Vto , address ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ]))
+                (path |-> var (Ip , address [ ]))
+                (to |-> var(Ito, address))
+       ...</env>
+       <store> _ [ Ito <- Vto:MInt{160} ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+  // fidSwap return to function return
+  rule <k> void ~> freezerExpressionStatement ( ) ~> .Statements ~> return amounts ; => return v(Va, uint256 [ ]) ; ...</k>
+       <summarize> true </summarize>
+       <env>... (amounts |-> var(Ia, uint256 [ ])) ...</env>
+       <store> _ [ Ia <- Va ] </store>
+       <current-function> swapExactTokensForTokens </current-function> [priority(40)]
+
+endmodule
+```
+
+```k
 module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-EXPRESSION
@@ -3092,6 +3151,218 @@ module SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
        <env> ( _ (i |-> var(I, uint256)) ) => E </env>
        <store> ( _ [ I <- V:MInt{256} ] ) #as S => S [ I <- V +MInt Int2MInt(1)::MInt{256} ] </store>
        <current-function> fidSwap </current-function> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-SWAP-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UNISWAP-TOKENS
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-STATEMENT
+
+  // Bind to getReserves call
+  rule <k> bind ( _STORE , ListItem(amount0Out) ListItem(amount1Out) ListItem(to) , ListItem(uint256) ListItem(uint256) ListItem(address) , v(V1, uint256), v(V2, uint256), v(V3, address), .TypedVals, .List, .List) ~> require ( amount0Out > 0 || amount1Out > 0 , "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT" , .TypedVals ) ; uint112 [ ] memory reserves = getReserves ( .TypedVals ) ; Ss:Statements => getReserves ( .TypedVals ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory reserves ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> .Map => .Map (amount0Out |-> var(size(S), uint256))
+                          (amount1Out |-> var(size(S) +Int 1, uint256))
+                          (to |-> var(size(S) +Int 2, address))
+       </env>
+       <store> S => S ListItem(V1) // amount0Out
+                      ListItem(V2) // amount1Out
+                      ListItem(V3) // to
+       </store>
+       <current-function> swap </current-function>
+    requires V1 >uMInt 0p256 orBool V2 >uMInt 0p256 [priority(40)]
+
+  // getReserves return to new scope 1
+  rule <k> v ( (ListItem(V1:MInt{112}) ListItem(V2:MInt{112}) ListItem(_V3:MInt{112})) #as RetVal , uint112 [ ] ) ~> freezerVariableDeclarationStatementA ( uint112 [ ] memory reserves ) ~> require ( amount0Out < reserves [ 0 ] && amount1Out < reserves [ 1 ] , "UniswapV2: INSUFFICIENT_LIQUIDITY" , .TypedVals ) ;  uint256 balance0 ;  uint256 balance1 ; Ss:Statements => Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var(Ia0, uint256))
+                 (amount1Out |-> var(Ia1, uint256)) ) #as ENV =>
+             ENV [ reserves <- var(size(STORE), uint112 []) ]
+                 [ balance0 <- var(size(STORE) +Int 1, uint256)]
+                 [ balance1 <- var(size(STORE) +Int 2, uint256)]
+       </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ] [ Ia1 <- Va1:MInt{256} ] ) #as STORE =>
+               STORE ListItem(RetVal) // reserves
+                     ListItem(0p256)  // balance0 (default init)
+                     ListItem(0p256)  // balance1 (default init)
+       </store>
+       <current-function> swap </current-function>
+    requires Va0 <uMInt roundMInt(V1)::MInt{256} andBool Va1 <uMInt roundMInt(V2)::MInt{256} [priority(40)]
+
+  // getReserves new scope 1 to first if condition evaluation
+  rule <k> { address vidToken0 = token0 ;  address vidToken1 = token1 ; require ( to != vidToken0 && to != vidToken1 , "UniswapV2: INVALID_TO" , .TypedVals ) ; if ( amount0Out > 0 ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ;  Ss':Statements } Ss:Statements => if ( v( Va0 >uMInt 0p256, bool) ) iERC20 ( vidToken0 , .TypedVals ) . transfer ( to , amount0Out , .TypedVals ) ; ~> Ss' ~> restoreEnv(ENV) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var(Ia0, uint256))
+                 (to |-> var(Ito, address)) ) #as ENV =>
+             ENV [ vidToken0 <- var(size(STORE), address)]
+                 [ vidToken1 <- var(size(STORE) +Int 1, address)]
+       </env>
+       <store>
+         ( _ [ Ia0 <- Va0:MInt{256} ] [ Ito <- Vto:MInt{160} ] ) #as STORE =>
+         STORE ListItem({S[token0] orDefault default(address)}:>Value) // vidToken0, assign from token0
+               ListItem({S[token1] orDefault default(address)}:>Value) // vidToken1, assign from token1
+       </store>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... (token0 |-> address) (token1 |-> address) ...</contract-state>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+       <current-function> swap </current-function>
+    requires Vto =/=MInt {S[token0] orDefault default(address)}:>MInt{160} andBool Vto =/=MInt {S[token1] orDefault default(address)}:>MInt{160} [priority(40)]
+
+  // Second if condition evaluation
+  rule <k> if ( amount1Out > 0 ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; Ss:Statements => if ( v( Va1 >uMInt 0p256, bool) ) iERC20 ( vidToken1 , .TypedVals ) . transfer ( to , amount1Out , .TypedVals ) ; ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... amount1Out |-> var(Ia1, uint256) ...</env>
+       <store> _ [ Ia1 <- Va1 ] </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // First if condition evaluated to true to transfer call
+  // Second if condition evaluated to true to transfer call
+  rule <k> if ( v( true, bool) ) iERC20 ( Token:Id , .TypedVals ) . transfer ( to , AmountOut:Id , .TypedVals ) ; => v ( Vtoken , iERC20 ) . transfer ( v ( Vto , address ) , v ( Vamount , uint256 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ...</k>
+       <summarize> true </summarize>
+       <env>... (AmountOut |-> var(Iamount, uint256))
+                (to |-> var(Ito, address))
+                (Token |-> var(Itoken, address))
+       ...</env>
+       <store> _ [ Iamount <- Vamount ] [ Ito <- Vto ] [ Itoken <- Vtoken ] </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // After if conditions: compute params and address for first balanceOf call
+  rule <k> balance0 = iERC20 ( vidToken0 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ; Ss:Statements => v ( Vv0 , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerAssignment ( balance0 ) ~> freezerExpressionStatement ( ) ~> Ss...</k>
+       <summarize> true </summarize>
+       <env>... (vidToken0 |-> var(Iv0, address)) ...</env>
+       <store> _ [ Iv0 <- Vv0 ] </store>
+       <this> THIS:MInt{160} </this>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // First balanceOf return to compute params and address for second balanceOf call
+  rule <k> v ( V:MInt{256} , uint256 ) ~> freezerAssignment ( balance0 ) ~> freezerExpressionStatement ( ) ~> balance1 = iERC20 ( vidToken1 , .TypedVals ) . balanceOf ( address ( this , .TypedVals ) , .TypedVals ) ; Ss:Statements => v ( Vv1 , iERC20 ) . balanceOf ( v ( THIS , address ) , .TypedVals ) ~> freezerAssignment ( balance1 ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (balance0 |-> var(Ib0, uint256)) (vidToken1 |-> var(Iv1, address)) ...</env>
+       <store> ( _ [ Iv1 <- Vv1 ] [ Ib0 <- _ ] ) #as STORE => STORE [ Ib0 <- V ] </store>
+       <this> THIS:MInt{160} </this>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second balanceOf return to condition of first ternary operator evaluation
+  rule <k> v ( V:MInt{256} , uint256 ) ~> freezerAssignment ( balance1 ) ~> freezerExpressionStatement ( ) ~> .Statements ~> restoreEnv ( ( _:Map (amount0Out |-> var ( Ia0 , uint256 )) (balance0 |-> var ( Ib0 , uint256 )) (reserves |-> var ( Ir , uint112 [ ] )) ) #as ENV ) ~> uint256 amount0In = balance0 > reserves [ 0 ] - amount0Out ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ; Ss:Statements => v ( Vb0 >uMInt (roundMInt(Vr0)::MInt{256} -MInt Va0), bool ) ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount0In ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (balance1 |-> var(Ib1, uint256)) ) => ENV </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ib1 <- _ ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(_) ListItem(_) ]
+               ) #as STORE => STORE [ Ib1 <- V ]
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // First ternary operator evaluated to true -> assignment to amount0In
+  rule <k> v ( true , bool ) ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount0In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount0Out |-> var ( Ia0 , uint256 ))
+                (balance0 |-> var ( Ib0 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] )) ) #as ENV =>
+             ENV [ amount0In <- var(size(STORE), uint256)]
+       </env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(_) ListItem(_) ]
+               ) #as STORE => STORE ListItem(Vb0 -MInt (roundMInt(Vr0)::MInt{256} -MInt Va0))
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // First ternary operator evaluated to false -> assignment to amount0In
+  rule <k> v ( false , bool ) ? balance0 - ( reserves [ 0 ] - amount0Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount0In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ENV => ENV [ amount0In <- var(size(STORE), uint256)] </env>
+       <store> STORE => STORE ListItem(0p256) </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second ternary operator, to its condition evaluation
+  rule <k> uint256 amount1In = balance1 > reserves [ 1 ] - amount1Out ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ; Ss:Statements => v ( Vb1 >uMInt (roundMInt(Vr1)::MInt{256} -MInt Va1), bool ) ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount1In ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amount1Out |-> var ( Ia1 , uint256 ))
+                (balance1 |-> var ( Ib1 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] ))
+       ...</env>
+       <store> _ [ Ia1 <- Va1:MInt{256} ]
+                 [ Ib1 <- Vb1:MInt{256} ]
+                 [ Ir <- ListItem(_) ListItem(Vr1:MInt{112}) ListItem(_) ]
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second ternary operator evaluated to false -> assignment to amount1In
+  rule <k> v ( false , bool ) ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount1In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ENV => ENV [ amount1In <- var(size(STORE), uint256)] </env>
+       <store> STORE => STORE ListItem(0p256) </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Second ternary operator evaluated to true -> assignment to amount1In
+  rule <k> v ( true , bool ) ? balance1 - ( reserves [ 1 ] - amount1Out ) : 0 ~> freezerVariableDeclarationStatementA ( uint256 amount1In ) => .K ...</k>
+       <summarize> true </summarize>
+       <env> ( _ (amount1Out |-> var ( Ia1 , uint256 ))
+                 (balance1 |-> var ( Ib1 , uint256 ))
+                 (reserves |-> var ( Ir , uint112 [ ] )) ) #as ENV =>
+             ENV [ amount1In <- var(size(STORE), uint256)]
+       </env>
+       <store> ( _ [ Ia1 <- Va1:MInt{256} ]
+                   [ Ib1 <- Vb1:MInt{256} ]
+                   [ Ir <- ListItem(_) ListItem(Vr1:MInt{112}) ListItem(_) ]
+               ) #as STORE => STORE ListItem(Vb1 -MInt (roundMInt(Vr1)::MInt{256} -MInt Va1))
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
+  // Requirements after ternary operators and args to fidUpdate
+  rule <k> require ( amount0In > 0 || amount1In > 0 , "UniswapV2: INSUFFICIENT_INPUT_AMOUNT" , .TypedVals ) ;  { uint256 balance0Adjusted = balance0 * 1000 - amount0In * 3 ;  uint256 balance1Adjusted = balance1 * 1000 - amount1In * 3 ;  require ( balance0Adjusted * balance1Adjusted >= uint256 ( reserves [ 0 ] , .TypedVals ) * reserves [ 1 ] * 1000 ** 2 , "UniswapV2: K" , .TypedVals ) ;  .Statements } fidUpdate ( balance0 , balance1 , reserves [ 0 ] , reserves [ 1 ] , .TypedVals ) ; Ss:Statements => fidUpdate ( v ( Vb0 , uint256 ) , v ( Vb1 , uint256 ) , v ( Vr0 , uint112 ) , v ( Vr1 , uint112 ) , .TypedVals ) ~> freezerExpressionStatement ( ) ~> Ss ...</k>
+       <summarize> true </summarize>
+       <env>... (amount0In |-> var ( Ia0 , uint256 ))
+                (amount1In |-> var ( Ia1 , uint256 ))
+                (balance0 |-> var ( Ib0 , uint256 ))
+                (balance1 |-> var ( Ib1 , uint256 ))
+                (reserves |-> var ( Ir , uint112 [ ] ))
+       ...</env>
+       <store> ( _ [ Ia0 <- Va0:MInt{256} ]
+                   [ Ia1 <- Va1:MInt{256} ]
+                   [ Ib0 <- Vb0:MInt{256} ]
+                   [ Ib1 <- Vb1:MInt{256} ]
+                   [ Ir <- ListItem(Vr0:MInt{112}) ListItem(Vr1:MInt{112}) ListItem(_) ]
+               ) #as STORE =>
+               STORE ListItem(Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256)
+                     ListItem(Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)
+       </store>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function>
+    requires (Va0 >uMInt 0p256 orBool Va1 >uMInt 0p256)
+     andBool (((Vb0 *MInt 1000p256 -MInt Va0 *MInt 3p256) *MInt (Vb1 *MInt 1000p256 -MInt Va1 *MInt 3p256)) >=uMInt (roundMInt(Vr0)::MInt{256} *MInt roundMInt(Vr1)::MInt{256} *MInt 1000000p256)) [priority(40)]
+
+  // fidUpdate return to end of swap
+  rule <k> void ~> freezerExpressionStatement ( ) ~> emit swapEvent ( msg . sender , amount0In , amount1In , amount0Out , amount1Out , to , .TypedVals ) ;  .Statements => .K ...</k>
+       <summarize> true </summarize>
+       <msg-sender> _ </msg-sender>
+       <env>... (amount0In |-> var ( _ , uint256 ))
+                (amount1In |-> var ( _ , uint256 ))
+                (amount0Out |-> var ( _ , uint256 ))
+                (amount1Out |-> var ( _ , uint256 ))
+                (to |-> var ( _ , address ))
+       ...</env>
+       <this-type> uniswapV2Pair </this-type>
+       <current-function> swap </current-function> [priority(40)]
+
 endmodule
 ```
 
@@ -3384,13 +3655,6 @@ module SOLIDITY-MATHSQRT-SUMMARY
        </store>
        <current-function> mathSqrt </current-function> [priority(40)]
 
-  // Skip environment updates when not needed.
-  // These occur due to the multiple block statements, introduced by the if
-  // statement that the while rewrites to.
-  rule <k> restoreEnv( _:Map ) ~> .Statements ~> restoreEnv( E:Map ) => restoreEnv(E) ...</k>
-       <summarize> true </summarize>
-       <current-function> mathSqrt </current-function> [priority(40)]
-
   // End of function: final environment restoration to return to caller
   rule <k> restoreEnv ( _:Map (z |-> var(Iz, uint256)) ) ~> .Statements ~> return z ; ~> .K => v (Vz, uint256) ~> K </k>
        <summarize> true </summarize>
@@ -3430,12 +3694,99 @@ module SOLIDITY-UNISWAP-MINT-SUMMARY
                       ListItem(V2) // wad
         </store> 
         <env>
-          ENV => ENV [ usr <- var(size(S)      , address) ]
+          ENV => ENV [ usr <- var(size(S)       , address) ]
                      [ wad <- var(size(S) +Int 1, uint256) ]
         </env>
         <contract-storage> Storage => Storage [ totalSupply <- {Storage[totalSupply] orDefault 0p256}:>MInt{256} +MInt V2:MInt{256} ]
                                               [ balanceOf   <- write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address account => uint256 )))}:>MInt{256} +MInt V2:MInt{256}), (mapping ( address account => uint256))) ]
         </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> bind ( _STORE,
+                  ListItem ( usr ) ListItem ( wad ),
+                  ListItem ( address ) ListItem ( uint256 ) ,
+                  v ( V1:MInt{160} , address ),
+                  v ( V2:MInt{256} , uint256 ),
+                  .TypedVals , ListItem ( bool ) , ListItem ( noId ) ) ~> allowance [ msg . sender ] [ usr ] = wad ;  emit approvalEvent ( msg . sender , usr , wad , .TypedVals ) ;  return true ;  .Statements ~> return void ; ~> .K => return v ( true , bool ) ;  ~> .Statements ~> return void ; ... </k>
+       <summarize> true </summarize>
+        <this> THIS </this>
+        <contract-address> THIS </contract-address>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <current-function> approve </current-function>
+        <contract-state>...  allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ) ...</contract-state>
+        <store> S => S ListItem(V1) // usr
+                       ListItem(V2) // wad
+        </store>
+        <env>
+          ENV => ENV [ usr <- var(size(S)       , address) ]
+                     [ wad <- var(size(S) +Int 1, uint256) ]
+        </env>
+        <msg-sender> SENDER </msg-sender>
+        <contract-storage>
+          Storage => Storage [ allowance <- write( { Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), write(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(SENDER), (mapping ( address daiownr => mapping ( address daispdr => uint256)))), ListItem(V1), V2:MInt{256}, (mapping ( address spender => uint256 ))),(mapping ( address daiownr => mapping ( address daispdr => uint256))))]
+        </contract-storage> [priority(40)]
+endmodule
+```
+
+```k
+module SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-EXPRESSION
+  imports SOLIDITY-UNISWAP-TOKENS
+
+  rule <k> transferFrom:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256), .TypedVals ) => v ( true , bool ) ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <contract-address> THIS </contract-address>
+        <msg-sender> SENDER </msg-sender>
+        <contract-state>... 
+          (allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))
+          (balanceOf |-> mapping ( address daiact => uint256 ))
+          (constUINTMAX |-> uint256) ...
+        </contract-state>
+        <store> S => S ListItem(V1) // src
+                       ListItem(V2) // dst
+                       ListItem(V3) // wad
+        </store>
+        <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address daiact => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address daiact => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address daiact => uint256))) ]
+        </contract-storage>
+    requires {read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // balanceOf[src] >= wad
+       andBool (V1 ==MInt SENDER orBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} ==MInt {Storage[constUINTMAX] orDefault 0p256}:>MInt{256}) [priority(40)]
+
+    rule <k> transferFrom:Id ( v(V1:MInt{160}, address #as T), v(V2:MInt{160}, T), v(V3:MInt{256}, uint256), .TypedVals ) => v ( true , bool ) ...</k>
+        <summarize> true </summarize>
+        <this> THIS </this>
+        <this-type> TYPE </this-type>
+        <contract-id> TYPE </contract-id>
+        <contract-address> THIS </contract-address>
+        <msg-sender> SENDER </msg-sender>
+        <contract-state>... 
+          (allowance |-> mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))
+          (balanceOf |-> mapping ( address daiact => uint256 ))
+          (constUINTMAX |-> uint256) ...
+        </contract-state>
+        <store> S => S ListItem(V1) // src
+                       ListItem(V2) // dst
+                       ListItem(V3) // wad
+        </store>
+        <contract-storage> Storage => Storage [ balanceOf <- write({write({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} -MInt V3:MInt{256}), (mapping ( address daiact => uint256))) }:>Value, ListItem(V2), ({read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V2), (mapping ( address daiact => uint256 )))}:>MInt{256} +MInt V3:MInt{256}), (mapping ( address daiact => uint256))) ]
+                                              [ allowance <- write({ Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), write(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))), ListItem(SENDER), {read(read( {Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} -MInt V3:MInt{256}, (mapping ( address daispdr => uint256 ))), (mapping ( address daiownr => mapping ( address daispdr => uint256 )))) ]                                                  
+        </contract-storage>
+    requires {read({Storage [ balanceOf ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiact => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // balanceOf[src] >= wad
+     andBool (V1 =/=MInt SENDER andBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} =/=MInt {Storage[constUINTMAX] orDefault 0p256}:>MInt{256}) // src != msg.sender && allowance[src][msg.sender] != constUINTMAX
+     andBool {read(read({Storage [ allowance ] orDefault .Map}:>Value, ListItem(V1), (mapping ( address daiownr => mapping ( address daispdr => uint256 ) ))), ListItem(SENDER), (mapping ( address daispdr => uint256 )))}:>MInt{256} >=uMInt V3:MInt{256} // allowance[src][msg.sender] >= wad
+     [priority(40)] 
+
 endmodule
 ```
 
@@ -3448,13 +3799,17 @@ module SOLIDITY-UNISWAP-SUMMARIES
   imports SOLIDITY-UNISWAP-UNISWAPV2LIBRARYGETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-GETAMOUNTIN-SUMMARY
   imports SOLIDITY-UNISWAP-PAIRFOR-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAPEXACTTOKENSFORTOKENS-SUMMARY
   imports SOLIDITY-UNISWAP-FIDSWAP-SUMMARY
+  imports SOLIDITY-UNISWAP-SWAP-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-4-SUMMARY
   imports SOLIDITY-UNISWAP-FIDUPDATE-3-SUMMARY
   imports SOLIDITY-UNISWAP-GETRESERVES-SUMMARY
   imports SOLIDITY-UNISWAP-SETUP-SUMMARY
   imports SOLIDITY-MATHSQRT-SUMMARY
   imports SOLIDITY-UNISWAP-MINT-SUMMARY
+  imports SOLIDITY-UNISWAP-APPROVE-SUMMARY
+  imports SOLIDITY-UNISWAP-TRANSFERFROM-SUMMARY
 
 endmodule
 ```
