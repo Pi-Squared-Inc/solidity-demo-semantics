@@ -93,6 +93,7 @@ endmodule
 module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
   imports SOLIDITY-CONFIGURATION
   imports INT
+  imports BYTES
   imports ULM-SIGNATURE
 
   rule getStatus(<solidity>...
@@ -100,6 +101,19 @@ module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
                      <status> STATUS:Int </status>
                    ...</exec>
                  ...</solidity>) => STATUS
+
+  // getOutput gets the output from the top of the K cell (as expected after
+  // completion of the return statement) and encodes it to Bytes.
+  // We currently handle the encoding of return values of types uint256 and bool.
+  rule getOutput(<solidity>...
+                   <k> v(V:MInt{256}, uint256) ...</k>
+                 ...</solidity>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<solidity>...
+                   <k> v(true, bool) ...</k>
+                 ...</solidity>) => Int2Bytes(32, 1, BE)
+  rule getOutput(<solidity>...
+                   <k> v(false, bool) ...</k>
+                 ...</solidity>) => Int2Bytes(32, 0, BE)
 
 endmodule
 ```
