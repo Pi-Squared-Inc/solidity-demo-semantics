@@ -8,10 +8,12 @@ requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
 requires "uniswap-summaries.md"
+requires "ulm.k"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
+  imports ULM
 
   syntax Id ::= "Id" [token]
 
@@ -80,6 +82,7 @@ module SOLIDITY-CONFIGURATION
           </live-contract>
         </live-contracts>
         <next-address> 2p160 </next-address>
+        <status> EVMC_SUCCESS </status>
       </exec>
     </solidity>
 
