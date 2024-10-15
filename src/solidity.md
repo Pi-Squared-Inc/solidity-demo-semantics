@@ -90,6 +90,21 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
+  imports SOLIDITY-CONFIGURATION
+  imports INT
+  imports ULM-SIGNATURE
+
+  rule getStatus(<solidity>...
+                   <exec>...
+                     <status> STATUS:Int </status>
+                   ...</exec>
+                 ...</solidity>) => STATUS
+
+endmodule
+```
+
+```k
 module SOLIDITY-DATA-SYNTAX
   imports MINT-SYNTAX
   imports STRING-SYNTAX
