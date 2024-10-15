@@ -83,6 +83,7 @@ module SOLIDITY-CONFIGURATION
         </live-contracts>
         <next-address> 2p160 </next-address>
         <status> EVMC_SUCCESS </status>
+        <gas> $GAS:Int </gas>
       </exec>
     </solidity>
 
@@ -114,6 +115,17 @@ module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
   rule getOutput(<solidity>...
                    <k> v(false, bool) ...</k>
                  ...</solidity>) => Int2Bytes(32, 0, BE)
+
+  // getGasLeft returns the amount of gas left by reading it from the cell <gas>.
+  // The semantics currently initialize the gas by reading the appropriate ULM
+  // configuration variable, but do not update it as the computations are performed.
+  // I.e., this function is always going to return the exact amount of gas that was
+  // provided to begin with.
+  rule getGasLeft(<solidity>...
+                    <exec>...
+                      <gas> GASLEFT:Int </gas>
+                    ...</exec>
+                  ...</solidity>) => GASLEFT
 
 endmodule
 ```
