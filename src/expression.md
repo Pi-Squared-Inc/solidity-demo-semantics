@@ -248,17 +248,9 @@ module SOLIDITY-EXPRESSION
   syntax Id ::= "gaslimit" [token] | "basefee" [token] | "coinbase" [token] | "number" [token] | "difficulty" [token] | "prevrandao" [token]
   syntax Id ::= "blockhash" [token] | "gasprice" [token] | "address" [token] | "value" [token] | "data" [token] | "chainid" [token]
 
-//   rule <k> (msg . sender)::Expression => v(FROM, address) ...</k>
-//        <msg-sender> FROM </msg-sender>
-//   rule <k> (msg . value)::Expression => v(VALUE, uint) ...</k>
-//        <msg-value> VALUE </msg-value>
   rule <k> this => v(THIS, TYPE) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
-//   rule <k> (tx . origin)::Expression => v(ORIGIN, address) ...</k>
-//        <tx-origin> ORIGIN </tx-origin>
-//   rule <k> (block . timestamp)::Expression => v(NOW, uint) ...</k>
-//        <block-timestamp> NOW </block-timestamp>
 
   rule <k> (block . gaslimit)::Expression => v(GasLimit(), uint) ...</k>
   rule <k> (block . basefee)::Expression => v(BaseFee(), uint) ...</k>
