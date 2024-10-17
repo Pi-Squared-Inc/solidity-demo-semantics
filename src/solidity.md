@@ -175,40 +175,6 @@ endmodule
 ```
 
 ```k
-module SOLIDITY-UTILS-SYNTAX
-  imports SOLIDITY-SYNTAX
-  imports INT-SYNTAX
-
-  syntax Int ::= addressRangeSize(TypeName) [function]
-  syntax Int ::= range(ElementaryTypeName) [function]
-endmodule
-```
-
-```k
-module SOLIDITY-UTILS
-  imports SOLIDITY-UTILS-SYNTAX
-  imports SOLIDITY-DATA
-  imports INT
-  imports BOOL
-
-// This address schema is limited to supporting the state variables found in
-// UniSwapV2Swap.sol, i.e. stae variables or primitive types, and mappings/double
-// mappins with only primitive types as keys. We do not currently support array
-// state variables with this address assignment schema.
-  rule addressRangeSize(mapping(T1:ElementaryTypeName _ => T2 _)) => range(T1) *Int addressRangeSize(T2)
-  rule addressRangeSize(T) => 1
-    requires notBool isAggregateType(T)
-  rule range(uint8) => 2 ^Int 8
-  rule range(uint32) => 2 ^Int 32
-  rule range(uint112) => 2 ^Int 112
-  rule range(uint256) => 2 ^Int 256
-  rule range(address) => 2 ^Int 160
-  rule range(bool) => 2
-
-endmodule
-```
-
-```k
 module SOLIDITY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-INTERFACE
@@ -216,7 +182,6 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
-  imports SOLIDITY-UTILS
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
