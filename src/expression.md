@@ -73,10 +73,64 @@ module SOLIDITY-EXPRESSION
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> LT </contract-state>
+       <contract-state>... X |-> (uint8 #as LT) </contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ A <- convert(V, RT, LT) ] </contract-storage>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{8}) ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint32 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{32}) ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint112 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{112}) ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint256 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{256}) ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (address #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{160}) ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (bool #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- #if V #then 1 #else 0 #fi ] </contract-storage>
+
+  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> LT:Id </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A <- MInt2Unsigned({convert(V, RT, LT)}:>MInt{160}) ] </contract-storage>
 
   // literal assignment to local variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
@@ -96,14 +150,22 @@ module SOLIDITY-EXPRESSION
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
   rule <k> lv(I:Int, L, LT []) [ v(Idx:MInt{256}, _) ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(MInt2Unsigned(Idx)), convert(V, RT, LT), LT[]) ] </store>
-  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => T2)) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> T ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- convert(V, RT, T2) ] </contract-storage>
+       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{256}) ] </contract-storage>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{160}) ] </contract-storage>
 
   syntax Value ::= write(Value, List, Value, TypeName) [function]
   rule write(_, .List, V, _) => V
@@ -123,11 +185,71 @@ module SOLIDITY-EXPRESSION
        <iface-id> TYPE </iface-id>
 
   // state variable lookup
-  rule <k> X:Id => v({S[A] orDefault default(T)}:>Value, T) ...</k>
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{8}, T) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
+       <contract-state>... X |-> (uint8 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{32}, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint32 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{112}, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint112 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{256}, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint256 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{160}, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (address #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(#if {S[A] orDefault 0}:>Int =/=Int 0 #then true #else false #fi, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (bool #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt({S[A] orDefault 0}:>Int)::MInt{160}, T) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T:Id ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
@@ -156,7 +278,16 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
        <store> _ [ I <- V ] </store>
     requires notBool isAggregateType(T)
-  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault default(T2)}:>Value, T2) ...</k>
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault 0}:>Int)::MInt{256}, T2) ...</k>
+       <this> THIS </this>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+       <contract-address> THIS </contract-address>
+       <contract-storage> S </contract-storage>
+    requires notBool isAggregateType(T2)
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault 0}:>Int)::MInt{160}, T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
