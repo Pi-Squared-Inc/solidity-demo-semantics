@@ -1,13 +1,15 @@
 # Solidity expressions
 
 ```k
+requires "plugin/krypto.md"
 
 module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
-  imports SOLIDITY-UTILS-SYNTAX
   imports INT
   imports ULM
+  imports BYTES
   imports K-EQUAL
+  imports KRYPTO
 
   // new contract
   rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
@@ -155,18 +157,16 @@ module SOLIDITY-EXPRESSION
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{256}) ] </contract-storage>
+       <contract-storage> S => S [ computeStorageIndex(L ListItem(convert(Key, RT1, LT1)), A) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{256}) ] </contract-storage>
   rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{160}) ] </contract-storage>
+       <contract-storage> S => S [ computeStorageIndex(L ListItem(convert(Key, RT1, LT1)), A) <- MInt2Unsigned({convert(V, RT, T2)}:>MInt{160}) ] </contract-storage>
 
   syntax Value ::= write(Value, List, Value, TypeName) [function]
   rule write(_, .List, V, _) => V
@@ -279,20 +279,18 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
        <store> _ [ I <- V ] </store>
     requires notBool isAggregateType(T)
-  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault 0}:>Int)::MInt{256}, T2) ...</k>
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[computeStorageIndex(L ListItem(convert(Key, RT, T1)), A)] orDefault 0}:>Int)::MInt{256}, T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
     requires notBool isAggregateType(T2)
-  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault 0}:>Int)::MInt{160}, T2) ...</k>
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT) ] => v(Int2MInt({S[computeStorageIndex(L ListItem(convert(Key, RT, T1)), A)] orDefault 0}:>Int)::MInt{160}, T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
        <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
@@ -305,20 +303,20 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(R, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(V, RT) ] => lv(R, L ListItem(convert(V, RT, T1)), T2) ...</k>
     requires isAggregateType(T2)
 
-  syntax Int ::= computeStorageOffset(List, TypeName, Int) [function]
-  rule computeStorageOffset(.List, _, Acc) => Acc
-  rule computeStorageOffset(ListItem(K:MInt{8}) L, mapping(uint8 _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(uint8) +Int MInt2Unsigned(K))
-  rule computeStorageOffset(ListItem(K:MInt{32}) L, mapping(uint32 _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(uint32) +Int MInt2Unsigned(K))
-  rule computeStorageOffset(ListItem(K:MInt{112}) L, mapping(uint112 _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(uint112) +Int MInt2Unsigned(K))
-  rule computeStorageOffset(ListItem(K:MInt{256}) L, mapping(uint256 _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(uint256) +Int MInt2Unsigned(K))
-  rule computeStorageOffset(ListItem(K:MInt{160}) L, mapping(address _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(address) +Int MInt2Unsigned(K))
-  rule computeStorageOffset(ListItem(K:Bool) L, mapping(bool _ => T2 _), Acc) =>
-       computeStorageOffset(L, T2, Acc *Int range(bool) +Int #if K #then 1 #else 0 #fi)
+  syntax Int ::= computeStorageIndex(List, Int) [function]
+  rule computeStorageIndex(.List, N) => N
+  rule computeStorageIndex(ListItem(K:MInt{8}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{32}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{112}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{160}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{256}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:Bool) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, #if K #then 1 #else 0 #fi, BE)), BE, Unsigned))
 
   syntax Value ::= read(Value, List, TypeName) [function]
   rule read(V, .List, _) => V

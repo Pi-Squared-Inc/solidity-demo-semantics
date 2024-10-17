@@ -3,7 +3,6 @@
 ```k
 module SOLIDITY-CONTRACT
   imports SOLIDITY-CONFIGURATION
-  imports SOLIDITY-UTILS-SYNTAX
 
   rule <k> contract X:Id { Body } => Body ...</k>
        <current-body> _ => X </current-body>
@@ -76,7 +75,7 @@ module SOLIDITY-CONTRACT
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-state> Env => Env [ X <- T ] </contract-state>
-       <contract-current-sv-address> A => A +Int addressRangeSize(T) </contract-current-sv-address>
+       <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
        <contract-fns>
          .Bag => <contract-fn>
@@ -116,14 +115,14 @@ module SOLIDITY-CONTRACT
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-state> Env => Env [ X <- T ] </contract-state>
-       <contract-current-sv-address> A => A +Int addressRangeSize(T) </contract-current-sv-address>
+       <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
 
    rule <k> T:TypeName public X:Id = E ; => .K ...</k>
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-state> Env => Env [ X <- T ] </contract-state>
-       <contract-current-sv-address> A => A +Int addressRangeSize(T) </contract-current-sv-address>
+       <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
        <contract-init>... .List => ListItem(X = E;) </contract-init>
        <contract-fns>
@@ -144,7 +143,7 @@ module SOLIDITY-CONTRACT
        <current-body> C </current-body>
        <contract-id> C </contract-id>
        <contract-state> Env => Env [ X <- T ] </contract-state>
-       <contract-current-sv-address> A => A +Int addressRangeSize(T) </contract-current-sv-address>
+       <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
        <contract-init>... .List => ListItem(X = E;) </contract-init>
  
