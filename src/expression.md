@@ -4,7 +4,9 @@
 
 module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-UTILS-SYNTAX
   imports INT
+  imports K-EQUAL
 
   // new contract
   rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
@@ -72,8 +74,9 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> LT </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ X <- convert(V, RT, LT) ] </contract-storage>
+       <contract-storage> S => S [ A <- convert(V, RT, LT) ] </contract-storage>
 
   // literal assignment to local variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
@@ -98,8 +101,9 @@ module SOLIDITY-EXPRESSION
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> T ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ X <- write({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT1, LT1)), convert(V, RT, T2), T) ] </contract-storage>
+       <contract-storage> S => S [ A +Int computeStorageOffset(L ListItem(convert(Key, RT1, LT1)), T, 0) <- convert(V, RT, T2) ] </contract-storage>
 
   syntax Value ::= write(Value, List, Value, TypeName) [function]
   rule write(_, .List, V, _) => V
@@ -119,11 +123,12 @@ module SOLIDITY-EXPRESSION
        <iface-id> TYPE </iface-id>
 
   // state variable lookup
-  rule <k> X:Id => v({S[X] orDefault default(T)}:>Value, T) ...</k>
+  rule <k> X:Id => v({S[A] orDefault default(T)}:>Value, T) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> T ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
     requires notBool isAggregateType(T)
@@ -151,11 +156,12 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
        <store> _ [ I <- V ] </store>
     requires notBool isAggregateType(T)
-  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v(read({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT, T1)), T), T2) ...</k>
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v({S[A +Int computeStorageOffset(L ListItem(convert(Key, RT, T1)), T, 0)] orDefault default(T2)}:>Value, T2) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
        <contract-state>... X |-> T ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
        <contract-address> THIS </contract-address>
        <contract-storage> S </contract-storage>
     requires notBool isAggregateType(T2)
@@ -166,6 +172,21 @@ module SOLIDITY-EXPRESSION
     requires isAggregateType(T)
   rule <k> lv(R, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(V, RT) ] => lv(R, L ListItem(convert(V, RT, T1)), T2) ...</k>
     requires isAggregateType(T2)
+
+  syntax Int ::= computeStorageOffset(List, TypeName, Int) [function]
+  rule computeStorageOffset(.List, _, Acc) => Acc
+  rule computeStorageOffset(ListItem(K:MInt{8}) L, mapping(uint8 _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(uint8) +Int MInt2Unsigned(K))
+  rule computeStorageOffset(ListItem(K:MInt{32}) L, mapping(uint32 _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(uint32) +Int MInt2Unsigned(K))
+  rule computeStorageOffset(ListItem(K:MInt{112}) L, mapping(uint112 _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(uint112) +Int MInt2Unsigned(K))
+  rule computeStorageOffset(ListItem(K:MInt{256}) L, mapping(uint256 _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(uint256) +Int MInt2Unsigned(K))
+  rule computeStorageOffset(ListItem(K:MInt{160}) L, mapping(address _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(address) +Int MInt2Unsigned(K))
+  rule computeStorageOffset(ListItem(K:Bool) L, mapping(bool _ => T2 _), Acc) =>
+       computeStorageOffset(L, T2, Acc *Int range(bool) +Int #if K #then 1 #else 0 #fi)
 
   syntax Value ::= read(Value, List, TypeName) [function]
   rule read(V, .List, _) => V
