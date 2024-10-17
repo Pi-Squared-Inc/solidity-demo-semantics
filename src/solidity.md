@@ -64,10 +64,10 @@ module SOLIDITY-CONFIGURATION
         </contracts>
       </compile>
       <exec>
-        <msg-sender> Caller() </msg-sender>
-        <msg-value> CallValue() </msg-value>
-        <tx-origin> Origin() </tx-origin>
-        <block-timestamp> BlockTimestamp() </block-timestamp>
+        <msg-sender> 0p160 </msg-sender>
+        <msg-value> 0p256 </msg-value>
+        <tx-origin> 0p160 </tx-origin>
+        <block-timestamp> 0p256 </block-timestamp>
         <this> 0p160 </this>
         <this-type> Id </this-type>
         <env> .Map </env>
@@ -86,7 +86,6 @@ module SOLIDITY-CONFIGURATION
         <gas> $GAS:Int </gas>
       </exec>
     </solidity>
-
 endmodule
 ```
 

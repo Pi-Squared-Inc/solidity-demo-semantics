@@ -244,33 +244,34 @@ module SOLIDITY-EXPRESSION
   // integer literal
   rule N:NumberLiteral => Number2Int(N)
 
-  // automatic variables
-  syntax Id ::= "msg" [token] | "sender" [token] | "this" [token] | "tx" [token] | "origin" [token] | "block" [token] | "timestamp" [token]
-  syntax Id ::= "gaslimit" [token] | "basefee" [token] | "coinbase" [token] | "number" [token] | "difficulty" [token] | "prevrandao" [token]
-  syntax Id ::= "blockhash" [token] | "gasprice" [token] | "address" [token] | "value" [token] | "data" [token] | "chainid" [token]
 
+  // automatic variables
+  syntax Id ::= "msg" [token] | "sender" [token] | "this" [token] | "tx" [token] | "origin" [token] | "block" [token] | "timestamp" [token] | "gaslimit" [token] | "basefee" [token] | "coinbase" [token] | "number" [token] | "difficulty" [token] | "prevrandao" [token] | "chainid" [token] | "gasprice" [token] | "data" [token] | "blockhash" [token]
+
+  rule <k> (msg . sender)::Expression => v(FROM, address) ...</k>
+       <msg-sender> FROM </msg-sender>
+  rule <k> (msg . value)::Expression => v(VALUE, uint) ...</k>
+       <msg-value> VALUE </msg-value>
   rule <k> this => v(THIS, TYPE) ...</k>
        <this> THIS </this>
        <this-type> TYPE </this-type>
+  rule <k> (tx . origin)::Expression => v(ORIGIN, address) ...</k>
+       <tx-origin> ORIGIN </tx-origin>
+  rule <k> (block . timestamp)::Expression => v(NOW, uint) ...</k>
+       <block-timestamp> NOW </block-timestamp>
 
-  rule <k> (block . gaslimit)::Expression => v(GasLimit(), uint) ...</k>
-  rule <k> (block . basefee)::Expression => v(BaseFee(), uint) ...</k>
-  rule <k> (block . coinbase)::Expression => v(Coinbase(), uint) ...</k>
-  rule <k> (block . timestamp)::Expression => v(BlockTimestamp() , uint) ...</k>
-  rule <k> (block . number)::Expression => v(BlockNumber(), uint) ...</k>
-  rule <k> (block . difficulty)::Expression => v(BlockDifficulty() , uint) ...</k>
-  rule <k> (block . prevrandao)::Expression => v(PrevRandao(), uint) ...</k>
-  rule <k> (block . chainid)::Expression => v(ChainId(), uint) ...</k>
+  rule <k> (block . gaslimit)::Expression => GasLimit() ...</k>
+  rule <k> (block . basefee)::Expression => BaseFee() ...</k>
+  rule <k> (block . coinbase)::Expression => Coinbase() ...</k>
+  rule <k> (block . number)::Expression => BlockNumber() ...</k>
+  rule <k> (block . difficulty)::Expression => BlockDifficulty() ...</k>
+  rule <k> (block . prevrandao)::Expression => PrevRandao() ...</k>
+  rule <k> (block . chainid)::Expression => ChainId() ...</k>
 
-  rule <k> blockhash ( X:Int ) => v(BlockHash(X), uint) ...</k>
+  rule <k> blockhash ( X:Int ) => BlockHash(X) ...</k>
 
-  rule <k> (tx . origin)::Expression => v(Origin(), address) ...</k>
-  rule <k> (tx . gasprice)::Expression => v(GasPrice(), uint) ...</k>
-
-  rule <k> (msg . address)::Expression => v(Address(), address) ...</k>
-  rule <k> (msg . sender)::Expression => v(Caller(), address) ...</k>
-  rule <k> (msg . value)::Expression => v(CallValue(), uint) ...</k>
-  rule <k> (msg . data)::Expression => v(CallData(), bytes) ...</k>
+  rule <k> (tx . gasprice)::Expression => GasPrice() ...</k>
+  rule <k> (msg . data)::Expression => CallData() ...</k>
 
   // basic arithmetic
   rule v(V1:Value, T)  + v(V2:Value, T) => v(add(V1, V2), T)
