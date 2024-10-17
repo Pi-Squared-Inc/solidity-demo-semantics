@@ -8,12 +8,12 @@ requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
 requires "uniswap-summaries.md"
-requires "ukm.k"
+requires "ulm.k"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
-  imports UKM
+  imports ULM
 
   syntax Id ::= "Id" [token]
 
@@ -82,8 +82,50 @@ module SOLIDITY-CONFIGURATION
           </live-contract>
         </live-contracts>
         <next-address> 2p160 </next-address>
+        <status> EVMC_SUCCESS </status>
+        <gas> $GAS:Int </gas>
       </exec>
     </solidity>
+
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
+  imports SOLIDITY-CONFIGURATION
+  imports INT
+  imports BYTES
+  imports ULM-SIGNATURE
+
+  rule getStatus(<solidity>...
+                   <exec>...
+                     <status> STATUS:Int </status>
+                   ...</exec>
+                 ...</solidity>) => STATUS
+
+  // getOutput gets the output from the top of the K cell (as expected after
+  // completion of the return statement) and encodes it to Bytes.
+  // We currently handle the encoding of return values of types uint256 and bool.
+  rule getOutput(<solidity>...
+                   <k> v(V:MInt{256}, uint256) ...</k>
+                 ...</solidity>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<solidity>...
+                   <k> v(true, bool) ...</k>
+                 ...</solidity>) => Int2Bytes(32, 1, BE)
+  rule getOutput(<solidity>...
+                   <k> v(false, bool) ...</k>
+                 ...</solidity>) => Int2Bytes(32, 0, BE)
+
+  // getGasLeft returns the amount of gas left by reading it from the cell <gas>.
+  // The semantics currently initialize the gas by reading the appropriate ULM
+  // configuration variable, but do not update it as the computations are performed.
+  // I.e., this function is always going to return the exact amount of gas that was
+  // provided to begin with.
+  rule getGasLeft(<solidity>...
+                    <exec>...
+                      <gas> GASLEFT:Int </gas>
+                    ...</exec>
+                  ...</solidity>) => GASLEFT
 
 endmodule
 ```

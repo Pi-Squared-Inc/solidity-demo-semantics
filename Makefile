@@ -8,6 +8,9 @@ SEMANTICS_FILE_NAME = solidity
 SEMANTICS_FILE = $(SEMANTICS_FILE_NAME).md
 MAIN_MODULE = SOLIDITY
 OUTPUT_DIR = out
+ULMDIR = ../ulm
+ULMINCLUDE = $(ULMDIR)/kllvm
+CFLAGS = -ccopt -L$(ULMINCLUDE) -ccopt -lulmkllvm
 
 UNISWAP_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2Swap.sol 2>&1 1>$(OUTPUT_DIR)/uniswap.ast
 UNISWAPRN_PARAMS = $(EXAMPLES_DIR)/swaps/UniswapV2SwapRenamed.sol 2>&1 1>$(OUTPUT_DIR)/uniswaprn.ast
@@ -23,7 +26,7 @@ TRANSACTIONS = $(shell find $(TRANSACTIONS_DIR) -name "*.txn")
 EXAMPLE_TESTS = $(patsubst %.txn, %.out, $(TRANSACTIONS))
 
 build: $(SEMANTICS_DIR)/$(SEMANTICS_FILE)
-	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --gen-glr-bison-parser -O2 --heuristic pbaL
+	kompile $(SEMANTICS_DIR)/$(SEMANTICS_FILE) --main-module $(MAIN_MODULE) --hook-namespaces 'ULM' -I $(ULMINCLUDE) $(CFLAGS) --gen-glr-bison-parser -O2 --heuristic pbaL
 
 clean: test-clean
 	rm -Rf $(SEMANTICS_FILE_NAME)-kompiled

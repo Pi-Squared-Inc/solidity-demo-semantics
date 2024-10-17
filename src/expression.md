@@ -5,6 +5,7 @@
 module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
   imports INT
+  imports ULM
 
   // new contract
   rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
@@ -354,6 +355,11 @@ module SOLIDITY-EXPRESSION
   syntax Id ::= "require" [token] | "assert" [token]
   rule require(v(true, bool), _) => void
   rule assert(v(true, bool)) => void
+  rule <k> require(v(false, bool), _) => STUCK ...</k>
+       <status> _ => EVMC_REVERT </status>
+  rule <k> assert(v(false, bool)) => STUCK ...</k>
+       <status> _ => EVMC_FAILURE </status>
+  syntax KItem ::= "STUCK"
 
   // ternary expression
   rule v(true, bool) ? X : _ => X
