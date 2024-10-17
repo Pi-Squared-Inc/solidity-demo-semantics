@@ -7,7 +7,6 @@ requires "contract.md"
 requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
-requires "uniswap-summaries.md"
 requires "ulm.k"
 
 module SOLIDITY-CONFIGURATION
@@ -39,6 +38,8 @@ module SOLIDITY-CONFIGURATION
           <contract multiplicity="*" type="Map">
             <contract-id> Id </contract-id>
             <contract-state> .Map </contract-state>
+            <contract-current-sv-address> 0:Int </contract-current-sv-address>
+            <contract-statevar-addresses> .Map </contract-statevar-addresses>
             <contract-init> .List </contract-init>
             <contract-fns>
               <contract-fn multiplicity="*" type="Map">
@@ -218,6 +219,40 @@ endmodule
 ```
 
 ```k
+module SOLIDITY-UTILS-SYNTAX
+  imports SOLIDITY-SYNTAX
+  imports INT-SYNTAX
+
+  syntax Int ::= addressRangeSize(TypeName) [function]
+  syntax Int ::= range(ElementaryTypeName) [function]
+endmodule
+```
+
+```k
+module SOLIDITY-UTILS
+  imports SOLIDITY-UTILS-SYNTAX
+  imports SOLIDITY-DATA
+  imports INT
+  imports BOOL
+
+// This address schema is limited to supporting the state variables found in
+// UniSwapV2Swap.sol, i.e. stae variables or primitive types, and mappings/double
+// mappins with only primitive types as keys. We do not currently support array
+// state variables with this address assignment schema.
+  rule addressRangeSize(mapping(T1:ElementaryTypeName _ => T2 _)) => range(T1) *Int addressRangeSize(T2)
+  rule addressRangeSize(T) => 1
+    requires notBool isAggregateType(T)
+  rule range(uint8) => 2 ^Int 8
+  rule range(uint32) => 2 ^Int 32
+  rule range(uint112) => 2 ^Int 112
+  rule range(uint256) => 2 ^Int 256
+  rule range(address) => 2 ^Int 160
+  rule range(bool) => 2
+
+endmodule
+```
+
+```k
 module SOLIDITY
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-INTERFACE
@@ -225,10 +260,9 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
-  imports SOLIDITY-UNISWAP-SUMMARIES
+  imports SOLIDITY-UTILS
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
-       <summarize> false </summarize>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
   rule .SourceUnits => .K
   rule C:ContractBodyElement Cc:ContractBodyElements => C ~> Cc
