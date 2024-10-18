@@ -3,6 +3,8 @@
 ```k
 module SOLIDITY-CONTRACT
   imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-FUNCTION-SELECTORS-SYNTAX
+  imports K-EQUAL
 
   rule <k> contract X:Id { Body } => Body ...</k>
        <current-body> _ => X </current-body>
@@ -10,6 +12,24 @@ module SOLIDITY-CONTRACT
          .Bag => <contract> <contract-id> X </contract-id> ...</contract>
          ...
        </contracts>
+
+  rule <k> function X ( Params ) F:FunctionSpecifiers { Body } => .K ...</k>
+       <current-body> C </current-body>
+       <contract-id> C </contract-id>
+       <function-selector> Sel => Sel[ functionSelector(X, getTypes(Params)) <- X ] </function-selector>
+       <contract-fns>
+         .Bag => <contract-fn>
+                   <contract-fn-id> X </contract-fn-id>
+                   <contract-fn-visibility> getVisibility(F) </contract-fn-visibility>
+                   <contract-fn-payable> getPayable(F) </contract-fn-payable>
+                   <contract-fn-arg-types> getTypes(Params) </contract-fn-arg-types>
+                   <contract-fn-param-names> getNames(Params) </contract-fn-param-names>
+                   <contract-fn-body> Body </contract-fn-body>
+                   ...
+                 </contract-fn>
+         ...
+       </contract-fns>
+    requires getVisibility(F) ==K public orBool getVisibility(F) ==K external
 
   rule <k> function X ( Params ) F:FunctionSpecifiers { Body } => .K ...</k>
        <current-body> C </current-body>
@@ -25,7 +45,27 @@ module SOLIDITY-CONTRACT
                    ...
                  </contract-fn>
          ...
+       </contract-fns> [owise]
+
+  rule <k> function X ( Params ) F:FunctionSpecifiers returns ( Rets ) { Body } => .K ...</k>
+       <current-body> C </current-body>
+       <contract-id> C </contract-id>
+       <function-selector> Sel => Sel[ functionSelector(X, getTypes(Params)) <- X ] </function-selector>
+       <contract-fns>
+         .Bag => <contract-fn>
+                   <contract-fn-id> X </contract-fn-id>
+                   <contract-fn-visibility> getVisibility(F) </contract-fn-visibility>
+                   <contract-fn-payable> getPayable(F) </contract-fn-payable>
+                   <contract-fn-arg-types> getTypes(Params) </contract-fn-arg-types>
+                   <contract-fn-param-names> getNames(Params) </contract-fn-param-names>
+                   <contract-fn-return-types> getTypes(Rets) </contract-fn-return-types>
+                   <contract-fn-return-names> getNames(Rets) </contract-fn-return-names>
+                   <contract-fn-body> Body </contract-fn-body>
+                   ...
+                 </contract-fn>
+         ...
        </contract-fns>
+    requires getVisibility(F) ==K public orBool getVisibility(F) ==K external
 
   rule <k> function X ( Params ) F:FunctionSpecifiers returns ( Rets ) { Body } => .K ...</k>
        <current-body> C </current-body>
@@ -43,7 +83,7 @@ module SOLIDITY-CONTRACT
                    ...
                  </contract-fn>
          ...
-       </contract-fns>
+       </contract-fns> [owise]
 
   syntax VisibilitySpecifier ::= getVisibility(FunctionSpecifiers) [function]
   rule getVisibility(private _) => private
@@ -74,6 +114,7 @@ module SOLIDITY-CONTRACT
   rule <k> T:TypeName public X:Id ; => .K ...</k>
        <current-body> C </current-body>
        <contract-id> C </contract-id>
+       <function-selector> Sel => Sel[ functionSelector(X, accessorTypes(T)) <- X ] </function-selector>
        <contract-state> Env => Env [ X <- T ] </contract-state>
        <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
@@ -121,6 +162,7 @@ module SOLIDITY-CONTRACT
    rule <k> T:TypeName public X:Id = E ; => .K ...</k>
        <current-body> C </current-body>
        <contract-id> C </contract-id>
+       <function-selector> Sel => Sel[ functionSelector(X, accessorTypes(T)) <- X ] </function-selector>
        <contract-state> Env => Env [ X <- T ] </contract-state>
        <contract-current-sv-address> A => A +Int 1 </contract-current-sv-address>
        <contract-statevar-addresses> B => B [ X <- A ] </contract-statevar-addresses>
@@ -161,5 +203,46 @@ module SOLIDITY-CONTRACT
          ...
        </contract-events>
 
+endmodule
+```
+
+```k
+module SOLIDITY-FUNCTION-SELECTORS
+  imports SOLIDITY-FUNCTION-SELECTORS-SYNTAX
+  imports BYTES
+  imports K-EQUAL
+  imports KRYPTO
+
+// The following rules to create function selectors have been adapted from SIMPLE.
+// Converts a type to the corresponding string that would represent it
+// in a function selector according to the EVM ABI.
+// We only handle types as needed for the demo for now, and the rest are not tested.
+  syntax String ::= typeName2String(TypeName) [function]
+  rule typeName2String(uint256) => "uint256"
+  rule typeName2String(uint112) => "uint112"
+  rule typeName2String(uint32) => "uint32"
+  rule typeName2String(uint8) => "uint8"
+  rule typeName2String(address) => "address"
+  rule typeName2String(bool) => "bool"
+  rule typeName2String(T[]) => typeName2String(T) +String "[]"
+
+  syntax String ::= functionSignature(Id, List) [function]
+                  | functionSignatureParams(List, String, Bool) [function]
+  rule functionSignature(F:Id, Ps:List)
+    => functionSignatureParams(Ps, Id2String(F) +String "(", false)
+  rule functionSignatureParams(.List, Sig:String, _:Bool) => Sig +String ")"
+  rule functionSignatureParams(ListItem(T) Ps, Sig:String, AddComma:Bool)
+    => functionSignatureParams(Ps, (#if AddComma #then Sig +String "," #else Sig #fi) +String typeName2String(T), true)
+
+  rule functionSelector(F:Id, Ps:List)
+    => Bytes2String(substrBytes(Keccak256raw(String2Bytes(functionSignature(F, Ps))), 0, 4))
+
+endmodule
+```
+
+```k
+module SOLIDITY-FUNCTION-SELECTORS-SYNTAX
+  imports SOLIDITY-DATA
+  syntax String ::= functionSelector(Id, List) [function]
 endmodule
 ```
