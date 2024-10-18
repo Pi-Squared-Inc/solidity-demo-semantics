@@ -79,7 +79,6 @@ module SOLIDITY-CONFIGURATION
           <live-contract multiplicity="*" type="Map">
             <contract-address> 0p160 </contract-address>
             <contract-type> Id </contract-type>
-            <contract-storage> .Map </contract-storage>
           </live-contract>
         </live-contracts>
         <next-address> 2p160 </next-address>
