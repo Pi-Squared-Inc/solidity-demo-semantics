@@ -8,6 +8,7 @@ requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
 requires "ulm.k"
+requires "plugin/krypto.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
@@ -41,6 +42,7 @@ module SOLIDITY-CONFIGURATION
             <contract-current-sv-address> 0:Int </contract-current-sv-address>
             <contract-statevar-addresses> .Map </contract-statevar-addresses>
             <contract-init> .List </contract-init>
+            <function-selector> .Map </function-selector>
             <contract-fns>
               <contract-fn multiplicity="*" type="Map">
                 <contract-fn-id> Id </contract-fn-id>
@@ -225,6 +227,7 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
+  imports SOLIDITY-FUNCTION-SELECTORS
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss

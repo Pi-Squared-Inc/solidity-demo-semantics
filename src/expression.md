@@ -1,8 +1,6 @@
 # Solidity expressions
 
 ```k
-requires "plugin/krypto.md"
-
 module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
   imports INT
