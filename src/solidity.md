@@ -13,13 +13,15 @@ requires "plugin/krypto.md"
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
+  imports BYTES
+  imports K-EQUAL
   imports ULM
 
   syntax Id ::= "Id" [token]
 
   configuration
     <solidity>
-      <k parser="TXN, SOLIDITY-DATA-SYNTAX"> $PGM:Program ~> $TXN:Transactions </k>
+      <k> decodeProgram($PGM:Bytes) ~> execute($CREATE:Bool, #if $CREATE:Bool #then $PGM:Bytes #else CallData() #fi) </k>
       <summarize parser="ISUNISWAP, BOOL-SYNTAX"> $ISUNISWAP:Bool </summarize>
       <compile>
         <current-body> Id </current-body>
@@ -88,6 +90,51 @@ module SOLIDITY-CONFIGURATION
         <gas> $GAS:Int </gas>
       </exec>
     </solidity>
+
+    syntax KItem ::= execute(Bool, Bytes)
+
+    // The active contract should be the last one in the list of contracts as
+    // decoded by the provided $PGM.
+    rule <k> execute(false, B) =>
+             #let Sel = Bytes2String(substrBytes(B, 0, 4)) #in
+             #let ARGS::CallArgumentList = decodeArgs(substrBytes(B, 4, lengthBytes(B)), ParamTypes) #in
+             F ( ARGS )
+         </k>
+         <current-body> TYPE </current-body>
+         <contract-id> TYPE </contract-id>
+         <function-selector>... Sel |-> F:Id ...</function-selector>
+         <contract-fn-id> F </contract-fn-id>
+         <contract-fn-arg-types> ParamTypes </contract-fn-arg-types>
+
+    syntax TypedVal ::= decodeArg(Bytes, Int, ElementaryTypeName) [function]
+    rule decodeArg(B:Bytes, I:Int, uint256) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{256}, uint256)
+    rule decodeArg(B:Bytes, I:Int, uint112) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{112}, uint256)
+    rule decodeArg(B:Bytes, I:Int, uint32) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{32}, uint256)
+    rule decodeArg(B:Bytes, I:Int, uint8) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{8}, uint256)
+    rule decodeArg(B:Bytes, I:Int, address) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{160}, uint256)
+    rule decodeArg(B:Bytes, I:Int, bool) =>
+         v(#if Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned) =/=Int 0 #then true #else false #fi, bool)
+
+    syntax TypedVals ::= decodeArgs(Bytes, List) [function]
+                       | decodeArgs(Bytes, Int, List, TypedVals) [function]
+    rule decodeArgs(B:Bytes, TL:List) => decodeArgs(B, 0, TL, .TypedVals)
+    rule decodeArgs(B:Bytes, I:Int, .List, TVs:TypedVals) => reverseTypedVals(TVs)
+      requires I ==Int lengthBytes(B)
+    rule decodeArgs(B:Bytes, I:Int, ListItem(T:ElementaryTypeName) Ts, TVs:TypedVals) =>
+         decodeArgs(B, I +Int 32, Ts, (decodeArg(B, I, T), TVs))
+      requires I >=Int 0 andBool I +Int 32 <=Int lengthBytes(B)
+
+    syntax TypedVals ::= reverseTypedVals(TypedVals) [function]
+                       | reverseTypedVals(TypedVals, TypedVals) [function]
+    rule reverseTypedVals(TVs:TypedVals) => reverseTypedVals(TVs, .TypedVals)
+    rule reverseTypedVals(.TypedVals, TVs:TypedVals) => TVs
+    rule reverseTypedVals((TV, TVs):TypedVals, TVs':TypedVals) =>
+         reverseTypedVals(TVs, (TV, TVs'))
 
 endmodule
 ```
