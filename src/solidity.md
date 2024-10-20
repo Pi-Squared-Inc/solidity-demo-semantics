@@ -95,6 +95,21 @@ module SOLIDITY-CONFIGURATION
 
     // The active contract should be the last one in the list of contracts as
     // decoded by the provided $PGM.
+    rule <k> execute(true, B) => List2Statements(INIT) ~> B </k>
+         <current-body> TYPE </current-body>
+         <contract-id> TYPE </contract-id>
+         <contract-init> INIT </contract-init>
+         <this-type> _ => TYPE </this-type>
+         <current-function> _ => constructor </current-function>
+         <env> _ => .Map </env>
+         <store> _ => .List </store>
+
+    syntax Statements ::= List2Statements(List) [function]
+    rule List2Statements(.List) => .Statements
+    rule List2Statements(ListItem(S) L) => S List2Statements(L)
+
+    // The active contract should be the last one in the list of contracts as
+    // decoded by the provided $PGM.
     rule <k> execute(false, B) =>
              #let Sel = Bytes2String(substrBytes(B, 0, 4)) #in
              #let ARGS::CallArgumentList = decodeArgs(substrBytes(B, 4, lengthBytes(B)), ParamTypes) #in

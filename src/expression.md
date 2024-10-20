@@ -470,10 +470,6 @@ module SOLIDITY-EXPRESSION
   rule DecimalString2Int(S) => String2Int(replaceAll(substrString(S, 0, findChar(S, "eE", 0)), "_", "")) *Int 10 ^Int String2Int(replaceAll(substrString(S, findChar(S, "eE", 0) +Int 1, lengthString(S)), "_", ""))
     requires findChar(S, ".", 0) ==Int -1 [owise]
 
-  syntax Statements ::= List2Statements(List) [function]
-  rule List2Statements(.List) => .Statements
-  rule List2Statements(ListItem(S) L) => S List2Statements(L)
-
   syntax KItem ::= var(Int, TypeName)
 
   syntax KItem ::= bind(List, List, List, CallArgumentList, List, List)
