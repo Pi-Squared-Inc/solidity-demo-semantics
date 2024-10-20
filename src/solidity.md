@@ -22,7 +22,6 @@ module SOLIDITY-CONFIGURATION
   configuration
     <solidity>
       <k> decodeProgram($PGM:Bytes) ~> execute($CREATE:Bool, #if $CREATE:Bool #then $PGM:Bytes #else CallData() #fi) </k>
-      <summarize parser="ISUNISWAP, BOOL-SYNTAX"> $ISUNISWAP:Bool </summarize>
       <compile>
         <current-body> Id </current-body>
         <ifaces>
@@ -79,7 +78,6 @@ module SOLIDITY-CONFIGURATION
         <store> .List </store>
         <current-function> Id </current-function>
         <call-stack> .List </call-stack>
-        <next-address> 2p160 </next-address>
         <status> EVMC_SUCCESS </status>
         <gas> $GAS:Int </gas>
       </exec>
