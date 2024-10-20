@@ -9,53 +9,53 @@ module SOLIDITY-EXPRESSION
   imports K-EQUAL
   imports KRYPTO
 
-  // new contract
-  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => X </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => constructor </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> X </contract-id>
-       <contract-init> INIT </contract-init>
-       <contract-fn-id> constructor </contract-fn-id>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-body> BODY </contract-fn-body>
-       <live-contracts>
-         .Bag => <live-contract>
-                   <contract-address> ADDR </contract-address>
-                   <contract-type> X </contract-type>
-                   ...
-                 </live-contract>
-         ...
-       </live-contracts>
-       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
-    requires isKResult(ARGS)
+//  // new contract
+//  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => X </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => constructor </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> X </contract-id>
+//       <contract-init> INIT </contract-init>
+//       <contract-fn-id> constructor </contract-fn-id>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <live-contracts>
+//         .Bag => <live-contract>
+//                   <contract-address> ADDR </contract-address>
+//                   <contract-type> X </contract-type>
+//                   ...
+//                 </live-contract>
+//         ...
+//       </live-contracts>
+//       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
+//    requires isKResult(ARGS)
 
-  rule <k> new X:Id ( .TypedVals ) ~> K => List2Statements(INIT) ~> return v(ADDR, X) ; </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => X </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => constructor </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> X </contract-id>
-       <contract-init> INIT </contract-init>
-       <live-contracts>
-         .Bag => <live-contract>
-                   <contract-address> ADDR </contract-address>
-                   <contract-type> X </contract-type>
-                   ...
-                 </live-contract>
-         ...
-       </live-contracts>
-       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
+//  rule <k> new X:Id ( .TypedVals ) ~> K => List2Statements(INIT) ~> return v(ADDR, X) ; </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => X </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => constructor </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> X </contract-id>
+//       <contract-init> INIT </contract-init>
+//       <live-contracts>
+//         .Bag => <live-contract>
+//                   <contract-address> ADDR </contract-address>
+//                   <contract-type> X </contract-type>
+//                   ...
+//                 </live-contract>
+//         ...
+//       </live-contracts>
+//       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
   // new array
   rule <k> new T[](Len:Int) => lv(size(S), .List, T[]) ...</k>
@@ -272,49 +272,49 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, .List, T) . length => v(Int2MInt(size({read(V, .List, T)}:>List))::MInt{256}, uint) ...</k>
        <store> _ [ I <- V ] </store>
 
-  // external call
-  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => TYPE' </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => F </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> TYPE' </contract-id>
-       <contract-fn-id> F </contract-fn-id>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
-       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
-       <contract-fn-body> BODY </contract-fn-body>
-       <contract-address> ADDR </contract-address>
-       <contract-type> TYPE' </contract-type>
-    requires isKResult(ARGS)
+//  // external call
+//  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => TYPE' </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => F </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> TYPE' </contract-id>
+//       <contract-fn-id> F </contract-fn-id>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+//       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <contract-address> ADDR </contract-address>
+//       <contract-type> TYPE' </contract-type>
+//    requires isKResult(ARGS)
 
   syntax Id ::= "value" [token]
 
-  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => VALUE' </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => TYPE' </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => F </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> TYPE' </contract-id>
-       <contract-fn-id> F </contract-fn-id>
-       <contract-fn-payable> PAYABLE </contract-fn-payable>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
-       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
-       <contract-fn-body> BODY </contract-fn-body>
-       <contract-address> ADDR </contract-address>
-       <contract-type> TYPE' </contract-type>
-    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
+//  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => VALUE' </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => TYPE' </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => F </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> TYPE' </contract-id>
+//       <contract-fn-id> F </contract-fn-id>
+//       <contract-fn-payable> PAYABLE </contract-fn-payable>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+//       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <contract-address> ADDR </contract-address>
+//       <contract-type> TYPE' </contract-type>
+//    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
 
   // internal call
   rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>

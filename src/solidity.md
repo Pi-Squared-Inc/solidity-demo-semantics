@@ -79,12 +79,6 @@ module SOLIDITY-CONFIGURATION
         <store> .List </store>
         <current-function> Id </current-function>
         <call-stack> .List </call-stack>
-        <live-contracts>
-          <live-contract multiplicity="*" type="Map">
-            <contract-address> 0p160 </contract-address>
-            <contract-type> Id </contract-type>
-          </live-contract>
-        </live-contracts>
         <next-address> 2p160 </next-address>
         <status> EVMC_SUCCESS </status>
         <gas> $GAS:Int </gas>
