@@ -69,11 +69,11 @@ module SOLIDITY-CONFIGURATION
         </contracts>
       </compile>
       <exec>
-        <msg-sender> 0p160 </msg-sender>
-        <msg-value> 0p256 </msg-value>
-        <tx-origin> 0p160 </tx-origin>
-        <block-timestamp> 0p256 </block-timestamp>
-        <this> 0p160 </this>
+        <msg-sender> Int2MInt(Caller())::MInt{160} </msg-sender>
+        <msg-value> Int2MInt(CallValue())::MInt{256} </msg-value>
+        <tx-origin> Int2MInt(Origin())::MInt{160} </tx-origin>
+        <block-timestamp> Int2MInt(BlockTimestamp())::MInt{256} </block-timestamp>
+        <this> Int2MInt($ACCTCODE:Int)::MInt{160} </this>
         <this-type> Id </this-type>
         <env> .Map </env>
         <store> .List </store>
