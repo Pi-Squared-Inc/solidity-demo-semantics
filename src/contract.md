@@ -226,8 +226,7 @@ module SOLIDITY-FUNCTION-SELECTORS
   rule typeName2String(bool) => "bool"
   rule typeName2String(T[]) => typeName2String(T) +String "[]"
 
-  syntax String ::= functionSignature(Id, List) [function]
-                  | functionSignatureParams(List, String, Bool) [function]
+  syntax String ::= functionSignatureParams(List, String, Bool) [function]
   rule functionSignature(F:Id, Ps:List)
     => functionSignatureParams(Ps, Id2String(F) +String "(", false)
   rule functionSignatureParams(.List, Sig:String, _:Bool) => Sig +String ")"
@@ -243,6 +242,7 @@ endmodule
 ```k
 module SOLIDITY-FUNCTION-SELECTORS-SYNTAX
   imports SOLIDITY-DATA
+  syntax String ::= functionSignature(Id, List) [function]
   syntax String ::= functionSelector(Id, List) [function]
 endmodule
 ```
