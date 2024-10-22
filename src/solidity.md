@@ -117,13 +117,13 @@ module SOLIDITY-CONFIGURATION
     rule decodeArg(B:Bytes, I:Int, uint256) =>
          v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{256}, uint256)
     rule decodeArg(B:Bytes, I:Int, uint112) =>
-         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{112}, uint256)
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{112}, uint112)
     rule decodeArg(B:Bytes, I:Int, uint32) =>
-         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{32}, uint256)
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{32}, uint32)
     rule decodeArg(B:Bytes, I:Int, uint8) =>
-         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{8}, uint256)
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{8}, uint8)
     rule decodeArg(B:Bytes, I:Int, address) =>
-         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{160}, uint256)
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{160}, address)
     rule decodeArg(B:Bytes, I:Int, bool) =>
          v(#if Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned) =/=Int 0 #then true #else false #fi, bool)
 
