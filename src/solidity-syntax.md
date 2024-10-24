@@ -14,6 +14,7 @@ We use `bool`, `string` and `id` modules, `int`s are defined in a custom way due
     imports BOOL-SYNTAX
     imports STRING-SYNTAX
     imports ID-SYNTAX
+    imports BYTES-SYNTAX
 
     syntax KResult
 ```
@@ -67,6 +68,8 @@ Parsing starts from `Program` rule. A program is a pragma definition followed by
 
 ```k
     syntax Program ::= PragmaDefinition SourceUnits
+                     | decodeProgram(Bytes) [function, hook(ULM.decode)]
+
 
 ```
 
