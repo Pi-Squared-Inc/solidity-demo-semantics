@@ -20,7 +20,6 @@ module SOLIDITY-CONFIGURATION
   syntax Id ::= "Id" [token]
 
   configuration
-    <solidity>
       <k> decodeProgram($PGM:Bytes) ~> execute($CREATE:Bool, #if $CREATE:Bool #then $PGM:Bytes #else CallData() #fi) </k>
       <compile>
         <current-body> Id </current-body>
@@ -81,7 +80,6 @@ module SOLIDITY-CONFIGURATION
         <status> EVMC_SUCCESS </status>
         <gas> $GAS:Int </gas>
       </exec>
-    </solidity>
 
     syntax KItem ::= execute(Bool, Bytes)
 
@@ -103,13 +101,13 @@ module SOLIDITY-CONFIGURATION
     // The active contract should be the last one in the list of contracts as
     // decoded by the provided $PGM.
     rule <k> execute(false, B) =>
-             #let Sel = Bytes2String(substrBytes(B, 0, 4)) #in
              #let ARGS::CallArgumentList = decodeArgs(substrBytes(B, 4, lengthBytes(B)), ParamTypes) #in
              F ( ARGS )
          </k>
          <current-body> TYPE </current-body>
+         <this-type> _ => TYPE </this-type>
          <contract-id> TYPE </contract-id>
-         <function-selector>... Sel |-> F:Id ...</function-selector>
+         <function-selector>... Bytes2String(substrBytes(B, 0, 4)) |-> F:Id ...</function-selector>
          <contract-fn-id> F </contract-fn-id>
          <contract-fn-arg-types> ParamTypes </contract-fn-arg-types>
 
@@ -153,35 +151,39 @@ module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
   imports BYTES
   imports ULM-SIGNATURE
 
-  rule getStatus(<solidity>...
+  rule getStatus(<generatedTop>...
                    <exec>...
                      <status> STATUS:Int </status>
                    ...</exec>
-                 ...</solidity>) => STATUS
+                 ...</generatedTop>) => STATUS
 
   // getOutput gets the output from the top of the K cell (as expected after
   // completion of the return statement) and encodes it to Bytes.
   // We currently handle the encoding of return values of types uint256 and bool.
-  rule getOutput(<solidity>...
+
+  rule getOutput(<generatedTop>...
+                    <k> B:Bytes </k>
+                ...</generatedTop>) => B
+  rule getOutput(<generatedTop>...
                    <k> v(V:MInt{256}, uint256) ...</k>
-                 ...</solidity>) => Int2Bytes(32, MInt2Unsigned(V), BE)
-  rule getOutput(<solidity>...
+                 ...</generatedTop>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<generatedTop>...
                    <k> v(true, bool) ...</k>
-                 ...</solidity>) => Int2Bytes(32, 1, BE)
-  rule getOutput(<solidity>...
+                 ...</generatedTop>) => Int2Bytes(32, 1, BE)
+  rule getOutput(<generatedTop>...
                    <k> v(false, bool) ...</k>
-                 ...</solidity>) => Int2Bytes(32, 0, BE)
+                 ...</generatedTop>) => Int2Bytes(32, 0, BE)
 
   // getGasLeft returns the amount of gas left by reading it from the cell <gas>.
   // The semantics currently initialize the gas by reading the appropriate ULM
   // configuration variable, but do not update it as the computations are performed.
   // I.e., this function is always going to return the exact amount of gas that was
   // provided to begin with.
-  rule getGasLeft(<solidity>...
+  rule getGasLeft(<generatedTop>...
                     <exec>...
                       <gas> GASLEFT:Int </gas>
                     ...</exec>
-                  ...</solidity>) => GASLEFT
+                  ...</generatedTop>) => GASLEFT
 
 endmodule
 ```
@@ -282,6 +284,7 @@ module SOLIDITY
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
   imports SOLIDITY-FUNCTION-SELECTORS
+  imports SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
