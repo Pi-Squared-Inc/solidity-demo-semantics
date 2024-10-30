@@ -5,15 +5,15 @@
 
 pragma solidity ^0.8.24;
 
-contract WETHMock {
+contract wETHMock {
 
-    uint256 private UINT256_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint256 private constUINT256MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
-    mapping (address => uint256) public balanceOf;
-    mapping (address => mapping (address => uint256)) public allowance;
+    mapping (address wethact => uint256) public balanceOf;
+    mapping (address wethownr => mapping (address wethspdr => uint256)) public allowance;
     
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-    event Transfer(address indexed from, address indexed to, uint256 value);
+    event approvalEvent(address indexed owner, address indexed spender, uint256 value);
+    event transferEvent(address indexed from, address indexed to, uint256 value);
 
     function decimals() external returns (uint8) {
         return 18;
@@ -21,12 +21,12 @@ contract WETHMock {
 
     function deposit() external payable {
         balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
-        emit Transfer(address(0), msg.sender, msg.value);
+        emit transferEvent(address(0), msg.sender, msg.value);
     }
     
     function approve(address spender, uint256 value) external returns (bool) {
         allowance[msg.sender][spender] = value;
-        emit Approval(msg.sender, spender, value);
+        emit approvalEvent(msg.sender, spender, value);
 
         return true;
     }
@@ -38,12 +38,12 @@ contract WETHMock {
 
             balanceOf[msg.sender] = balance - value;
             balanceOf[to] = balanceOf[to] + value;
-            emit Transfer(msg.sender, to, value);
+            emit transferEvent(msg.sender, to, value);
         } else { // Withdraw
             uint256 balance = balanceOf[msg.sender];
             require(balance >= value, "WETH: burn amount exceeds balance");
             balanceOf[msg.sender] = balance - value;
-            emit Transfer(msg.sender, address(0), value);
+            emit transferEvent(msg.sender, address(0), value);
 
             (bool success, ) = msg.sender.call{value: value}("");
             require(success, "WETH: ETH transfer failed");
@@ -55,11 +55,11 @@ contract WETHMock {
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
         if (from != msg.sender) {
             uint256 allowed = allowance[from][msg.sender];
-            if (allowed != UINT256_MAX) {
+            if (allowed != constUINT256MAX) {
                 require(allowed >= value, "WETH: request exceeds allowance");
                 uint256 reduced = allowed - value;
                 allowance[from][msg.sender] = reduced;
-                emit Approval(from, msg.sender, reduced);
+                emit approvalEvent(from, msg.sender, reduced);
             }
         }
 
@@ -69,12 +69,12 @@ contract WETHMock {
 
             balanceOf[from] = balance - value;
             balanceOf[to] = balanceOf[to] + value;
-            emit Transfer(from, to, value);
+            emit transferEvent(from, to, value);
         } else { 
             uint256 balance = balanceOf[from];
             require(balance >= value, "WETH: burn amount exceeds balance");
             balanceOf[from] = balance - value;
-            emit Transfer(from, address(0), value);
+            emit transferEvent(from, address(0), value);
 
             (bool success, ) = msg.sender.call{value: value}("");
             require(success, "WETH: ETH transfer failed");

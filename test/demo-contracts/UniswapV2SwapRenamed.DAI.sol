@@ -5,17 +5,17 @@
 
 pragma solidity ^0.8.24;
 
-contract DAIMock {
+contract dAIMock {
 
-    uint private UINT_MAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    uint private constUINTMAX = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
     uint256 public totalSupply;
 
-    mapping (address => uint)                      public balanceOf;
-    mapping (address => mapping (address => uint)) public allowance;
+    mapping (address daiact => uint)                      public balanceOf;
+    mapping (address daiownr => mapping (address daispdr => uint)) public allowance;
 
-    event Approval(address indexed src, address indexed guy, uint wad);
-    event Transfer(address indexed src, address indexed dst, uint wad);
+    event approvalEvent(address indexed src, address indexed guy, uint wad);
+    event transferEvent(address indexed src, address indexed dst, uint wad);
 
     function decimals() external returns (uint8) {
         return 18;
@@ -24,7 +24,7 @@ contract DAIMock {
     function mint(address usr, uint wad) public {
         balanceOf[usr] = balanceOf[usr] + wad;
         totalSupply    = totalSupply + wad;
-        emit Transfer(address(0), usr, wad);
+        emit transferEvent(address(0), usr, wad);
     }
 
     function mintOnDeposit(address usr, uint wad) public {
@@ -40,7 +40,7 @@ contract DAIMock {
 
     function approve(address usr, uint wad) external returns (bool) {
         allowance[msg.sender][usr] = wad;
-        emit Approval(msg.sender, usr, wad);
+        emit approvalEvent(msg.sender, usr, wad);
         return true;
     }
 
@@ -53,13 +53,13 @@ contract DAIMock {
         public returns (bool)
     {
         require(balanceOf[src] >= wad, "Dai/insufficient-balance");
-        if (src != msg.sender && allowance[src][msg.sender] != UINT_MAX) {
+        if (src != msg.sender && allowance[src][msg.sender] != constUINTMAX) {
             require(allowance[src][msg.sender] >= wad, "Dai/insufficient-allowance");
             allowance[src][msg.sender] = allowance[src][msg.sender] - wad;
         }
         balanceOf[src] = balanceOf[src] - wad;
         balanceOf[dst] = balanceOf[dst] + wad;
-        emit Transfer(src, dst, wad);
+        emit transferEvent(src, dst, wad);
         return true;
     }
 
