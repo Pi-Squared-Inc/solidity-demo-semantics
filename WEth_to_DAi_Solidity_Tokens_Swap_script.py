@@ -153,7 +153,7 @@ def deposit_weth(owner_Address, weth_address, amount):
     }
     tx_hash = w3.eth.send_transaction(deposit_weth_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Minted WETH: ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print("Deposited WETH:", tx_receipt["status"] == 1 and "Success" or "Failed")
 
     if RECEIPTS:
         print(tx_receipt)
@@ -175,7 +175,7 @@ def mint_token(token_name, token_address, owner_Address, amount):
 
     tx_hash = w3.eth.send_transaction(mint_token_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Minted ", token_name, ": ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print("Minted " + token_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
 
     if RECEIPTS:
         print(tx_receipt)
@@ -197,7 +197,7 @@ def approve(token_name, token_address, owner_address, spender_address, amount):
 
     tx_hash = w3.eth.send_transaction(token_approve_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Approved ", token_name,": ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print("Approved " + token_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
     if RECEIPTS:
         print(tx_receipt)
 
@@ -229,7 +229,7 @@ def transfer(token_name, token_address, owner_address, to_name, to_address, amou
     }
     tx_hash = w3.eth.send_transaction(token_transfer_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Transferred ", token_name, "to", to_name, ": ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print("Transferred", token_name, "to", to_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
     if RECEIPTS:
         print(tx_receipt)
 
