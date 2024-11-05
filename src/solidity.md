@@ -194,6 +194,9 @@ module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
                    <k> v(V:MInt{256}, uint256) ...</k>
                  ...</generatedTop>) => Int2Bytes(32, MInt2Unsigned(V), BE)
   rule getOutput(<generatedTop>...
+                   <k> v(V:MInt{8}, uint8) ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<generatedTop>...
                    <k> v(true, bool) ...</k>
                  ...</generatedTop>) => Int2Bytes(32, 1, BE)
   rule getOutput(<generatedTop>...
