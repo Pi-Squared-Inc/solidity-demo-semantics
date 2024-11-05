@@ -100,6 +100,7 @@ module SOLIDITY-CONFIGURATION
 
     // The active contract should be the last one in the list of contracts as
     // decoded by the provided $PGM.
+    // When the function selector is found, call the corresponding function
     rule <k> execute(false, B) =>
              #let ARGS::CallArgumentList = decodeArgs(substrBytes(B, 4, lengthBytes(B)), ParamTypes) #in
              F ( ARGS )
@@ -110,6 +111,9 @@ module SOLIDITY-CONFIGURATION
          <function-selector>... Bytes2String(substrBytes(B, 0, 4)) |-> F:Id ...</function-selector>
          <contract-fn-id> F </contract-fn-id>
          <contract-fn-arg-types> ParamTypes </contract-fn-arg-types>
+
+    // When the function selector is not found, fail.
+    rule execute(false, _B:Bytes) => require(v(false, bool), "Missing function selector") [owise]
 
     syntax TypedVal ::= decodeArg(Bytes, Int, ElementaryTypeName) [function]
     rule decodeArg(B:Bytes, I:Int, uint256) =>
