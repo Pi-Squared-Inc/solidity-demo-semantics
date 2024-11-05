@@ -5,6 +5,8 @@ from solcx import install_solc, compile_source
 
 install_solc(version="latest")
 
+print('Swapping Solidity wETH Token to Rust DAI Token')
+
 # Set Geth's URL
 GETH_URL = "http://localhost:8545"
 
@@ -266,8 +268,8 @@ def main():
     router = w3.eth.contract(address=router_address, abi=router_abi)
 
     # 10000000 * 10**18 = '000000000000000000000000000000000000000000084595161401484a000000'
-    eth_10000000_hex = "{:064x}".format(10**10)
-    eth_10000000 = 10**10 #w3.to_wei(10000000, "ether")
+    eth_10000000_hex = "{:064x}".format(10000000 * 10**18)
+    eth_10000000 = w3.to_wei(10000000, "ether")
 
     # Mint tokens to dev account
     weth_address = solidity_contracts_address["wETHMock"]
@@ -325,8 +327,8 @@ def main():
     tx_hash = router.functions.addLiquidity(
         weth_address,
         dai_address,
-        2 * 10**5,
-        50 * 10**5,
+        200 * 10**18,
+        500000 * 10**18,
         0,
         0,
         dev_account_address,
@@ -346,7 +348,7 @@ def main():
     print("")
     print("Starting SwapSingleHopExactAmountIn Test...")
     
-    weth_amount = 1 * 5**10
+    weth_amount = 1 * 10**18
     weth_amount_hex = "{:064x}".format(weth_amount)
     two_weth_amount = 2 * weth_amount
     two_weth_amount_hex = "{:064x}".format(two_weth_amount)
@@ -388,17 +390,17 @@ def main():
 
 
     # Here is the transaction of swap WETH to DAI just for reference
-    tx_hash = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).transact(
-        {
-            "from": dev_account_address,
-            "gas": 3000000,
-            "gasPrice": Web3.to_wei("20", "gwei"),
-        }
-    )
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Swapped WETH to DAI: ", tx_receipt["status"] == 1 and "Success" or "Failed")
-    if RECEIPTS:
-        print(tx_receipt)
+    # tx_hash = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).transact(
+    #     {
+    #         "from": dev_account_address,
+    #         "gas": 3000000,
+    #         "gasPrice": Web3.to_wei("20", "gwei"),
+    #     }
+    # )
+    # tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    # print("Swapped WETH to DAI: ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    # if RECEIPTS:
+    #     print(tx_receipt)
 
 if __name__ == "__main__":
     main()
