@@ -13,6 +13,7 @@ requires "plugin/krypto.md"
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
+  imports SOLIDITY-ULM-EXECUTE-SYNTAX
   imports BYTES
   imports K-EQUAL
   imports ULM
@@ -81,7 +82,27 @@ module SOLIDITY-CONFIGURATION
         <gas> $GAS:Int </gas>
       </exec>
 
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-EXECUTE-SYNTAX
+  imports BOOL
+  imports BYTES
+
     syntax KItem ::= execute(Bool, Bytes)
+
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-EXECUTE
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-DATA
+  imports SOLIDITY-SYNTAX
+  imports SOLIDITY-EXPRESSION
+  imports BYTES
+  imports K-EQUAL
 
     // The active contract should be the last one in the list of contracts as
     // decoded by the provided $PGM.
@@ -289,6 +310,7 @@ module SOLIDITY
   imports SOLIDITY-STATEMENT
   imports SOLIDITY-FUNCTION-SELECTORS
   imports SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
+  imports SOLIDITY-ULM-EXECUTE
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
