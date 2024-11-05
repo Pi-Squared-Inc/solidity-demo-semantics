@@ -18,7 +18,8 @@ contract dAIMock {
     event transferEvent(address indexed src, address indexed dst, uint wad);
 
     function decimals() external returns (uint8) {
-        return 18;
+        uint8 dec = 18;
+        return dec;
     }
 
     function mint(address usr, uint wad) public {

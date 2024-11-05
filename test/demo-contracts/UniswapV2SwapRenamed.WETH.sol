@@ -16,7 +16,8 @@ contract wETHMock {
     event transferEvent(address indexed from, address indexed to, uint256 value);
 
     function decimals() external returns (uint8) {
-        return 18;
+        uint8 dec = 18;
+        return dec;
     }
 
     function deposit() external payable {

@@ -17,7 +17,8 @@ contract uSDCMock {
     event approvalEvent(address indexed owner, address indexed spender, uint256 value);
 
     function decimals() external returns (uint8) {
-        return 18;
+        uint8 dec = 18;
+        return dec;
     }
 
     function mint(address account, uint256 value) public {
