@@ -97,6 +97,7 @@ endmodule
 
 ```k
 module SOLIDITY-ULM-EXECUTE
+  imports SOLIDITY-ULM-EXECUTE-SYNTAX
   imports SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
