@@ -3,7 +3,7 @@ from web3 import Web3
 from web3.middleware import SignAndSendRawMiddlewareBuilder
 import time
 
-simple_usdc_hex = open('test/demo-contracts/UniswapV2SwapRenamed.USDC.kore.bin').read().rstrip()
+simple_usdc_hex = open('test/demo-contracts/USDCMock.kore.bin').read().rstrip()
 
 w3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
 sender = w3.eth.account.create()
