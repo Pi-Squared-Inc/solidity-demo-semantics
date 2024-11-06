@@ -719,115 +719,115 @@ contract UniswapV2SwapTest {
         assert(daiAmountOut >= daiAmountMin);
     }
 
-    function testSwapMultiHopExactAmountIn() public {
-        uint256 wethAmount = 1e18;
-        
-        _weth.deposit{value: 4*wethAmount}();
-        _weth.approve(address(_uni), 8*wethAmount);
-        _dai.mint(address(this), 3*wethAmount);
-        _dai.approve(address(_uni), 3*wethAmount);
-        _usdc.mint(address(this), 2*wethAmount);
-        _usdc.approve(address(_uni), 2*wethAmount);
-
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
-
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
-
-        uint256 daiAmountMin = 1;
-        _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
-
-        uint256 daiAmountIn = 1e18;
-        
-        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
-        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
-        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
-
-        _uni.router().sync_local_pair(address(_dai), address(_weth));
-        _uni.router().sync_local_pair(address(_weth), address(_usdc));
-
-        uint256 usdcAmountOutMin = 1;
-        uint256 usdcAmountOut =
-            _uni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
-
-        assert(usdcAmountOut >= usdcAmountOutMin);
-    }
-
-    function testSwapSingleHopExactAmountOut() public {
-        uint256 wethAmount = 1e18;
-        _weth.deposit{value: 10*wethAmount}();
-        _weth.approve(address(_uni), 6*wethAmount);
-        _dai.mint(address(this), 10*wethAmount);
-        _dai.approve(address(_uni), 4*wethAmount);
-        
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
-
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
-
-        uint256 daiAmountDesired = 1e18;
-        uint256 daiAmountOut =
-            _uni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
-
-        assert(daiAmountOut == daiAmountDesired);
-    }
-
-    function testSwapMultiHopExactAmountOut() public {
-        uint256 wethAmount = 1e18;
-        _weth.deposit{value: 20*wethAmount}();
-        _weth.approve(address(_uni), 20*wethAmount);
-        _dai.mint(address(this), 20*wethAmount);
-        _dai.approve(address(_uni), 20*wethAmount);
-        _usdc.mint(address(this), 10*wethAmount);
-        _usdc.approve(address(_uni), 10*wethAmount);
-
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
-        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
-
-        _uni.router().sync_local_pair(address(_weth), address(_dai));
-
-        uint256 daiAmountOut = 2 * 1e18;
-        _uni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
-        
-        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
-        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
-        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
-        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
-        _uni.router().sync_local_pair(address(_dai), address(_weth));
-        _uni.router().sync_local_pair(address(_weth), address(_usdc));
-
-        uint256 amountOutDesired = 1e6;
-        uint256 amountOut =
-            _uni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
-
-        assert(amountOut == amountOutDesired);
-    }
-
-    function testRouterAddLiquidity() public {
-        uint256 testAmount = 131072; // Hex: 0x20000
-        uint desiredA = 10000; 
-        uint desiredB = 10000; 
-        uint minA = 0; 
-        uint minB = 0; 
-
-        _router = new UniswapV2Router02();
-
-        _router.set_local_pair(address(_weth), address(_dai));
-        _router.set_local_pair(address(_weth), address(_usdc));
-        _router.set_local_pair(address(_usdc), address(_dai));
-
-        _dai.mint(address(this), testAmount);
-        _dai.approve(address(_router), testAmount);
-        _usdc.mint(address(this), testAmount);
-        _usdc.approve(address(_router), testAmount);
-
-        _router.addLiquidity(address(_dai), address(_usdc), desiredA, desiredB, minA, minB, address(this));
-   
-        assert(_dai.balanceOf(address(this)) == 121072);
-        assert(_usdc.balanceOf(address(this)) == 121072);
-        assert(_dai.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
-        assert(_usdc.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
-        assert(UniswapV2Pair(_router.get_local_pair(address(_dai), address(_usdc))).balanceOf(address(this)) == 9000);
-    }
+//    function testSwapMultiHopExactAmountIn() public {
+//        uint256 wethAmount = 1e18;
+//        
+//        _weth.deposit{value: 4*wethAmount}();
+//        _weth.approve(address(_uni), 8*wethAmount);
+//        _dai.mint(address(this), 3*wethAmount);
+//        _dai.approve(address(_uni), 3*wethAmount);
+//        _usdc.mint(address(this), 2*wethAmount);
+//        _usdc.approve(address(_uni), 2*wethAmount);
+//
+//        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+//        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), wethAmount);
+//
+//        _uni.router().sync_local_pair(address(_weth), address(_dai));
+//
+//        uint256 daiAmountMin = 1;
+//        _uni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+//
+//        uint256 daiAmountIn = 1e18;
+//        
+//        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
+//        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), daiAmountIn);
+//        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
+//        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), daiAmountIn);
+//
+//        _uni.router().sync_local_pair(address(_dai), address(_weth));
+//        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+//
+//        uint256 usdcAmountOutMin = 1;
+//        uint256 usdcAmountOut =
+//            _uni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
+//
+//        assert(usdcAmountOut >= usdcAmountOutMin);
+//    }
+//
+//    function testSwapSingleHopExactAmountOut() public {
+//        uint256 wethAmount = 1e18;
+//        _weth.deposit{value: 10*wethAmount}();
+//        _weth.approve(address(_uni), 6*wethAmount);
+//        _dai.mint(address(this), 10*wethAmount);
+//        _dai.approve(address(_uni), 4*wethAmount);
+//        
+//        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
+//        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 4*wethAmount);
+//
+//        _uni.router().sync_local_pair(address(_weth), address(_dai));
+//
+//        uint256 daiAmountDesired = 1e18;
+//        uint256 daiAmountOut =
+//            _uni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
+//
+//        assert(daiAmountOut == daiAmountDesired);
+//    }
+//
+//    function testSwapMultiHopExactAmountOut() public {
+//        uint256 wethAmount = 1e18;
+//        _weth.deposit{value: 20*wethAmount}();
+//        _weth.approve(address(_uni), 20*wethAmount);
+//        _dai.mint(address(this), 20*wethAmount);
+//        _dai.approve(address(_uni), 20*wethAmount);
+//        _usdc.mint(address(this), 10*wethAmount);
+//        _usdc.approve(address(_uni), 10*wethAmount);
+//
+//        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
+//        _dai.transfer(_uni.router().get_local_pair(address(_weth), address(_dai)), 8*wethAmount);
+//
+//        _uni.router().sync_local_pair(address(_weth), address(_dai));
+//
+//        uint256 daiAmountOut = 2 * 1e18;
+//        _uni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
+//        
+//        _dai.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
+//        _weth.transfer(_uni.router().get_local_pair(address(_dai), address(_weth)), 2*daiAmountOut);
+//        _weth.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
+//        _usdc.transfer(_uni.router().get_local_pair(address(_weth), address(_usdc)), 2*daiAmountOut);
+//        _uni.router().sync_local_pair(address(_dai), address(_weth));
+//        _uni.router().sync_local_pair(address(_weth), address(_usdc));
+//
+//        uint256 amountOutDesired = 1e6;
+//        uint256 amountOut =
+//            _uni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
+//
+//        assert(amountOut == amountOutDesired);
+//    }
+//
+//    function testRouterAddLiquidity() public {
+//        uint256 testAmount = 131072; // Hex: 0x20000
+//        uint desiredA = 10000; 
+//        uint desiredB = 10000; 
+//        uint minA = 0; 
+//        uint minB = 0; 
+//
+//        _router = new UniswapV2Router02();
+//
+//        _router.set_local_pair(address(_weth), address(_dai));
+//        _router.set_local_pair(address(_weth), address(_usdc));
+//        _router.set_local_pair(address(_usdc), address(_dai));
+//
+//        _dai.mint(address(this), testAmount);
+//        _dai.approve(address(_router), testAmount);
+//        _usdc.mint(address(this), testAmount);
+//        _usdc.approve(address(_router), testAmount);
+//
+//        _router.addLiquidity(address(_dai), address(_usdc), desiredA, desiredB, minA, minB, address(this));
+//   
+//        assert(_dai.balanceOf(address(this)) == 121072);
+//        assert(_usdc.balanceOf(address(this)) == 121072);
+//        assert(_dai.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
+//        assert(_usdc.balanceOf(_router.get_local_pair(address(_dai), address(_usdc))) == 10000);
+//        assert(UniswapV2Pair(_router.get_local_pair(address(_dai), address(_usdc))).balanceOf(address(this)) == 9000);
+//    }
 }

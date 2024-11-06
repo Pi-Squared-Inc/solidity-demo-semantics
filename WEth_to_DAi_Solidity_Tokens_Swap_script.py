@@ -43,11 +43,11 @@ def balanceOf(contract_name, token_address, owner_Address):
     print(f' > Balance of {contract_name}: {int(balance.hex(), 16)}')
 
 def deploy_tokens(owner_address):
-    solidity_usdc_hex = open('test/demo-contracts/UniswapV2SwapRenamed.USDC.kore.bin').read().rstrip()
-    solidity_dai_hex = open('test/demo-contracts/UniswapV2SwapRenamed.DAI.kore.bin').read().rstrip()
-    solidity_weth_hex = open('test/demo-contracts/UniswapV2SwapRenamed.WETH.kore.bin').read().rstrip()
+    solidity_usdc_hex = open('test/demo-contracts/USDCMock.kore.bin').read().rstrip()
+    solidity_dai_hex = open('test/demo-contracts/DAIMock.kore.bin').read().rstrip()
+    solidity_weth_hex = open('test/demo-contracts/WETHMock.kore.bin').read().rstrip()
 
-    solidity_contracts = {"uSDCMock": solidity_usdc_hex, "dAIMock": solidity_dai_hex, "wETHMock": solidity_weth_hex}
+    solidity_contracts = {"USDCMock": solidity_usdc_hex, "DAIMock": solidity_dai_hex, "WETHMock": solidity_weth_hex}
     solidity_contracts_address = {}
 
     for sol_contract_name, sol_contract_hex in solidity_contracts.items():
@@ -80,12 +80,12 @@ def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
         interface = compiled_sol["<stdin>:" + id]
         abi, binary = interface["abi"], interface["bin"]
         Contract = w3.eth.contract(abi=abi, bytecode="6B65766D" + binary)
-        if id in {"uniswapV2Swap", "uniswapV2Pair"}:
+        if id in {"UniswapV2Swap", "UniswapV2Pair"}:
             # We know by now token contracts were already deployed
-            weth_address = solidity_contracts_address["wETHMock"]
-            dai_address = solidity_contracts_address["dAIMock"]
-            usdc_address = solidity_contracts_address["uSDCMock"]
-            if id == "uniswapV2Swap":
+            weth_address = solidity_contracts_address["WETHMock"]
+            dai_address = solidity_contracts_address["DAIMock"]
+            usdc_address = solidity_contracts_address["USDCMock"]
+            if id == "UniswapV2Swap":
                 tx_hash = Contract.constructor(
                     weth_address, dai_address, usdc_address
                 ).transact()
@@ -97,7 +97,7 @@ def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
                 print(
                     f"Contract {id} deployed with address: {tx_receipt.contractAddress}"
                 )
-            elif id == "uniswapV2Pair":
+            elif id == "UniswapV2Pair":
                 # Deploy (weth, dai)
                 tx_hash = Contract.constructor(weth_address, dai_address).transact()
                 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -239,14 +239,14 @@ def main():
     print(f"Starting block number: {w3.eth.block_number}")
 
     # Compile our Uniswap contract
-    compiled_sol = compile_contract("test/examples/swaps/UniswapV2SwapRenamed.sol")
+    compiled_sol = compile_contract("test/examples/swaps/UniswapV2Swap.sol")
 
     # List of contracts to deploy (in this order)
     contract_ids = [
-        "uniswapV2Pair",
-        "uniswapV2Router02",
-        "uniswapV2Swap",
-        "uniswapV2SwapTest",
+        "UniswapV2Pair",
+        "UniswapV2Router02",
+        "UniswapV2Swap",
+        "UniswapV2SwapTest",
     ]
 
     # Deploy tokens
@@ -257,11 +257,11 @@ def main():
     deployed_contracts = deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address)
 
     # Instantiate Uniswap contracts
-    swap_meta = deployed_contracts["uniswapV2Swap"]
+    swap_meta = deployed_contracts["UniswapV2Swap"]
     swap_address, swap_abi = swap_meta["address"], swap_meta["abi"]
     swap = w3.eth.contract(address=swap_address, abi=swap_abi)
 
-    router_abi = deployed_contracts["uniswapV2Router02"]["abi"]
+    router_abi = deployed_contracts["UniswapV2Router02"]["abi"]
     router_address = swap.functions.router().call()
     router = w3.eth.contract(address=router_address, abi=router_abi)
 
@@ -270,9 +270,9 @@ def main():
     eth_10000000 = w3.to_wei(10000000, "ether")
 
     # Mint tokens to dev account
-    weth_address = solidity_contracts_address["wETHMock"]
-    dai_address = solidity_contracts_address["dAIMock"]
-    usdc_address = solidity_contracts_address["uSDCMock"]
+    weth_address = solidity_contracts_address["WETHMock"]
+    dai_address = solidity_contracts_address["DAIMock"]
+    usdc_address = solidity_contracts_address["USDCMock"]
 
     # WETH
     print("")
@@ -352,16 +352,16 @@ def main():
     two_weth_amount_hex = "{:064x}".format(two_weth_amount)
     dai_amount_min = 1
 
-    # Approve WETH transaction to uniswapV2Swap contract
+    # Approve WETH transaction to UniswapV2Swap contract
     # approve(swap_address, two_weth_amount_hex)
     approve("WETH", weth_address, dev_account_address, swap_address, two_weth_amount_hex)
 
-    # Approve DAI transaction to uniswapV2Swap contract
+    # Approve DAI transaction to UniswapV2Swap contract
     # approve(swap_address, weth_amount_hex)
     approve("DAI", dai_address, dev_account_address, swap_address, weth_amount_hex)
 
     # Get local pair address for WETH-DAI so we can transfer WETH and DAI to it
-    address_local_pair_weth_dai = router.functions.getLocalPair(weth_address, dai_address).call()
+    address_local_pair_weth_dai = router.functions.get_local_pair(weth_address, dai_address).call()
 
     # WETH transfer to address_local_pair_weth_dai
     transfer("WETH", weth_address, dev_account_address, "Local Pair WETH-DAI", address_local_pair_weth_dai, two_weth_amount_hex)
@@ -370,7 +370,7 @@ def main():
     transfer("DAI", dai_address, dev_account_address, "Local Pair WETH-DAI", address_local_pair_weth_dai, weth_amount_hex)
 
     # Sync local pair
-    tx_hash = router.functions.syncLocalPair(weth_address, dai_address).transact(
+    tx_hash = router.functions.sync_local_pair(weth_address, dai_address).transact(
         {
             "from": dev_account_address,
             "gas": 3000000,
