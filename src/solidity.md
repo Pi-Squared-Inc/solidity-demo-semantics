@@ -202,6 +202,7 @@ module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
   rule getOutput(<generatedTop>...
                    <k> v(false, bool) ...</k>
                  ...</generatedTop>) => Int2Bytes(32, 0, BE)
+  // This rule handles only the case where the return type is exactly one string.
   rule getOutput(<generatedTop>...
                    <k> S:String ...</k>
                  ...</generatedTop>) => Int2Bytes(32, 32, BE) +Bytes Int2Bytes(32, lengthString(S), BE) +Bytes padRightBytes(String2Bytes(S), 32, 0) // TODO: All strings in the EVM ABI must be UTF-8 encoded to bytes
