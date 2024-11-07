@@ -21,7 +21,7 @@ contract WETHMock {
     }
 
     function name() public returns (string memory) {
-        return "Wrapped Ether";
+        return "Wrapped Ethereum";
     }
 
     function symbol() public returns (string memory) {
