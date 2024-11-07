@@ -21,6 +21,14 @@ contract uSDCMock {
         return dec;
     }
 
+    function name() public returns (string memory) {
+        return "USD Coin";
+    }
+
+    function symbol() public returns (string memory) {
+        return "USDC";
+    }
+
     function mint(address account, uint256 value) public {
         require(account != address(0), "USDC: invalid receiver");
         fidUpdate(address(0), account, value);

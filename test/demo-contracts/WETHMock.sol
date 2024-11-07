@@ -20,6 +20,14 @@ contract WETHMock {
         return dec;
     }
 
+    function name() public returns (string memory) {
+        return "Wrapped Ethereum";
+    }
+
+    function symbol() public returns (string memory) {
+        return "WETH";
+    }
+
     function deposit() external payable {
         balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
         emit Transfer(address(0), msg.sender, msg.value);
