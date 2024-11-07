@@ -20,6 +20,14 @@ contract wETHMock {
         return dec;
     }
 
+    function name() public returns (string memory) {
+        return "WETH Coin";
+    }
+
+    function symbol() public returns (string memory) {
+        return "WETH";
+    }
+
     function deposit() external payable {
         balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
         emit transferEvent(address(0), msg.sender, msg.value);

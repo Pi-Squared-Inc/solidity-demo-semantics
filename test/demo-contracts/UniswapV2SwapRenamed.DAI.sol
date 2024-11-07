@@ -22,6 +22,14 @@ contract dAIMock {
         return dec;
     }
 
+    function name() public returns (string memory) {
+        return "DAI Coin";
+    }
+
+    function symbol() public returns (string memory) {
+        return "DAI";
+    }
+
     function mint(address usr, uint wad) public {
         balanceOf[usr] = balanceOf[usr] + wad;
         totalSupply    = totalSupply + wad;
