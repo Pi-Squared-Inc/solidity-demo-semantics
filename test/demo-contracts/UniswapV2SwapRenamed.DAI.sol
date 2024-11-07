@@ -23,7 +23,7 @@ contract dAIMock {
     }
 
     function name() public returns (string memory) {
-        return "DAI Coin";
+        return "Dai Stablecoin";
     }
 
     function symbol() public returns (string memory) {
