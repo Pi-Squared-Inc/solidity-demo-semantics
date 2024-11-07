@@ -5,8 +5,6 @@ from solcx import install_solc, compile_source
 
 install_solc(version="latest")
 
-print('Swapping Solidity wETH Token to Rust DAI Token')
-
 # Set Geth's URL
 GETH_URL = "http://localhost:8545"
 
@@ -15,8 +13,9 @@ dev_account_address = w3.eth.accounts[0]
 w3.eth.default_account = dev_account_address
 print(f"Dev account address: {dev_account_address}")
 
-BALANCES=True
-RECEIPTS=False
+BALANCES = True
+RECEIPTS = False
+
 
 def compile_contract(filename):
     with open(filename, "r") as file:
@@ -28,53 +27,68 @@ def compile_contract(filename):
     print("")
     return compiled_sol
 
+
 def balanceOf(contract_name, token_address, owner_Address):
-    balanceOf_data = '70a08231000000000000000000000000' + owner_Address[2:]
+    balanceOf_data = "70a08231000000000000000000000000" + owner_Address[2:]
 
     balanceOf_tx = {
-        'from': owner_Address,
-        'data': balanceOf_data,
-        'to': token_address,
-        'value': 0,
-        'gas': 11000000,
-        'maxFeePerGas': 2000000000,
-        'maxPriorityFeePerGas': 1000000000,
+        "from": owner_Address,
+        "data": balanceOf_data,
+        "to": token_address,
+        "value": 0,
+        "gas": 11000000,
+        "maxFeePerGas": 2000000000,
+        "maxPriorityFeePerGas": 1000000000,
     }
 
     balance = w3.eth.call(balanceOf_tx)
-    print(f' > Balance of {contract_name}: {int(balance.hex(), 16)}')
+    print(f" > Balance of {contract_name}: {int(balance.hex(), 16)}")
 
-def deploy_tokens(owner_address):
-    solidity_usdc_hex = open('test/demo-contracts/UniswapV2SwapRenamed.USDC.kore.bin').read().rstrip()
-    solidity_dai_hex = open('/home/robertorosmaninho/pi2-inc/rust-demo-semantics/.build/erc20/rust-token.bin').read().rstrip()
-    solidity_weth_hex = open('test/demo-contracts/UniswapV2SwapRenamed.WETH.kore.bin').read().rstrip()
 
-    solidity_contracts = {"uSDCMock": solidity_usdc_hex, "dAIMock": solidity_dai_hex, "wETHMock": solidity_weth_hex}
-    solidity_contracts_address = {}
+def deploy_evm_tokens(owner_address):
+    token_contract_ids = [
+        "USDCMock",
+        "DAIMock",
+        "WETHMock",
+    ]
+    evm_contracts = {}
+    for id in token_contract_ids:
+        compiled_contract = compile_contract("test/demo-contracts/" + id + ".sol")
+        interface = compiled_contract["<stdin>:" + id]
+        evm_contracts[id] = "kevm".encode("utf-8").hex() + interface["bin"]
 
-    for sol_contract_name, sol_contract_hex in solidity_contracts.items():
-        deploy_solidity_tx = {
-            'from': owner_address,
-            'data': sol_contract_hex,
-            'to': '',
-            'value': 0,
-            'gas': 11000000,
-            'maxFeePerGas': 2000000000,
-            'maxPriorityFeePerGas': 1000000000,
+    evm_contracts_address = {}
+
+    for evm_contract_name, evm_contract_hex in evm_contracts.items():
+        deploy_evm_tx = {
+            "from": owner_address,
+            "data": evm_contract_hex,
+            "to": "",
+            "value": 0,
+            "gas": 11000000,
+            "maxFeePerGas": 2000000000,
+            "maxPriorityFeePerGas": 1000000000,
         }
 
-        tx_hash = w3.eth.send_transaction(deploy_solidity_tx)
+        tx_hash = w3.eth.send_transaction(deploy_evm_tx)
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-        solidity_contracts_address[sol_contract_name] = receipt['contractAddress']
-        print(f"Contract {sol_contract_name} deployed with address: {solidity_contracts_address[sol_contract_name]}")
+        evm_contracts_address[evm_contract_name] = receipt["contractAddress"]
+        print(
+            f"Contract {evm_contract_name} deployed with address: {evm_contracts_address[evm_contract_name]}"
+        )
 
         if RECEIPTS:
             print(receipt)
 
         if BALANCES:
-            balanceOf(sol_contract_name, solidity_contracts_address[sol_contract_name], owner_address)
+            balanceOf(
+                evm_contract_name,
+                evm_contracts_address[evm_contract_name],
+                owner_address,
+            )
 
-    return solidity_contracts_address
+    return evm_contracts_address
+
 
 def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
     deployed_contracts = {}
@@ -82,12 +96,12 @@ def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
         interface = compiled_sol["<stdin>:" + id]
         abi, binary = interface["abi"], interface["bin"]
         Contract = w3.eth.contract(abi=abi, bytecode="6B65766D" + binary)
-        if id in {"uniswapV2Swap", "uniswapV2Pair"}:
+        if id in {"UniswapV2Swap", "UniswapV2Pair"}:
             # We know by now token contracts were already deployed
-            weth_address = solidity_contracts_address["wETHMock"]
-            dai_address = solidity_contracts_address["dAIMock"]
-            usdc_address = solidity_contracts_address["uSDCMock"]
-            if id == "uniswapV2Swap":
+            weth_address = solidity_contracts_address["WETHMock"]
+            dai_address = solidity_contracts_address["DAIMock"]
+            usdc_address = solidity_contracts_address["USDCMock"]
+            if id == "UniswapV2Swap":
                 tx_hash = Contract.constructor(
                     weth_address, dai_address, usdc_address
                 ).transact()
@@ -99,7 +113,7 @@ def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
                 print(
                     f"Contract {id} deployed with address: {tx_receipt.contractAddress}"
                 )
-            elif id == "uniswapV2Pair":
+            elif id == "UniswapV2Pair":
                 # Deploy (weth, dai)
                 tx_hash = Contract.constructor(weth_address, dai_address).transact()
                 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -141,13 +155,14 @@ def deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address):
 
     return deployed_contracts
 
+
 def deposit_weth(owner_Address, weth_address, amount):
-    deposit_weth_data = 'd0e30db0'
+    deposit_weth_data = "d0e30db0"
     deposit_weth_tx = {
         "chainId": w3.eth.chain_id,
         "from": owner_Address,
-        'data': deposit_weth_data,
-        'to': weth_address,
+        "data": deposit_weth_data,
+        "to": weth_address,
         "value": amount,
         "gas": 200000,
         "gasPrice": w3.to_wei(20, "gwei"),
@@ -163,21 +178,25 @@ def deposit_weth(owner_Address, weth_address, amount):
     if BALANCES:
         balanceOf("WETH", weth_address, dev_account_address)
 
+
 def mint_token(token_name, token_address, owner_Address, amount):
-    token_mint_data = '40c10f19000000000000000000000000' + owner_Address[2:] + amount
+    token_mint_data = "40c10f19000000000000000000000000" + owner_Address[2:] + amount
     mint_token_tx = {
-        'from': owner_Address,
-        'data': token_mint_data,
-        'to': token_address,
-        'value': 0,
-        'gas': 11000000,
-        'maxFeePerGas': 2000000000,
-        'maxPriorityFeePerGas': 1000000000,
+        "from": owner_Address,
+        "data": token_mint_data,
+        "to": token_address,
+        "value": 0,
+        "gas": 11000000,
+        "maxFeePerGas": 2000000000,
+        "maxPriorityFeePerGas": 1000000000,
     }
 
     tx_hash = w3.eth.send_transaction(mint_token_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Minted " + token_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print(
+        "Minted " + token_name + ":",
+        tx_receipt["status"] == 1 and "Success" or "Failed",
+    )
 
     if RECEIPTS:
         print(tx_receipt)
@@ -185,85 +204,105 @@ def mint_token(token_name, token_address, owner_Address, amount):
     if BALANCES:
         balanceOf(token_name, token_address, owner_Address)
 
+
 def approve(token_name, token_address, owner_address, spender_address, amount):
-    token_approve_data = '095ea7b3000000000000000000000000' + spender_address[2:] + amount
+    token_approve_data = (
+        "095ea7b3000000000000000000000000" + spender_address[2:] + amount
+    )
     token_approve_tx = {
-        'from': owner_address,
-        'data': token_approve_data,
-        'to': token_address,
-        'value': 0,
-        'gas': 11000000,
-        'maxFeePerGas': 2000000000,
-        'maxPriorityFeePerGas': 1000000000,
+        "from": owner_address,
+        "data": token_approve_data,
+        "to": token_address,
+        "value": 0,
+        "gas": 11000000,
+        "maxFeePerGas": 2000000000,
+        "maxPriorityFeePerGas": 1000000000,
     }
 
     tx_hash = w3.eth.send_transaction(token_approve_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Approved " + token_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print(
+        "Approved " + token_name + ":",
+        tx_receipt["status"] == 1 and "Success" or "Failed",
+    )
     if RECEIPTS:
         print(tx_receipt)
 
+
 def allowance(token_name, token_address, owner_address, spender_address):
-    token_allowance_data = 'dd62ed3e000000000000000000000000' + owner_address[2:] + '000000000000000000000000' + spender_address[2:]
+    token_allowance_data = (
+        "dd62ed3e000000000000000000000000"
+        + owner_address[2:]
+        + "000000000000000000000000"
+        + spender_address[2:]
+    )
     token_allowance_tx = {
-        'from': owner_address,
-        'data': token_allowance_data,
-        'to': token_address,
-        'value': 0,
-        'gas': 11000000,
-        'maxFeePerGas': 2000000000,
-        'maxPriorityFeePerGas': 1000000000,
+        "from": owner_address,
+        "data": token_allowance_data,
+        "to": token_address,
+        "value": 0,
+        "gas": 11000000,
+        "maxFeePerGas": 2000000000,
+        "maxPriorityFeePerGas": 1000000000,
     }
 
     allowance = w3.eth.call(token_allowance_tx)
-    print(f' > Allowance of {token_name}: {int(allowance.hex(), 16)}')
+    print(f" > Allowance of {token_name}: {int(allowance.hex(), 16)}")
+
 
 def transfer(token_name, token_address, owner_address, to_name, to_address, amount):
-    token_transfer_data = 'a9059cbb000000000000000000000000' + to_address[2:] + amount
+    token_transfer_data = "a9059cbb000000000000000000000000" + to_address[2:] + amount
     token_transfer_tx = {
-        'from': owner_address,
-        'data': token_transfer_data,
-        'to': token_address,
-        'value': 0,
-        'gas': 11000000,
-        'maxFeePerGas': 2000000000,
-        'maxPriorityFeePerGas': 1000000000,
+        "from": owner_address,
+        "data": token_transfer_data,
+        "to": token_address,
+        "value": 0,
+        "gas": 11000000,
+        "maxFeePerGas": 2000000000,
+        "maxPriorityFeePerGas": 1000000000,
     }
     tx_hash = w3.eth.send_transaction(token_transfer_tx)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Transferred", token_name, "to", to_name + ":", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print(
+        "Transferred",
+        token_name,
+        "to",
+        to_name + ":",
+        tx_receipt["status"] == 1 and "Success" or "Failed",
+    )
     if RECEIPTS:
         print(tx_receipt)
-
 
 
 def main():
     print(f"Starting block number: {w3.eth.block_number}")
 
+    # Compile and deploy tokens
+    evm_contracts_address = deploy_evm_tokens(dev_account_address)
+
     # Compile our Uniswap contract
-    compiled_sol = compile_contract("test/examples/swaps/UniswapV2SwapRenamed.sol")
+    compiled_sol = compile_contract("test/examples/swaps/UniswapV2Swap.sol")
 
     # List of contracts to deploy (in this order)
     contract_ids = [
-        "uniswapV2Pair",
-        "uniswapV2Router02",
-        "uniswapV2Swap",
-        "uniswapV2SwapTest",
+        "UniswapV2Pair",
+        "UniswapV2Router02",
+        "UniswapV2Swap",
+        "UniswapV2SwapTest",
     ]
-
-    # Deploy tokens
-    solidity_contracts_address = deploy_tokens(dev_account_address)
 
     # Deploy contracts
     print("")
-    deployed_contracts = deploy_contracts(compiled_sol, contract_ids, solidity_contracts_address)
+    deployed_contracts = deploy_contracts(
+        compiled_sol, contract_ids, evm_contracts_address
+    )
 
     # Instantiate Uniswap contracts
-    swap_meta = deployed_contracts["uniswapV2Swap"]
+    swap_meta = deployed_contracts["UniswapV2Swap"]
     swap_address, swap_abi = swap_meta["address"], swap_meta["abi"]
     swap = w3.eth.contract(address=swap_address, abi=swap_abi)
 
-    router_abi = deployed_contracts["uniswapV2Router02"]["abi"]
+    router_abi = deployed_contracts["UniswapV2Router02"]["abi"]
     router_address = swap.functions.router().call()
     router = w3.eth.contract(address=router_address, abi=router_abi)
 
@@ -272,9 +311,9 @@ def main():
     eth_10000000 = w3.to_wei(10000000, "ether")
 
     # Mint tokens to dev account
-    weth_address = solidity_contracts_address["wETHMock"]
-    dai_address = solidity_contracts_address["dAIMock"]
-    usdc_address = solidity_contracts_address["uSDCMock"]
+    weth_address = evm_contracts_address["WETHMock"]
+    dai_address = evm_contracts_address["DAIMock"]
+    usdc_address = evm_contracts_address["USDCMock"]
 
     # WETH
     print("")
@@ -286,7 +325,7 @@ def main():
     # approve(router_address, 10000000 * 10**18)
     approve("WETH", weth_address, dev_account_address, router_address, eth_10000000_hex)
 
-    #call allowance
+    # call allowance
     allowance("WETH", weth_address, dev_account_address, router_address)
 
     # USDC
@@ -301,7 +340,7 @@ def main():
     # approve(router_address, 10000000 * 10**18)
     approve("USDC", usdc_address, dev_account_address, router_address, eth_10000000_hex)
 
-    #call allowance
+    # call allowance
     allowance("USDC", usdc_address, dev_account_address, router_address)
 
     # DAI
@@ -318,7 +357,6 @@ def main():
 
     # call allowance
     allowance("DAI", dai_address, dev_account_address, router_address)
-
 
     print("")
     print("TESTS")
@@ -340,7 +378,10 @@ def main():
         }
     )
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Added liquidity to WETH-DAI: ", tx_receipt["status"] == 1 and "Success" or "Failed")
+    print(
+        "Added liquidity to WETH-DAI: ",
+        tx_receipt["status"] == 1 and "Success" or "Failed",
+    )
     if RECEIPTS:
         print(tx_receipt)
 
@@ -354,25 +395,43 @@ def main():
     two_weth_amount_hex = "{:064x}".format(two_weth_amount)
     dai_amount_min = 1
 
-    # Approve WETH transaction to uniswapV2Swap contract
+    # Approve WETH transaction to UniswapV2Swap contract
     # approve(swap_address, two_weth_amount_hex)
-    approve("WETH", weth_address, dev_account_address, swap_address, two_weth_amount_hex)
+    approve(
+        "WETH", weth_address, dev_account_address, swap_address, two_weth_amount_hex
+    )
 
-    # Approve DAI transaction to uniswapV2Swap contract
+    # Approve DAI transaction to UniswapV2Swap contract
     # approve(swap_address, weth_amount_hex)
     approve("DAI", dai_address, dev_account_address, swap_address, weth_amount_hex)
 
     # Get local pair address for WETH-DAI so we can transfer WETH and DAI to it
-    address_local_pair_weth_dai = router.functions.getLocalPair(weth_address, dai_address).call()
+    address_local_pair_weth_dai = router.functions.get_local_pair(
+        weth_address, dai_address
+    ).call()
 
     # WETH transfer to address_local_pair_weth_dai
-    transfer("WETH", weth_address, dev_account_address, "Local Pair WETH-DAI", address_local_pair_weth_dai, two_weth_amount_hex)
+    transfer(
+        "WETH",
+        weth_address,
+        dev_account_address,
+        "Local Pair WETH-DAI",
+        address_local_pair_weth_dai,
+        two_weth_amount_hex,
+    )
 
     # DAI transfer to address_local_pair_weth_dai
-    transfer("DAI", dai_address, dev_account_address, "Local Pair WETH-DAI", address_local_pair_weth_dai, weth_amount_hex)
+    transfer(
+        "DAI",
+        dai_address,
+        dev_account_address,
+        "Local Pair WETH-DAI",
+        address_local_pair_weth_dai,
+        weth_amount_hex,
+    )
 
     # Sync local pair
-    tx_hash = router.functions.syncLocalPair(weth_address, dai_address).transact(
+    tx_hash = router.functions.sync_local_pair(weth_address, dai_address).transact(
         {
             "from": dev_account_address,
             "gas": 3000000,
@@ -387,12 +446,13 @@ def main():
     # Swap WETH to DAI
     daiAmountOut = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).call()
 
-    tx_hash = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).transact({'from': dev_account_address})
+    tx_hash = swap.functions.swapSingleHopExactAmountIn(
+        weth_amount, dai_amount_min
+    ).transact({'from': dev_account_address})
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(f'Sucessfully swapped {weth_amount} WETH to DAI: {daiAmountOut}')
+    print(f"Sucessfully swapped {weth_amount} WETH to DAI: {daiAmountOut}")
     if RECEIPTS:
         print(tx_receipt)
-
 
     # Here is the transaction of swap WETH to DAI just for reference
     # tx_hash = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).transact(
@@ -406,6 +466,7 @@ def main():
     # print("Swapped WETH to DAI: ", tx_receipt["status"] == 1 and "Success" or "Failed")
     # if RECEIPTS:
     #     print(tx_receipt)
+
 
 if __name__ == "__main__":
     main()

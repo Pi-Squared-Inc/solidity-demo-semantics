@@ -345,7 +345,7 @@ def main():
     ######################################### SwapSingleHopExactAmountIn Test ##########################################
     print("")
     print("Starting SwapSingleHopExactAmountIn Test...")
-    
+
     weth_amount = 1 * 10**18
     weth_amount_hex = "{:064x}".format(weth_amount)
     two_weth_amount = 2 * weth_amount
@@ -381,10 +381,15 @@ def main():
     print("Synced WETH-DAI pair: ", tx_receipt["status"] == 1 and "Success" or "Failed")
     if RECEIPTS:
         print(tx_receipt)
-        
+
     # Swap WETH to DAI
     daiAmountOut = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).call()
+
+    tx_hash = swap.functions.swapSingleHopExactAmountIn(weth_amount,dai_amount_min).transact({'from': dev_account_address})
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     print(f'Sucessfully swapped {weth_amount} WETH to DAI: {daiAmountOut}')
+    if RECEIPTS:
+        print(tx_receipt)
 
 
     # Here is the transaction of swap WETH to DAI just for reference
