@@ -46,7 +46,7 @@ def balanceOf(contract_name, token_address, owner_Address):
 
 def deploy_tokens(owner_address):
     solidity_usdc_hex = open('test/demo-contracts/UniswapV2SwapRenamed.USDC.kore.bin').read().rstrip()
-    solidity_dai_hex = open('/home/robertorosmaninho/pi2-inc/rust-demo-semantics/.build/erc20/rust-token.bin').read().rstrip()
+    solidity_dai_hex = open('../rust-ulm/tests/ulm-contracts/DAIMock.kore.bin').read().rstrip()
     solidity_weth_hex = open('test/demo-contracts/UniswapV2SwapRenamed.WETH.kore.bin').read().rstrip()
 
     solidity_contracts = {"uSDCMock": solidity_usdc_hex, "dAIMock": solidity_dai_hex, "wETHMock": solidity_weth_hex}
