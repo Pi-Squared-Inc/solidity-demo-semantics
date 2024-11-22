@@ -8,7 +8,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   test:
     name: 'Conformance Tests'
     runs-on: [self-hosted, aws, us-east-2, m6a.large]
