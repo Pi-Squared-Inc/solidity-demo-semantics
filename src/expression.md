@@ -1,58 +1,61 @@
 # Solidity expressions
 
 ```k
-
 module SOLIDITY-EXPRESSION
   imports SOLIDITY-CONFIGURATION
   imports INT
+  imports ULM
+  imports BYTES
+  imports K-EQUAL
+  imports KRYPTO
 
-  // new contract
-  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => X </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => constructor </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> X </contract-id>
-       <contract-init> INIT </contract-init>
-       <contract-fn-id> constructor </contract-fn-id>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-body> BODY </contract-fn-body>
-       <live-contracts>
-         .Bag => <live-contract>
-                   <contract-address> ADDR </contract-address>
-                   <contract-type> X </contract-type>
-                   ...
-                 </live-contract>
-         ...
-       </live-contracts>
-       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
-    requires isKResult(ARGS)
+//  // new contract
+//  rule <k> new X:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, .List, .List) ~> List2Statements(INIT) ~> BODY ~> return v(ADDR, X) ; </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => X </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => constructor </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> X </contract-id>
+//       <contract-init> INIT </contract-init>
+//       <contract-fn-id> constructor </contract-fn-id>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <live-contracts>
+//         .Bag => <live-contract>
+//                   <contract-address> ADDR </contract-address>
+//                   <contract-type> X </contract-type>
+//                   ...
+//                 </live-contract>
+//         ...
+//       </live-contracts>
+//       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
+//    requires isKResult(ARGS)
 
-  rule <k> new X:Id ( .TypedVals ) ~> K => List2Statements(INIT) ~> return v(ADDR, X) ; </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => X </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => constructor </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> X </contract-id>
-       <contract-init> INIT </contract-init>
-       <live-contracts>
-         .Bag => <live-contract>
-                   <contract-address> ADDR </contract-address>
-                   <contract-type> X </contract-type>
-                   ...
-                 </live-contract>
-         ...
-       </live-contracts>
-       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
+//  rule <k> new X:Id ( .TypedVals ) ~> K => List2Statements(INIT) ~> return v(ADDR, X) ; </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => X </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => constructor </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> X </contract-id>
+//       <contract-init> INIT </contract-init>
+//       <live-contracts>
+//         .Bag => <live-contract>
+//                   <contract-address> ADDR </contract-address>
+//                   <contract-type> X </contract-type>
+//                   ...
+//                 </live-contract>
+//         ...
+//       </live-contracts>
+//       <next-address> ADDR => ADDR +MInt 1p160 </next-address>
 
   // new array
   rule <k> new T[](Len:Int) => lv(size(S), .List, T[]) ...</k>
@@ -67,13 +70,47 @@ module SOLIDITY-EXPRESSION
        <contract-state>... X |-> LT </contract-state>
 
   // assignment to state variable
-  rule <k> X:Id = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
-       <this> THIS </this>
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{8})) ~> v(convert(V, RT, LT), LT) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> LT </contract-state>
-       <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ X <- convert(V, RT, LT) ] </contract-storage>
+       <contract-state>... X |-> (uint8 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{32})) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint32 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{112})) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint112 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{256})) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint256 #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{160})) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (address #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, #if V #then 1 #else 0 #fi) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (bool #as LT) </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+
+  rule <k> X:Id = v(V, RT) => SetAccountStorage(A, MInt2Unsigned({convert(V, RT, LT)}:>MInt{160})) ~> v(convert(V, RT, LT), LT) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> LT:Id </contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
 
   // literal assignment to local variable
   rule <k> X:Id = N:Int => X = v(convert(N, LT), LT) ...</k>
@@ -93,13 +130,14 @@ module SOLIDITY-EXPRESSION
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(Idx), convert(V, RT, LT), LT[]) ] </store>
   rule <k> lv(I:Int, L, LT []) [ v(Idx:MInt{256}, _) ] = v(V, RT) => v(convert(V, RT, LT), LT) ...</k>
        <store> S => S [ I <- write({S [ I ]}:>Value, L ListItem(MInt2Unsigned(Idx)), convert(V, RT, LT), LT[]) ] </store>
-  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => T2)) [ v(Key, RT1) ] = v(V, RT) => v(convert(V, RT, T2), T2) ...</k>
-       <this> THIS </this>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT1) ] = v(V, RT) => SetAccountStorage(computeStorageIndex(L ListItem(convert(Key, RT1, LT1)), A), MInt2Unsigned({convert(V, RT, T2)}:>MInt{256})) ~> v(convert(V, RT, T2), T2) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
-       <contract-address> THIS </contract-address>
-       <contract-storage> S => S [ X <- write({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT1, LT1)), convert(V, RT, T2), T) ] </contract-storage>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+  rule <k> lv(X:Id, L, mapping(LT1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT1) ] = v(V, RT) => SetAccountStorage(computeStorageIndex(L ListItem(convert(Key, RT1, LT1)), A), MInt2Unsigned({convert(V, RT, T2)}:>MInt{160})) ~> v(convert(V, RT, T2), T2) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
 
   syntax Value ::= write(Value, List, Value, TypeName) [function]
   rule write(_, .List, V, _) => V
@@ -119,13 +157,53 @@ module SOLIDITY-EXPRESSION
        <iface-id> TYPE </iface-id>
 
   // state variable lookup
-  rule <k> X:Id => v({S[X] orDefault default(T)}:>Value, T) ...</k>
-       <this> THIS </this>
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{8}, T) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
-       <contract-address> THIS </contract-address>
-       <contract-storage> S </contract-storage>
+       <contract-state>... X |-> (uint8 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{32}, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint32 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{112}, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint112 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{256}, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (uint256 #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{160}, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (address #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(#if GetAccountStorage(A) =/=Int 0 #then true #else false #fi, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> (bool #as T) ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T)
+
+  rule <k> X:Id => v(Int2MInt(GetAccountStorage(A))::MInt{160}, T) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-state>... X |-> T:Id ...</contract-state>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
     requires notBool isAggregateType(T)
 
   rule <k> X:Id => lv(X, .List, T) ...</k>
@@ -151,13 +229,15 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, L, T []) [ v(Idx:MInt{256}, _) ] => v(read(V, L ListItem(MInt2Unsigned(Idx)), T[]), T) ...</k>
        <store> _ [ I <- V ] </store>
     requires notBool isAggregateType(T)
-  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(Key, RT) ] => v(read({S [ X ] orDefault .Map}:>Value, L ListItem(convert(Key, RT, T1)), T), T2) ...</k>
-       <this> THIS </this>
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (uint256 #as T2))) [ v(Key, RT) ] => v(Int2MInt(GetAccountStorage(computeStorageIndex(L ListItem(convert(Key, RT, T1)), A)))::MInt{256}, T2) ...</k>
        <this-type> TYPE </this-type>
        <contract-id> TYPE </contract-id>
-       <contract-state>... X |-> T ...</contract-state>
-       <contract-address> THIS </contract-address>
-       <contract-storage> S </contract-storage>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
+    requires notBool isAggregateType(T2)
+  rule <k> lv(X:Id, L, mapping(T1:ElementaryTypeName _ => (address #as T2))) [ v(Key, RT) ] => v(Int2MInt(GetAccountStorage(computeStorageIndex(L ListItem(convert(Key, RT, T1)), A)))::MInt{160}, T2) ...</k>
+       <this-type> TYPE </this-type>
+       <contract-id> TYPE </contract-id>
+       <contract-statevar-addresses>... X |-> A ...</contract-statevar-addresses>
     requires notBool isAggregateType(T2)
 
   rule <k> lv(R, L, T []) [ Idx:Int ] => lv(R, L ListItem(Idx), T) ...</k>
@@ -166,6 +246,21 @@ module SOLIDITY-EXPRESSION
     requires isAggregateType(T)
   rule <k> lv(R, L, mapping(T1:ElementaryTypeName _ => T2)) [ v(V, RT) ] => lv(R, L ListItem(convert(V, RT, T1)), T2) ...</k>
     requires isAggregateType(T2)
+
+  syntax Int ::= computeStorageIndex(List, Int) [function]
+  rule computeStorageIndex(.List, N) => N
+  rule computeStorageIndex(ListItem(K:MInt{8}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{32}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{112}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{160}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:MInt{256}) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, MInt2Unsigned(K), BE)), BE, Unsigned))
+  rule computeStorageIndex(ListItem(K:Bool) L, N) =>
+       computeStorageIndex(L, Bytes2Int(Keccak256raw(Int2Bytes(32, N, BE) +Bytes Int2Bytes(32, #if K #then 1 #else 0 #fi, BE)), BE, Unsigned))
 
   syntax Value ::= read(Value, List, TypeName) [function]
   rule read(V, .List, _) => V
@@ -177,49 +272,49 @@ module SOLIDITY-EXPRESSION
   rule <k> lv(I:Int, .List, T) . length => v(Int2MInt(size({read(V, .List, T)}:>List))::MInt{256}, uint) ...</k>
        <store> _ [ I <- V ] </store>
 
-  // external call
-  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => 0p256 </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => TYPE' </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => F </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> TYPE' </contract-id>
-       <contract-fn-id> F </contract-fn-id>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
-       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
-       <contract-fn-body> BODY </contract-fn-body>
-       <contract-address> ADDR </contract-address>
-       <contract-type> TYPE' </contract-type>
-    requires isKResult(ARGS)
+//  // external call
+//  rule <k> v(ADDR, _) . F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => 0p256 </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => TYPE' </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => F </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> TYPE' </contract-id>
+//       <contract-fn-id> F </contract-fn-id>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+//       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <contract-address> ADDR </contract-address>
+//       <contract-type> TYPE' </contract-type>
+//    requires isKResult(ARGS)
 
   syntax Id ::= "value" [token]
 
-  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
-       <msg-sender> FROM => THIS </msg-sender>
-       <msg-value> VALUE => VALUE' </msg-value>
-       <this> THIS => ADDR </this>
-       <this-type> TYPE => TYPE' </this-type>
-       <env> E => .Map </env>
-       <store> S => .List </store>
-       <current-function> FUNC => F </current-function>
-       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
-       <contract-id> TYPE' </contract-id>
-       <contract-fn-id> F </contract-fn-id>
-       <contract-fn-payable> PAYABLE </contract-fn-payable>
-       <contract-fn-param-names> PARAMS </contract-fn-param-names>
-       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
-       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
-       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
-       <contract-fn-body> BODY </contract-fn-body>
-       <contract-address> ADDR </contract-address>
-       <contract-type> TYPE' </contract-type>
-    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
+//  rule <k> v(ADDR, TYPE') . F:Id { value: v(VALUE', uint256) } ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
+//       <msg-sender> FROM => THIS </msg-sender>
+//       <msg-value> VALUE => VALUE' </msg-value>
+//       <this> THIS => ADDR </this>
+//       <this-type> TYPE => TYPE' </this-type>
+//       <env> E => .Map </env>
+//       <store> S => .List </store>
+//       <current-function> FUNC => F </current-function>
+//       <call-stack>... .List => ListItem(frame(K, E, S, FROM, TYPE, VALUE, FUNC)) </call-stack>
+//       <contract-id> TYPE' </contract-id>
+//       <contract-fn-id> F </contract-fn-id>
+//       <contract-fn-payable> PAYABLE </contract-fn-payable>
+//       <contract-fn-param-names> PARAMS </contract-fn-param-names>
+//       <contract-fn-arg-types> TYPES </contract-fn-arg-types>
+//       <contract-fn-return-types> RETTYPES </contract-fn-return-types>
+//       <contract-fn-return-names> RETNAMES </contract-fn-return-names>
+//       <contract-fn-body> BODY </contract-fn-body>
+//       <contract-address> ADDR </contract-address>
+//       <contract-type> TYPE' </contract-type>
+//    requires isKResult(ARGS) andBool (PAYABLE orBool VALUE' ==MInt 0p256)
 
   // internal call
   rule <k> F:Id ( ARGS ) ~> K => bind(S, PARAMS, TYPES, ARGS, RETTYPES, RETNAMES) ~> BODY ~> return retval(RETNAMES); </k>
@@ -341,6 +436,11 @@ module SOLIDITY-EXPRESSION
   syntax Id ::= "require" [token] | "assert" [token]
   rule require(v(true, bool), _) => void
   rule assert(v(true, bool)) => void
+  rule <k> require(v(false, bool), _) => STUCK ...</k>
+       <status> _ => EVMC_REVERT </status>
+  rule <k> assert(v(false, bool)) => STUCK ...</k>
+       <status> _ => EVMC_FAILURE </status>
+  syntax KItem ::= "STUCK"
 
   // ternary expression
   rule v(true, bool) ? X : _ => X
@@ -369,10 +469,6 @@ module SOLIDITY-EXPRESSION
     requires findChar(S, "eE.", 0) ==Int -1
   rule DecimalString2Int(S) => String2Int(replaceAll(substrString(S, 0, findChar(S, "eE", 0)), "_", "")) *Int 10 ^Int String2Int(replaceAll(substrString(S, findChar(S, "eE", 0) +Int 1, lengthString(S)), "_", ""))
     requires findChar(S, ".", 0) ==Int -1 [owise]
-
-  syntax Statements ::= List2Statements(List) [function]
-  rule List2Statements(.List) => .Statements
-  rule List2Statements(ListItem(S) L) => S List2Statements(L)
 
   syntax KItem ::= var(Int, TypeName)
 

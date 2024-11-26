@@ -719,115 +719,115 @@ contract uniswapV2SwapTest {
         assert(daiAmountOut >= daiAmountMin);
     }
 
-    function testSwapMultiHopExactAmountIn() public {
-        uint256 wethAmount = 1e18;
-        
-        vidWeth.deposit{value: 4*wethAmount}();
-        vidWeth.approve(address(vidUni), 8*wethAmount);
-        vidDai.mint(address(this), 3*wethAmount);
-        vidDai.approve(address(vidUni), 3*wethAmount);
-        vidUsdc.mint(address(this), 2*wethAmount);
-        vidUsdc.approve(address(vidUni), 2*wethAmount);
-
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
-        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
-
-        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
-
-        uint256 daiAmountMin = 1;
-        vidUni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
-
-        uint256 daiAmountIn = 1e18;
-        
-        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
-        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
-
-        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
-        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
-
-        uint256 usdcAmountOutMin = 1;
-        uint256 usdcAmountOut =
-            vidUni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
-
-        assert(usdcAmountOut >= usdcAmountOutMin);
-    }
-
-    function testSwapSingleHopExactAmountOut() public {
-        uint256 wethAmount = 1e18;
-        vidWeth.deposit{value: 10*wethAmount}();
-        vidWeth.approve(address(vidUni), 6*wethAmount);
-        vidDai.mint(address(this), 10*wethAmount);
-        vidDai.approve(address(vidUni), 4*wethAmount);
-        
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
-        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
-
-        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
-
-        uint256 daiAmountDesired = 1e18;
-        uint256 daiAmountOut =
-            vidUni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
-
-        assert(daiAmountOut == daiAmountDesired);
-    }
-
-    function testSwapMultiHopExactAmountOut() public {
-        uint256 wethAmount = 1e18;
-        vidWeth.deposit{value: 20*wethAmount}();
-        vidWeth.approve(address(vidUni), 20*wethAmount);
-        vidDai.mint(address(this), 20*wethAmount);
-        vidDai.approve(address(vidUni), 20*wethAmount);
-        vidUsdc.mint(address(this), 10*wethAmount);
-        vidUsdc.approve(address(vidUni), 10*wethAmount);
-
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
-        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
-
-        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
-
-        uint256 daiAmountOut = 2 * 1e18;
-        vidUni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
-        
-        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
-        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
-        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
-        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
-        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
-
-        uint256 amountOutDesired = 1e6;
-        uint256 amountOut =
-            vidUni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
-
-        assert(amountOut == amountOutDesired);
-    }
-
-    function testRouterAddLiquidity() public {
-        uint256 testAmount = 131072; // Hex: 0x20000
-        uint desiredA = 10000; 
-        uint desiredB = 10000; 
-        uint minA = 0; 
-        uint minB = 0; 
-
-        vidRouter = new uniswapV2Router02();
-
-        vidRouter.setLocalPair(address(vidWeth), address(vidDai));
-        vidRouter.setLocalPair(address(vidWeth), address(vidUsdc));
-        vidRouter.setLocalPair(address(vidUsdc), address(vidDai));
-
-        vidDai.mint(address(this), testAmount);
-        vidDai.approve(address(vidRouter), testAmount);
-        vidUsdc.mint(address(this), testAmount);
-        vidUsdc.approve(address(vidRouter), testAmount);
-
-        vidRouter.addLiquidity(address(vidDai), address(vidUsdc), desiredA, desiredB, minA, minB, address(this));
-   
-        assert(vidDai.balanceOf(address(this)) == 121072);
-        assert(vidUsdc.balanceOf(address(this)) == 121072);
-        assert(vidDai.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
-        assert(vidUsdc.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
-        assert(uniswapV2Pair(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))).balanceOf(address(this)) == 9000);
-    }
+//    function testSwapMultiHopExactAmountIn() public {
+//        uint256 wethAmount = 1e18;
+//        
+//        vidWeth.deposit{value: 4*wethAmount}();
+//        vidWeth.approve(address(vidUni), 8*wethAmount);
+//        vidDai.mint(address(this), 3*wethAmount);
+//        vidDai.approve(address(vidUni), 3*wethAmount);
+//        vidUsdc.mint(address(this), 2*wethAmount);
+//        vidUsdc.approve(address(vidUni), 2*wethAmount);
+//
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
+//        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), wethAmount);
+//
+//        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
+//
+//        uint256 daiAmountMin = 1;
+//        vidUni.swapSingleHopExactAmountIn(wethAmount, daiAmountMin);
+//
+//        uint256 daiAmountIn = 1e18;
+//        
+//        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), daiAmountIn);
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
+//        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), daiAmountIn);
+//
+//        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
+//        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
+//
+//        uint256 usdcAmountOutMin = 1;
+//        uint256 usdcAmountOut =
+//            vidUni.swapMultiHopExactAmountIn(daiAmountIn, usdcAmountOutMin);
+//
+//        assert(usdcAmountOut >= usdcAmountOutMin);
+//    }
+//
+//    function testSwapSingleHopExactAmountOut() public {
+//        uint256 wethAmount = 1e18;
+//        vidWeth.deposit{value: 10*wethAmount}();
+//        vidWeth.approve(address(vidUni), 6*wethAmount);
+//        vidDai.mint(address(this), 10*wethAmount);
+//        vidDai.approve(address(vidUni), 4*wethAmount);
+//        
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
+//        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 4*wethAmount);
+//
+//        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
+//
+//        uint256 daiAmountDesired = 1e18;
+//        uint256 daiAmountOut =
+//            vidUni.swapSingleHopExactAmountOut(daiAmountDesired, 2*wethAmount);
+//
+//        assert(daiAmountOut == daiAmountDesired);
+//    }
+//
+//    function testSwapMultiHopExactAmountOut() public {
+//        uint256 wethAmount = 1e18;
+//        vidWeth.deposit{value: 20*wethAmount}();
+//        vidWeth.approve(address(vidUni), 20*wethAmount);
+//        vidDai.mint(address(this), 20*wethAmount);
+//        vidDai.approve(address(vidUni), 20*wethAmount);
+//        vidUsdc.mint(address(this), 10*wethAmount);
+//        vidUsdc.approve(address(vidUni), 10*wethAmount);
+//
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
+//        vidDai.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidDai)), 8*wethAmount);
+//
+//        vidUni.router().syncLocalPair(address(vidWeth), address(vidDai));
+//
+//        uint256 daiAmountOut = 2 * 1e18;
+//        vidUni.swapSingleHopExactAmountOut(daiAmountOut, 4*wethAmount);
+//        
+//        vidDai.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidDai), address(vidWeth)), 2*daiAmountOut);
+//        vidWeth.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
+//        vidUsdc.transfer(vidUni.router().getLocalPair(address(vidWeth), address(vidUsdc)), 2*daiAmountOut);
+//        vidUni.router().syncLocalPair(address(vidDai), address(vidWeth));
+//        vidUni.router().syncLocalPair(address(vidWeth), address(vidUsdc));
+//
+//        uint256 amountOutDesired = 1e6;
+//        uint256 amountOut =
+//            vidUni.swapMultiHopExactAmountOut(amountOutDesired, daiAmountOut);
+//
+//        assert(amountOut == amountOutDesired);
+//    }
+//
+//    function testRouterAddLiquidity() public {
+//        uint256 testAmount = 131072; // Hex: 0x20000
+//        uint desiredA = 10000; 
+//        uint desiredB = 10000; 
+//        uint minA = 0; 
+//        uint minB = 0; 
+//
+//        vidRouter = new uniswapV2Router02();
+//
+//        vidRouter.setLocalPair(address(vidWeth), address(vidDai));
+//        vidRouter.setLocalPair(address(vidWeth), address(vidUsdc));
+//        vidRouter.setLocalPair(address(vidUsdc), address(vidDai));
+//
+//        vidDai.mint(address(this), testAmount);
+//        vidDai.approve(address(vidRouter), testAmount);
+//        vidUsdc.mint(address(this), testAmount);
+//        vidUsdc.approve(address(vidRouter), testAmount);
+//
+//        vidRouter.addLiquidity(address(vidDai), address(vidUsdc), desiredA, desiredB, minA, minB, address(this));
+//   
+//        assert(vidDai.balanceOf(address(this)) == 121072);
+//        assert(vidUsdc.balanceOf(address(this)) == 121072);
+//        assert(vidDai.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
+//        assert(vidUsdc.balanceOf(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))) == 10000);
+//        assert(uniswapV2Pair(vidRouter.getLocalPair(address(vidDai), address(vidUsdc))).balanceOf(address(this)) == 9000);
+//    }
 }

@@ -7,18 +7,21 @@ requires "contract.md"
 requires "transaction.md"
 requires "expression.md"
 requires "statement.md"
-requires "uniswap-summaries.md"
+requires "ulm.k"
+requires "plugin/krypto.md"
 
 module SOLIDITY-CONFIGURATION
   imports SOLIDITY-DATA
   imports SOLIDITY-SYNTAX
+  imports SOLIDITY-ULM-EXECUTE-SYNTAX
+  imports BYTES
+  imports K-EQUAL
+  imports ULM
 
   syntax Id ::= "Id" [token]
 
   configuration
-    <solidity>
-      <k parser="TXN, SOLIDITY-DATA-SYNTAX"> $PGM:Program ~> $TXN:Transactions </k>
-      <summarize parser="ISUNISWAP, BOOL-SYNTAX"> $ISUNISWAP:Bool </summarize>
+      <k> decodeProgram($PGM:Bytes) ~> execute($CREATE:Bool, #if $CREATE:Bool #then $PGM:Bytes #else CallData() #fi) </k>
       <compile>
         <current-body> Id </current-body>
         <ifaces>
@@ -37,7 +40,10 @@ module SOLIDITY-CONFIGURATION
           <contract multiplicity="*" type="Map">
             <contract-id> Id </contract-id>
             <contract-state> .Map </contract-state>
+            <contract-current-sv-address> 0:Int </contract-current-sv-address>
+            <contract-statevar-addresses> .Map </contract-statevar-addresses>
             <contract-init> .List </contract-init>
+            <function-selector> .Map </function-selector>
             <contract-fns>
               <contract-fn multiplicity="*" type="Map">
                 <contract-fn-id> Id </contract-fn-id>
@@ -62,26 +68,155 @@ module SOLIDITY-CONFIGURATION
         </contracts>
       </compile>
       <exec>
-        <msg-sender> 0p160 </msg-sender>
-        <msg-value> 0p256 </msg-value>
-        <tx-origin> 0p160 </tx-origin>
-        <block-timestamp> 0p256 </block-timestamp>
-        <this> 0p160 </this>
+        <msg-sender> Int2MInt(Caller())::MInt{160} </msg-sender>
+        <msg-value> Int2MInt(CallValue())::MInt{256} </msg-value>
+        <tx-origin> Int2MInt(Origin())::MInt{160} </tx-origin>
+        <block-timestamp> Int2MInt(BlockTimestamp())::MInt{256} </block-timestamp>
+        <this> Int2MInt($ACCTCODE:Int)::MInt{160} </this>
         <this-type> Id </this-type>
         <env> .Map </env>
         <store> .List </store>
         <current-function> Id </current-function>
         <call-stack> .List </call-stack>
-        <live-contracts>
-          <live-contract multiplicity="*" type="Map">
-            <contract-address> 0p160 </contract-address>
-            <contract-type> Id </contract-type>
-            <contract-storage> .Map </contract-storage>
-          </live-contract>
-        </live-contracts>
-        <next-address> 2p160 </next-address>
+        <status> EVMC_SUCCESS </status>
+        <gas> $GAS:Int </gas>
       </exec>
-    </solidity>
+
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-EXECUTE-SYNTAX
+  imports BOOL
+  imports BYTES
+
+    syntax KItem ::= execute(Bool, Bytes)
+
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-EXECUTE
+  imports SOLIDITY-ULM-EXECUTE-SYNTAX
+  imports SOLIDITY-CONFIGURATION
+  imports SOLIDITY-DATA
+  imports SOLIDITY-SYNTAX
+  imports SOLIDITY-EXPRESSION
+  imports BYTES
+  imports K-EQUAL
+
+    // The active contract should be the last one in the list of contracts as
+    // decoded by the provided $PGM.
+    rule <k> execute(true, B) => List2Statements(INIT) ~> B </k>
+         <current-body> TYPE </current-body>
+         <contract-id> TYPE </contract-id>
+         <contract-init> INIT </contract-init>
+         <this-type> _ => TYPE </this-type>
+         <current-function> _ => constructor </current-function>
+         <env> _ => .Map </env>
+         <store> _ => .List </store>
+
+    syntax Statements ::= List2Statements(List) [function]
+    rule List2Statements(.List) => .Statements
+    rule List2Statements(ListItem(S) L) => S List2Statements(L)
+
+    // The active contract should be the last one in the list of contracts as
+    // decoded by the provided $PGM.
+    // When the function selector is found, call the corresponding function
+    rule <k> execute(false, B) =>
+             #let ARGS::CallArgumentList = decodeArgs(substrBytes(B, 4, lengthBytes(B)), ParamTypes) #in
+             F ( ARGS )
+         </k>
+         <current-body> TYPE </current-body>
+         <this-type> _ => TYPE </this-type>
+         <contract-id> TYPE </contract-id>
+         <function-selector>... Bytes2String(substrBytes(B, 0, 4)) |-> F:Id ...</function-selector>
+         <contract-fn-id> F </contract-fn-id>
+         <contract-fn-arg-types> ParamTypes </contract-fn-arg-types>
+
+    // When the function selector is not found, fail.
+    rule execute(false, _B:Bytes) => require(v(false, bool), "Missing function selector") [owise]
+
+    syntax TypedVal ::= decodeArg(Bytes, Int, ElementaryTypeName) [function]
+    rule decodeArg(B:Bytes, I:Int, uint256) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{256}, uint256)
+    rule decodeArg(B:Bytes, I:Int, uint112) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{112}, uint112)
+    rule decodeArg(B:Bytes, I:Int, uint32) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{32}, uint32)
+    rule decodeArg(B:Bytes, I:Int, uint8) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{8}, uint8)
+    rule decodeArg(B:Bytes, I:Int, address) =>
+         v(Int2MInt(Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned))::MInt{160}, address)
+    rule decodeArg(B:Bytes, I:Int, bool) =>
+         v(#if Bytes2Int(substrBytes(B, I, I +Int 32), BE, Unsigned) =/=Int 0 #then true #else false #fi, bool)
+
+    syntax TypedVals ::= decodeArgs(Bytes, List) [function]
+                       | decodeArgs(Bytes, Int, List, TypedVals) [function]
+    rule decodeArgs(B:Bytes, TL:List) => decodeArgs(B, 0, TL, .TypedVals)
+    rule decodeArgs(B:Bytes, I:Int, .List, TVs:TypedVals) => reverseTypedVals(TVs)
+      requires I ==Int lengthBytes(B)
+    rule decodeArgs(B:Bytes, I:Int, ListItem(T:ElementaryTypeName) Ts, TVs:TypedVals) =>
+         decodeArgs(B, I +Int 32, Ts, (decodeArg(B, I, T), TVs))
+      requires I >=Int 0 andBool I +Int 32 <=Int lengthBytes(B)
+
+    syntax TypedVals ::= reverseTypedVals(TypedVals) [function]
+                       | reverseTypedVals(TypedVals, TypedVals) [function]
+    rule reverseTypedVals(TVs:TypedVals) => reverseTypedVals(TVs, .TypedVals)
+    rule reverseTypedVals(.TypedVals, TVs:TypedVals) => TVs
+    rule reverseTypedVals((TV, TVs):TypedVals, TVs':TypedVals) =>
+         reverseTypedVals(TVs, (TV, TVs'))
+
+endmodule
+```
+
+```k
+module SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
+  imports SOLIDITY-CONFIGURATION
+  imports INT
+  imports BYTES
+  imports ULM-SIGNATURE
+
+  rule getStatus(<generatedTop>...
+                   <exec>...
+                     <status> STATUS:Int </status>
+                   ...</exec>
+                 ...</generatedTop>) => STATUS
+
+  // getOutput gets the output from the top of the K cell (as expected after
+  // completion of the return statement) and encodes it to Bytes.
+  // We currently handle the encoding of return values of types uint256 and bool.
+
+  rule getOutput(<generatedTop>...
+                    <k> B:Bytes </k>
+                ...</generatedTop>) => B
+  rule getOutput(<generatedTop>...
+                   <k> v(V:MInt{256}, uint256) ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<generatedTop>...
+                   <k> v(V:MInt{8}, uint8) ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, MInt2Unsigned(V), BE)
+  rule getOutput(<generatedTop>...
+                   <k> v(true, bool) ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, 1, BE)
+  rule getOutput(<generatedTop>...
+                   <k> v(false, bool) ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, 0, BE)
+  // This rule handles only the case where the return type is exactly one string.
+  rule getOutput(<generatedTop>...
+                   <k> S:String ...</k>
+                 ...</generatedTop>) => Int2Bytes(32, 32, BE) +Bytes Int2Bytes(32, lengthString(S), BE) +Bytes padRightBytes(String2Bytes(S), 32, 0) // TODO: All strings in the EVM ABI must be UTF-8 encoded to bytes
+
+  // getGasLeft returns the amount of gas left by reading it from the cell <gas>.
+  // The semantics currently initialize the gas by reading the appropriate ULM
+  // configuration variable, but do not update it as the computations are performed.
+  // I.e., this function is always going to return the exact amount of gas that was
+  // provided to begin with.
+  rule getGasLeft(<generatedTop>...
+                    <exec>...
+                      <gas> GASLEFT:Int </gas>
+                    ...</exec>
+                  ...</generatedTop>) => GASLEFT
 
 endmodule
 ```
@@ -181,10 +316,11 @@ module SOLIDITY
   imports SOLIDITY-TRANSACTION
   imports SOLIDITY-EXPRESSION
   imports SOLIDITY-STATEMENT
-  imports SOLIDITY-UNISWAP-SUMMARIES
+  imports SOLIDITY-FUNCTION-SELECTORS
+  imports SOLIDITY-ULM-SIGNATURE-IMPLEMENTATION
+  imports SOLIDITY-ULM-EXECUTE
 
   rule <k> _:PragmaDefinition Ss:SourceUnits => Ss ...</k>
-       <summarize> false </summarize>
   rule S:SourceUnit Ss:SourceUnits => S ~> Ss
   rule .SourceUnits => .K
   rule C:ContractBodyElement Cc:ContractBodyElements => C ~> Cc
